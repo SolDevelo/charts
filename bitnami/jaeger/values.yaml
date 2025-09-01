@@ -79,8 +79,8 @@ diagnosticMode:
 ## @param image.debug Enable image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/jaeger
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/jaeger
   tag: 2.9.0-debian-12-r1
   digest: ""
   ## Specify a imagePullPolicy
@@ -1150,8 +1150,8 @@ migration:
 ## @param cqlshImage.debug Enable image debug mode
 ##
 cqlshImage:
-  registry: docker.io
-  repository: bitnami/cassandra
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/cassandra
   tag: 5.0.5-debian-12-r7
   digest: ""
   ## Specify a imagePullPolicy
