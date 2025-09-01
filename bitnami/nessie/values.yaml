@@ -122,8 +122,8 @@ javaOpts: ""
 ## @param image.debug Enable nessie image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/nessie
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/nessie
   tag: 0.104.10-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
@@ -750,8 +750,8 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets OS Shell + Utility image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -805,8 +805,8 @@ waitContainer:
   ## @param waitContainer.image.debug Enable PostgreSQL client image debug mode
   ##
   image:
-    registry: docker.io
-    repository: bitnami/postgresql
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/postgresql
     tag: 17.6.0-debian-12-r4
     digest: ""
     ## Specify a imagePullPolicy
