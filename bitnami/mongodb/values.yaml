@@ -137,8 +137,8 @@ diagnosticMode:
 ## @param image.debug Set to true if you would like to see extra information on logs
 ##
 image:
-  registry: docker.io
-  repository: bitnami/mongodb
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/mongodb
   tag: 8.0.13-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
@@ -263,8 +263,8 @@ tls:
   ## @param tls.extraDnsNames Add extra dns names to the CA, can solve x509 auth issue for pod clients
   ##
   image:
-    registry: docker.io
-    repository: bitnami/nginx
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/nginx
     tag: 1.29.1-debian-12-r0
     digest: ""
     pullPolicy: IfNotPresent
@@ -855,9 +855,9 @@ externalAccess:
     ## @param externalAccess.autoDiscovery.image.pullSecrets Init container auto-discovery image pull secrets
     ##
     image:
-      registry: docker.io
-      repository: bitnami/kubectl
-      tag: 1.33.4-debian-12-r0
+      registry: registry.app-catalog.vmware.com
+      repository: eam/prd/containers/verified/common/minideb-bookworm/kubectl
+      tag: 1.34.0-debian-12-r0
       digest: ""
       ## Specify a imagePullPolicy
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -904,8 +904,8 @@ externalAccess:
     ## @param externalAccess.dnsCheck.image.pullSecrets Init container dns-check image pull secrets
     ##
     image:
-      registry: docker.io
-      repository: bitnami/os-shell
+      registry: registry.app-catalog.vmware.com
+      repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
       tag: 12-debian-12-r51
       digest: ""
       ## Specify a imagePullPolicy
@@ -1633,8 +1633,8 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets Specify docker-registry secret names as an array
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     digest: ""
     ## Specify a imagePullPolicy
@@ -2433,8 +2433,8 @@ metrics:
   ## @param metrics.image.pullSecrets Specify docker-registry secret names as an array
   ##
   image:
-    registry: docker.io
-    repository: bitnami/mongodb-exporter
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/mongodb-exporter
     tag: 0.47.0-debian-12-r1
     digest: ""
     pullPolicy: IfNotPresent
