@@ -1,0 +1,55 @@
+CHART NAME: {{ .Chart.Name }}
+CHART VERSION: {{ .Chart.Version }}
+APP VERSION: {{ .Chart.AppVersion }}
+
+** Please be patient while the chart is being deployed **
+
+Tip:
+
+  Watch the deployment status using the command: kubectl get pods -w --namespace {{ include "common.names.namespace" . }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+MariaDB can be accessed through following DNS names from within your cluster:
+
+  Primary: {{ include "mariadb.primary.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (port {{ .Values.primary.service.ports.mysql }})
+{{- if eq .Values.architecture "replication" }}
+  Secondary: {{ include "mariadb.secondary.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (port {{ .Values.secondary.service.ports.mysql }})
+{{- end }}
+
+To get the admin credentials (username "root"), run:
+
+    export MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace {{ include "common.names.namespace" . }} {{ template "mariadb.secretName" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 -d)
+
+To connect to your database, create a client pod:
+
+    kubectl run {{ include "common.names.fullname" . }}-client --rm --tty -i --restart='Never' --image {{ template "mariadb.setup.image" . }} --env MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD --namespace {{ include "common.names.namespace" . }} --command -- bash
+
+{{- if .Values.tls.enabled }}
+
+Copy your CA TLS certificates to your client pod:
+
+    kubectl get secret --namespace {{ include "common.names.namespace" . }} {{ include "mariadb.tls.ca.secretName" . }} -o json | jq -r '.data["tls.crt"]' | base64 --decode > /tmp/tls.crt
+    kubectl cp --namespace {{ include "common.names.namespace" . }} /tmp/tls.crt {{ include "common.names.fullname" . }}-client:/tmp/tls.crt
+
+{{- end }}
+
+Then, access the database:
+
+  1. To connect to primary service (read/write):
+
+      mariadb -h {{ include "mariadb.primary.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} -uroot -p$MARIADB_ROOT_PASSWORD {{ .Values.auth.database }}
+
+{{- if eq .Values.architecture "replication" }}
+
+  2. To connect to secondary service (read-only):
+
+      mariadb -h {{ include "mariadb.secondary.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} -uroot -p$MARIADB_ROOT_PASSWORD {{ .Values.auth.database }}
+{{- end }}
+
+{{- include "common.warnings.rollingTag" .Values.image }}
+{{- include "common.warnings.rollingTag" .Values.defaultInitContainers.setup.image }}
+{{- include "common.warnings.rollingTag" .Values.defaultInitContainers.volumePermissions.image }}
+{{- include "common.warnings.rollingTag" .Values.metrics.image }}
+{{- include "mariadb.validateValues" . }}
+{{- include "common.warnings.resources" (dict "sections" (list "primary" "secondary" "defaultInitContainers.setup" "defaultInitContainers.volumePermissions" "metrics") "context" .) }}
+{{- include "common.warnings.modifiedImages" (dict "images" (list .Values.image .Values.defaultInitContainers.setup.image .Values.defaultInitContainers.volumePermissions.image .Values.metrics.image) "context" .) }}
+{{- include "common.errors.insecureImages" (dict "images" (list .Values.image .Values.defaultInitContainers.setup.image .Values.defaultInitContainers.volumePermissions.image .Values.metrics.image) "context" .) }}
