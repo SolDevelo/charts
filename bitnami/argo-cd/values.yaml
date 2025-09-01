@@ -68,8 +68,8 @@ extraDeploy: []
 ## @param image.debug Enable Argo CD image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/argo-cd
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/argo-cd
   tag: 3.1.1-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
@@ -3297,8 +3297,8 @@ dex:
   ## @param dex.image.debug Enable Dex image debug mode
   ##
   image:
-    registry: docker.io
-    repository: bitnami/dex
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/dex
     tag: 2.43.1-debian-12-r8
     digest: ""
     ## Specify a imagePullPolicy
@@ -3994,8 +3994,8 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets OS Shell + Utility image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     digest: ""
     pullPolicy: IfNotPresent
@@ -4056,8 +4056,8 @@ redis:
   ## @param redis.image.pullSecrets Redis image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/redis
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/redis
     tag: 8.2.1-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
