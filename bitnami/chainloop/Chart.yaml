@@ -4,13 +4,13 @@
 annotations:
   images: |
     - name: chainloop-artifact-cas
-      image: docker.io/bitnami/chainloop-artifact-cas:1.43.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/chainloop-artifact-cas:1.43.1-debian-12-r0
     - name: chainloop-control-plane
-      image: docker.io/bitnami/chainloop-control-plane:1.43.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/chainloop-control-plane:1.43.1-debian-12-r0
     - name: chainloop-control-plane-migrations
-      image: docker.io/bitnami/chainloop-control-plane-migrations:1.43.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/chainloop-control-plane-migrations:1.43.1-debian-12-r0
     - name: dex
-      image: docker.io/bitnami/dex:2.43.1-debian-12-r8
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:2.43.1-debian-12-r8
   license: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -64,4 +64,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/chainloop-control-plane-migrations
 - https://github.com/bitnami/containers/tree/main/bitnami/chainloop-artifact-cas
 - https://github.com/chainloop-dev/chainloop
-version: 4.0.76
+version: 4.0.77
