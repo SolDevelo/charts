@@ -87,8 +87,8 @@ diagnosticMode:
 ## @param image.debug Specify if debug logs should be enabled
 ##
 image:
-  registry: docker.io
-  repository: bitnami/multus-cni
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/multus-cni
   tag: 4.2.2-debian-12-r2
   digest: ""
   ## Specify a imagePullPolicy
