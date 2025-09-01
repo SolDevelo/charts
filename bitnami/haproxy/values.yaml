@@ -312,8 +312,8 @@ terminationGracePeriodSeconds: ""
 ## @param image.pullSecrets HAProxy image pull secrets
 ##
 image:
-  registry: docker.io
-  repository: bitnami/haproxy
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/haproxy
   tag: 3.2.4-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
