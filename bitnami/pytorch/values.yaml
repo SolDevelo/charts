@@ -83,8 +83,8 @@ diagnosticMode:
 ## @param image.pullSecrets Specify docker-registry secret names as an array
 ##
 image:
-  registry: docker.io
-  repository: bitnami/pytorch
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/pytorch
   tag: 2.8.0-debian-12-r2
   digest: ""
   ## Specify a imagePullPolicy
@@ -562,8 +562,8 @@ networkPolicy:
 ## @param git.pullSecrets Specify docker-registry secret names as an array
 ##
 git:
-  registry: docker.io
-  repository: bitnami/git
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/git
   tag: 2.51.0-debian-12-r0
   digest: ""
   pullPolicy: IfNotPresent
@@ -591,9 +591,9 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets Specify docker-registry secret names as an array
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
-    tag: 12-debian-12-r50
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
+    tag: 12-debian-12-r51
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
