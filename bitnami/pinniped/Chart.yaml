@@ -4,11 +4,11 @@
 annotations:
   images: |
     - name: pinniped
-      image: docker.io/bitnami/pinniped:0.40.0-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pinniped:0.41.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
-appVersion: 0.40.0
+appVersion: 0.41.0
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
@@ -29,4 +29,4 @@ maintainers:
 name: pinniped
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/pinniped
-version: 2.4.24
+version: 2.4.25
