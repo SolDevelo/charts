@@ -90,8 +90,8 @@ diagnosticMode:
 ## @param image.debug Enable image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/jenkins
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/jenkins
   tag: 2.516.2-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
@@ -386,8 +386,8 @@ agent:
   ## @param agent.image.debug Enable image debug mode
   ##
   image:
-    registry: docker.io
-    repository: bitnami/jenkins-agent
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/jenkins-agent
     tag: 0.3327.0-debian-12-r1
     digest: ""
     ## Specify a imagePullPolicy
@@ -1041,8 +1041,8 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets OS Shell + Utility image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     digest: ""
     pullPolicy: IfNotPresent
