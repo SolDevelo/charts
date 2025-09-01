@@ -8,7 +8,7 @@ annotations:
     - name: parse
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/parse:8.2.3-debian-12-r13
     - name: parse-dashboard
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/parse-dashboard:7.3.0-debian-12-r15
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/parse-dashboard:7.4.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -40,4 +40,4 @@ maintainers:
 name: parse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/parse
-version: 25.1.17
+version: 25.1.18
