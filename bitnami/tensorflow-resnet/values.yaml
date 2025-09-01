@@ -77,9 +77,9 @@ diagnosticMode:
 ##
 server:
   image:
-    registry: docker.io
-    repository: bitnami/tensorflow-serving
-    tag: 2.19.1-debian-12-r0
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/tensorflow-serving
+    tag: 2.19.1-debian-12-r1
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -104,8 +104,8 @@ server:
 ##
 client:
   image:
-    registry: docker.io
-    repository: bitnami/tensorflow-resnet
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/tensorflow-resnet
     tag: 2.19.1-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
