@@ -95,8 +95,8 @@ ingress:
 alertmanager:
   enabled: true
   image:
-    registry: docker.io
-    repository: bitnami/alertmanager
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/alertmanager
     tag: 0.28.1-debian-12-r15
     digest: ""
     ## Specify a imagePullPolicy
@@ -679,8 +679,8 @@ alertmanager:
 ##
 server:
   image:
-    registry: docker.io
-    repository: bitnami/prometheus
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/prometheus
     tag: 3.5.0-debian-12-r3
     digest: ""
     ## Specify a imagePullPolicy
@@ -1080,8 +1080,8 @@ server:
     ## @param server.thanos.image.pullSecrets Specify docker-registry secret names as an array
     ##
     image:
-      registry: docker.io
-      repository: bitnami/thanos
+      registry: registry.app-catalog.vmware.com
+      repository: eam/prd/containers/verified/common/minideb-bookworm/thanos
       tag: 0.39.2-debian-12-r2
       digest: ""
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1691,9 +1691,9 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets OS Shell + Utility image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
-    tag: 12-debian-12-r50
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
+    tag: 12-debian-12-r51
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
