@@ -74,8 +74,8 @@ extraDeploy: []
 ## @param image.debug Enable MinIO&reg; Operator image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/minio-operator
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/minio-operator
   tag: 7.1.1-debian-12-r7
   digest: ""
   ## Specify a imagePullPolicy
@@ -101,8 +101,8 @@ image:
 ## @param sidecarImage.digest MinIO&reg; Operator sidecar image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended)
 ##
 sidecarImage:
-  registry: docker.io
-  repository: bitnami/minio-operator-sidecar
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/minio-operator-sidecar
   tag: 7.1.1-debian-12-r7
   digest: ""
 ## Bitnami MinIO&reg; image version
@@ -113,9 +113,9 @@ sidecarImage:
 ## @param minioImage.digest MinIO&reg; image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
 ##
 minioImage:
-  registry: docker.io
-  repository: bitnami/minio
-  tag: 2025.7.23-debian-12-r3
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/minio
+  tag: 2025.7.23-debian-12-r5
   digest: ""
 ## @param replicaCount Number of MinIO&reg; Operator replicas to deploy
 ##
