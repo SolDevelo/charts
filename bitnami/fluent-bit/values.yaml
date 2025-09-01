@@ -84,8 +84,8 @@ diagnosticMode:
 ## @param image.debug Enable image debug mode
 ##
 image:
-  registry: docker.io
-  repository: bitnami/fluent-bit
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/fluent-bit
   tag: 4.0.8-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
