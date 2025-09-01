@@ -83,8 +83,8 @@ diagnosticMode:
 ## @param image.pullSecrets NATS image pull secrets
 ##
 image:
-  registry: docker.io
-  repository: bitnami/nats
+  registry: registry.app-catalog.vmware.com
+  repository: eam/prd/containers/verified/common/minideb-bookworm/nats
   tag: 2.11.8-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
@@ -749,8 +749,8 @@ metrics:
   ## @param metrics.image.pullSecrets Prometheus metrics image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/nats-exporter
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/nats-exporter
     tag: 0.17.3-debian-12-r8
     digest: ""
     pullPolicy: IfNotPresent

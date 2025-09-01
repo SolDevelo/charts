@@ -4,9 +4,9 @@
 annotations:
   images: |
     - name: nats
-      image: docker.io/bitnami/nats:2.11.8-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nats:2.11.8-debian-12-r0
     - name: nats-exporter
-      image: docker.io/bitnami/nats-exporter:0.17.3-debian-12-r8
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nats-exporter:0.17.3-debian-12-r8
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -33,4 +33,4 @@ maintainers:
 name: nats
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/nats
-version: 9.0.29
+version: 9.0.30
