@@ -118,8 +118,8 @@ postgresql:
   ## @param postgresql.image.debug Specify if debug logs should be enabled
   ##
   image:
-    registry: docker.io
-    repository: bitnami/postgresql-repmgr
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr
     tag: 17.6.0-debian-12-r2
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1131,8 +1131,8 @@ pgpool:
   ## @param pgpool.image.debug Specify if debug logs should be enabled
   ##
   image:
-    registry: docker.io
-    repository: bitnami/pgpool
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/pgpool
     tag: 4.6.3-debian-12-r0
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1735,8 +1735,8 @@ metrics:
   ## @param metrics.image.debug Specify if debug logs should be enabled
   ##
   image:
-    registry: docker.io
-    repository: bitnami/postgres-exporter
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/postgres-exporter
     tag: 0.17.1-debian-12-r16
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1985,8 +1985,8 @@ volumePermissions:
   ## @param volumePermissions.image.pullSecrets Specify docker-registry secret names as an array
   ##
   image:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
