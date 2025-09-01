@@ -95,8 +95,8 @@ dremio:
   ## @param dremio.image.debug Enable Dremio image debug mode
   ##
   image:
-    registry: docker.io
-    repository: bitnami/dremio
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/dremio
     tag: 26.0.0-debian-12-r5
     digest: ""
     ## Specify a imagePullPolicy
@@ -1954,8 +1954,8 @@ defaultInitContainers:
   ## @param defaultInitContainers.defaultImage.pullSecrets OS Shell + Utility image pull secrets
   ##
   defaultImage:
-    registry: docker.io
-    repository: bitnami/os-shell
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
     tag: 12-debian-12-r51
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -2335,8 +2335,8 @@ metrics:
   ## @param metrics.image.pullSecrets Specify docker-registry secret names as an array
   ##
   image:
-    registry: docker.io
-    repository: bitnami/jmx-exporter
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter
     tag: 1.4.0-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
