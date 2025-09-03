@@ -4,7 +4,7 @@
 annotations:
   images: |
     - name: apache-exporter
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r55
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r56
     - name: phpmyadmin
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/phpmyadmin:5.2.2-debian-12-r23
   licenses: Apache-2.0
@@ -38,4 +38,4 @@ maintainers:
 name: phpmyadmin
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/phpmyadmin
-version: 20.0.2
+version: 20.0.3
