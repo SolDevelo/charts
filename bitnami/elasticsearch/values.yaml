@@ -2218,7 +2218,7 @@ metrics:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/elasticsearch-exporter
-    tag: 1.9.0-debian-12-r16
+    tag: 1.9.0-debian-12-r17
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
