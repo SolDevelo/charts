@@ -4,7 +4,7 @@
 annotations:
   images: |
     - name: cloudnative-pg
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cloudnative-pg:1.27.0-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cloudnative-pg:1.27.0-debian-12-r2
     - name: plugin-barman-cloud
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud:0.6.0-debian-12-r0
     - name: plugin-barman-cloud-sidecar
@@ -35,4 +35,4 @@ maintainers:
 name: cloudnative-pg
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/cloudnative-pg
-version: 1.0.14
+version: 1.0.15
