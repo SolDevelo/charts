@@ -4,15 +4,15 @@
 annotations:
   images: |
     - name: clickhouse
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.8.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.8.2-debian-12-r0
     - name: clickhouse-keeper
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.8.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.8.2-debian-12-r0
     - name: os-shell
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 25.8.1
+appVersion: 25.8.2
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
@@ -33,4 +33,4 @@ maintainers:
 name: clickhouse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/clickhouse
-version: 9.4.6
+version: 9.4.7
