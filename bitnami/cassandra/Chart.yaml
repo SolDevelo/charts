@@ -4,9 +4,9 @@
 annotations:
   images: |
     - name: cassandra
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r7
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r8
     - name: cassandra-exporter
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra-exporter:2.3.8-debian-12-r51
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra-exporter:2.3.8-debian-12-r53
     - name: os-shell
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
   licenses: Apache-2.0
@@ -34,4 +34,4 @@ maintainers:
 name: cassandra
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/cassandra
-version: 12.3.13
+version: 12.3.14
