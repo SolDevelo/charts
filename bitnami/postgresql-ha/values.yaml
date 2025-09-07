@@ -120,7 +120,7 @@ postgresql:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr
-    tag: 17.6.0-debian-12-r3
+    tag: 17.6.0-debian-12-r4
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
@@ -1133,7 +1133,7 @@ pgpool:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/pgpool
-    tag: 4.6.3-debian-12-r0
+    tag: 4.6.3-debian-12-r1
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
@@ -1737,7 +1737,7 @@ metrics:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/postgres-exporter
-    tag: 0.17.1-debian-12-r17
+    tag: 0.17.1-debian-12-r18
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
@@ -1987,7 +1987,7 @@ volumePermissions:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r51
+    tag: 12-debian-12-r52
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
