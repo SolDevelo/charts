@@ -4,7 +4,7 @@
 annotations:
   images: |
     - name: minio
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.9.6-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.9.7-debian-12-r0
     - name: minio-client
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio-client:2025.8.13-debian-12-r0
     - name: minio-object-browser
@@ -14,7 +14,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 2025.9.6
+appVersion: 2025.9.7
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
@@ -38,4 +38,4 @@ maintainers:
 name: minio
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/minio
-version: 17.0.28
+version: 17.0.29
