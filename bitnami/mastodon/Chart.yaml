@@ -4,9 +4,9 @@
 annotations:
   images: |
     - name: mastodon
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/mastodon:4.4.3-debian-12-r11
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/mastodon:4.4.3-debian-12-r12
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -50,4 +50,4 @@ maintainers:
 name: mastodon
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/mastodon
-version: 14.0.2
+version: 14.0.3
