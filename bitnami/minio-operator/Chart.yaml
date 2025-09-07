@@ -4,7 +4,7 @@
 annotations:
   images: |
     - name: minio
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.7.23-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.9.6-debian-12-r0
     - name: minio-operator
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio-operator:7.1.1-debian-12-r8
     - name: minio-operator-sidecar
@@ -33,4 +33,4 @@ maintainers:
 name: minio-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/minio-operator
-version: 0.2.13
+version: 0.2.14
