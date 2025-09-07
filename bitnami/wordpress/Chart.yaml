@@ -4,11 +4,11 @@
 annotations:
   images: |
     - name: apache-exporter
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r56
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r57
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
     - name: wordpress
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/wordpress:6.8.2-debian-12-r5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/wordpress:6.8.2-debian-12-r6
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -46,4 +46,4 @@ maintainers:
 name: wordpress
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/wordpress
-version: 27.0.2
+version: 27.0.3
