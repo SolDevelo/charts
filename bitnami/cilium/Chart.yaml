@@ -4,17 +4,17 @@
 annotations:
   images: |
     - name: cilium
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium:1.18.1-debian-12-r5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium:1.18.1-debian-12-r6
     - name: cilium-operator
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium-operator:1.18.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium-operator:1.18.1-debian-12-r2
     - name: cilium-proxy
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium-proxy:1.34.6-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cilium-proxy:1.34.7-debian-12-r0
     - name: hubble-relay
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-relay:1.18.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-relay:1.18.1-debian-12-r2
     - name: hubble-ui
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-ui:0.13.3-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-ui:0.13.3-debian-12-r1
     - name: hubble-ui-backend
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-ui-backend:0.13.3-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/hubble-ui-backend:0.13.3-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -53,4 +53,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/hubble-relay
 - https://github.com/bitnami/containers/tree/main/bitnami/hubble-ui
 - https://github.com/bitnami/containers/tree/main/bitnami/hubble-ui-backend
-version: 3.1.18
+version: 3.1.19
