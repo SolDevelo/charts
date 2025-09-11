@@ -4,13 +4,13 @@
 annotations:
   images: |
     - name: gitea
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitea:1.24.5-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitea:1.24.6-debian-12-r0
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 1.24.5
+appVersion: 1.24.6
 dependencies:
 - condition: postgresql.enabled
   name: postgresql
@@ -38,4 +38,4 @@ maintainers:
 name: gitea
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/gitea
-version: 3.2.25
+version: 3.2.26
