@@ -1,0 +1,353 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+name: Update and automerge PRs
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+# Remove all permissions by default
+permissions: {}
+# Avoid concurrency over the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+jobs:
+  get-chart:
+    runs-on: ubuntu-latest
+    name: Get modified charts
+    permissions:
+      pull-requests: read
+    outputs:
+      chart: ${{ steps.get-chart.outputs.chart }}
+      result: ${{ steps.get-chart.outputs.result }}
+      values-updated: ${{ steps.get-chart.outputs.values-updated }}
+    steps:
+      - id: get-chart
+        name: Get modified charts
+        env:
+          PULL_REQUEST_NUMBER: "${{ github.event.pull_request.number }}"
+          PULL_REQUEST_URL: "${{ github.event.pull_request.url }}"
+          GITHUB_TOKEN: "${{ github.token }}"
+        run: |
+          # Using the Github API to detect the files changed as git merge-base stops working when the branch is behind
+          files_changed_data="$(gh api --paginate "/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_NUMBER}/files")"
+          files_changed="$(echo "$files_changed_data" | jq -r '.[] | .filename')"
+          # Adding || true to avoid "Process exited with code 1" errors
+          charts_dirs_changed="$(echo "$files_changed" | xargs dirname | grep -o "bitnami/[^/]*" | sort | uniq || true)"
+          # Using grep -c as a better alternative to wc -l when dealing with empty strings."
+          num_charts_changed="$(echo "$charts_dirs_changed" | grep -c "bitnami" || true)"
+          num_version_bumps="$(echo "$files_changed_data" | jq -r '[.[] | select(.filename|match("bitnami/[^/]+/Chart.yaml")) | select(.patch|contains("+version")) ] | length' )"
+          non_readme_files=$(echo "$files_changed" | grep -vc "\.md" || true)
+
+          if [[ $(curl -Lks "${PULL_REQUEST_URL}" | jq '.state | index("closed")') != *null* ]]; then
+            # The PR for which this workflow run was launched is now closed -> SKIP
+            echo "error=The PR for which this workflow run was launched is now closed. The tests will be skipped." >> "$GITHUB_OUTPUT"
+            echo "result=skip" >> "$GITHUB_OUTPUT"
+          elif [[ "$non_readme_files" -le "0" ]]; then
+            # The only changes are .md files -> SKIP
+            echo "result=skip" >> "$GITHUB_OUTPUT"
+          elif [[ "$num_charts_changed" -ne "$num_version_bumps" ]]; then
+            # Changes done in charts but version not bumped -> ERROR
+            echo "error=Detected changes in charts without version bump in Chart.yaml. Charts changed: ${num_charts_changed}. Version bumps detected: ${num_version_bumps}" >> "$GITHUB_OUTPUT"
+            echo "result=fail" >> "$GITHUB_OUTPUT"
+          elif [[ "$num_charts_changed" -eq "1" ]]; then
+            # Changes done in only one chart -> OK
+            echo "result=ok" >> "$GITHUB_OUTPUT"
+            # Extra output: chart name
+            chart_name="${charts_dirs_changed//bitnami\/}"
+            echo "chart=${chart_name}" >> "$GITHUB_OUTPUT"
+            # Extra output: values-updated
+            # shellcheck disable=SC2076
+            if [[ "${files_changed[*]}" =~ "bitnami/${chart_name}/values.yaml" ]]; then
+              echo "values-updated=true" >> "$GITHUB_OUTPUT"
+            fi
+          elif [[ "$num_charts_changed" -le "0" ]]; then
+            # Changes done in the bitnami/ folder but not inside a chart subfolder -> SKIP
+            echo "error=No changes detected in charts. The rest of the tests will be skipped." >> "$GITHUB_OUTPUT"
+            echo "result=skip" >> "$GITHUB_OUTPUT"
+          else
+            # Changes done in more than chart -> SKIP
+            echo "error=Changes detected in more than one chart directory. It is strongly advised to change only one chart in a PR. The rest of the tests will be skipped." >> "$GITHUB_OUTPUT"
+            echo "result=skip" >> "$GITHUB_OUTPUT"
+          fi
+      # Using actions/github-scripts because using exit 1 in the script above would not provide any output
+      # Source: https://github.community/t/no-output-on-process-completed-with-exit-code-1/123821/3
+      - id: show-error
+        name: Show error
+        if: ${{ steps.get-chart.outputs.result != 'ok' }}
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea
+        with:
+          script: |
+            let message='${{ steps.get-chart.outputs.error }}';
+            if ('${{ steps.get-chart.outputs.result }}' === 'fail' ) {
+              core.setFailed(message);
+            } else {
+              core.warning(message);
+            }
+  update-pr:
+    runs-on: ubuntu-latest
+    needs: [get-chart]
+    name: Automatically update README and CRDs
+    permissions:
+      contents: write
+    outputs:
+      result: ${{ steps.update-pr.outputs.result }}
+    if: needs.get-chart.outputs.result == 'ok'
+    steps:
+      - name: Checkout bitnami/charts
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          path: charts
+      - name: Setup git configuration
+        run: |
+          cd $GITHUB_WORKSPACE/charts
+          git config user.name "Bitnami Bot"
+          git config user.email "bitnami.bot@broadcom.com"
+      - name: Install readme-generator-for-helm
+        if: needs.get-chart.outputs.values-updated == 'true'
+        run: npm install -g @bitnami/readme-generator-for-helm
+      - id: update-readme
+        name: 'Update README'
+        if: needs.get-chart.outputs.values-updated == 'true'
+        env:
+          CHART: ${{ needs.get-chart.outputs.chart }}
+        run: |
+          exit_code=0
+          cd "${GITHUB_WORKSPACE}/charts" || exit 1
+
+          echo "Validating README.md for bitnami/${CHART}"
+
+          # Validating *.registry parameters
+          while read -r line; do
+            echo "$line" | grep --quiet "\[default: \(REGISTRY_NAME\|\"\"\)\]" || exit_code=$?
+          done < <(grep "@param\s\+[A-Za-z\.]\+\.registry\s\+" "bitnami/${CHART}/values.yaml")
+          if [[ $exit_code -ne 0 ]]; then
+            echo "error=Please ensure all *.registry params include the [default: REGISTRY_NAME] modifier in the chart bitnami/${CHART}/values.yaml file"
+            exit "$exit_code"
+          fi
+
+          # Validating *.repository parameters
+          while read -r line; do
+            param=$(echo "$line" | awk '{print $3}')
+            # Checking if it's a image's registry-related param
+            registry_param="${param//.repository/.registry}"
+            grep --quiet "@param\s\+${registry_param}" "bitnami/${CHART}/values.yaml" && ( echo "$line" | grep --quiet "\[default: \(REPOSITORY_NAME/.*\|\"\"\)\]" || exit_code=$? )
+          done < <(grep "@param\s\+[A-Za-z\.]\+\.repository\s\+" "bitnami/${CHART}/values.yaml")
+          if [[ $exit_code -ne 0 ]]; then
+            echo "error=Please ensure all *.repository params include the [default: REPOSITORY_NAME] modifier the in the chart bitnami/${CHART}/values.yaml file"
+            exit "$exit_code"
+          fi
+
+          # Validating *.tag parameters
+          grep -v --quiet "@param\s\+[A-Za-z\.]\+\.tag\s\+" "bitnami/${CHART}/values.yaml" || exit_code=$?
+          if [[ $exit_code -ne 0 ]]; then
+            echo "error=Please ensure all *.tag params are skipped (@skip) in the bitnami/${CHART}/values.yaml file"
+            exit "$exit_code"
+          fi
+          echo "Updating README.md for bitnami/${CHART}"
+          readme-generator --values "bitnami/${CHART}/values.yaml" --readme "bitnami/${CHART}/README.md" --schema "/tmp/schema.json"
+
+          # Commit all changes, if any
+          if git status -s | grep "bitnami/${CHART}"; then
+            git add "bitnami/${CHART}"
+            git commit -m "Update README.md with readme-generator-for-helm" --signoff
+          fi
+      - id: update-crds
+        name: 'Update CRDs'
+        # To avoid malicious executions, only PRs performed by the bitnami-bot will perform the CRDs update
+        if: github.event.pull_request.user.login == 'bitnami-bot'
+        env:
+          CHART: ${{ needs.get-chart.outputs.chart }}
+        run: |
+          cd "${GITHUB_WORKSPACE}/charts" || exit 1
+
+          # Updating CRDs stored at 'bitnami/$CHART/crds', 'bitnami/$CHART/templates/crds', and "bitnami/${CHART}/charts/${CHART}-crds/crds"
+          mapfile -t crd_files < <(find "bitnami/${CHART}/crds" "bitnami/${CHART}/templates/crds" "bitnami/${CHART}/charts/${CHART}-crds/crds" -name "*.yaml" -o -name "*.yml" 2>/dev/null || true)
+          for file in "${crd_files[@]}"; do
+            # Automatically update CRDs that use the '# Source' header
+            source_url_tpl="$(head -n 1 "$file" | grep -E "^# ?Source: ?" | sed -E 's|^# ?Source: ?||' || true)"
+            if [[ -n "$source_url_tpl" ]]; then
+              # Validate the second line of the CRD file includes the version of the CRD
+              crd_version="$(head -n 2 $file | tail -n 1 | grep -E "^# ?Version: ?" | sed -E 's|^# ?Version: ?||' || true)"
+              if [[ -z "$crd_version" ]]; then
+                echo "error=CRD file '${file}' does not include the '#Version: <version> header'"
+                exit 1
+              fi
+              # Additional headers may be used for extra features
+              # Conditional - Adds a conditional {{if}}/{{end}} to the downloaded upstream CRD
+              # VersionOf - Name of a subcomponent, its version will be used for CRD tracking instead of the main component version
+              # UseKustomize - If set to true, uses Kustomize to render the CRDs
+              # RequiresFilter - If set to true, uses yq to filter resources having 'kind: CustomResourceDefinition', useful when using 'install.yaml' file as upstream source
+              continue=true
+              line_n=2
+              extra_headers=""
+              CONDITIONAL=""
+              SUBCOMPONENT=""
+              USE_KUSTOMIZE=""
+              REQUIRES_FILTER=""
+              while [ "$continue" = true ]; do
+                line_n=$((line_n+1))
+                line="$(head -n $line_n $file | tail -n 1)"
+                if [[ $line =~ ^#\ ?[a-zA-Z]+:\ ? ]]; then
+                  if [[ $line =~ ^#\ ?Conditional:\ ? ]]; then
+                    CONDITIONAL="$(echo $line | sed -E 's|^# ?Conditional: ?||')"
+                    CONDITIONAL="{{- if ${CONDITIONAL} }}\n"
+                  elif [[ $line =~ ^#\ ?VersionOf:\ ? ]]; then
+                    SUBCOMPONENT="$(echo $line | sed -E 's|^# ?VersionOf: ?||')"
+                  elif [[ $line =~ ^#\ ?UseKustomize:\ ? ]]; then
+                    USE_KUSTOMIZE="$(echo $line | sed -E 's|^# ?UseKustomize: ?||' || true)"
+                  elif [[ $line =~ ^#\ ?RequiresFilter:\ ? ]]; then
+                    REQUIRES_FILTER="$(echo $line | sed -E 's|^# ?RequiresFilter: ?||' || true)"
+                  else
+                    echo "error=Header ${line} not recognized'"
+                    exit 1
+                  fi
+                  extra_headers="${extra_headers}${line}\n"
+                else
+                  continue=false
+                fi
+              done
+              # Obtain the version of the subcomponent if provided, otherwise use the main component version
+              if [[ -n "$SUBCOMPONENT" ]]; then
+                APP_VERSION="$(cat bitnami/${CHART}/Chart.yaml | grep -E "image: \S+${SUBCOMPONENT}:" | sed -E "s|.*${SUBCOMPONENT}:([0-9\.]+)-.*|\1|")"
+              else
+                APP_VERSION="$(yq e '.appVersion' bitnami/${CHART}/Chart.yaml)"
+              fi
+              # Replace version placeholder, if present
+              source_url=$(echo "$source_url_tpl" | sed "s/{version}/${APP_VERSION}/")
+              # If the application version is newer, automatically update the CRD file
+              if [[ "$APP_VERSION" != "$crd_version" ]]; then
+                if [[ "$USE_KUSTOMIZE" = "true" ]]; then
+                  kubectl kustomize "$source_url" > $file
+                else
+                  curl -Lks --fail -o $file "$source_url"
+                fi
+                if [[ "$REQUIRES_FILTER" = "true" ]]; then
+                  yq -i e '. | select(.kind == "CustomResourceDefinition") | ... head_comment=""' $file
+                fi
+                sed -i "1s|^|# Source: ${source_url_tpl}\n# Version: ${APP_VERSION}\n${extra_headers}${CONDITIONAL}|" $file
+                if [[ -n "$CONDITIONAL" ]]; then
+                  echo -E "{{- end }}" >> $file
+                fi
+                echo "info=CRD file '${file}' automatically updated using source '$source_url'"
+              fi
+            else
+              echo "info=CRD file '$file' does not contain the '#Source' header. Skipping..."
+            fi
+          done
+
+          # Commit all changes, if any
+          if git status -s | grep "bitnami/${CHART}"; then
+            git add "bitnami/${CHART}"
+            git commit -m "Update CRDs automatically" --signoff
+          fi
+      - id: update-prometheus-rules
+        name: Update Prometheus rules on kube-prometheus based on upstream
+        # To avoid malicious executions, only PRs performed by the bitnami-bot will perform the CRDs update
+        if: github.event.pull_request.user.login == 'bitnami-bot' && needs.get-chart.outputs.chart == 'kube-prometheus'
+        run: |
+          cd "${GITHUB_WORKSPACE}/charts" || exit 1
+
+          # This function returns the chart parameter name based on the rule name
+          rule_parameter_from_rule_name() {
+            local -r rule_name="${1:-missing rule_name}"
+
+            kebab_to_camel() {
+              IFS='-' read -r -a parts <<< "$1"
+              for i in "${!parts[@]}"; do
+                if [[ $i -eq 0 ]]; then
+                  camelCase="${parts[i]}"
+                else
+                  camelCase+=$(tr '[:lower:]' '[:upper:]' <<< ${parts[i]:0:1})${parts[i]:1}
+                fi
+              done
+              echo "$camelCase"
+            }
+
+            case "$rule_name" in
+              "config-reloaders" | "etcd" | "kube-state-metrics" | "kubernetes-apps" | "kubernetes-resources" | "kubernetes-storage" | "kube-apiserver-slos" | "prometheus" | "prometheus-operator") kebab_to_camel "$rule_name" ;;
+              "alertmanager.rules" | "general.rules" | "kubelet.rules" | "node.rules" | "kube-apiserver-availability.rules" | "kube-apiserver-burnrate.rules" | "kube-apiserver-histogram.rules" | "kube-prometheus-general.rules" | "kube-prometheus-node-recording.rules") kebab_to_camel "${rule_name%.rules}" ;;
+              "k8s.rules.container-cpu-usage-seconds-total" | "k8s.rules.container-memory-cache" | "k8s.rules.container-memory-rss" | "k8s.rules.container-memory-swap" | "k8s.rules.container-memory-working-set-bytes" | "k8s.rules.container-resource" | "k8s.rules.pod-owner") kebab_to_camel "${rule_name//.rules./-}" ;;
+              "kubernetes-system-apiserver" | "kubernetes-system-kubelet" | "kubernetes-system") echo "kubernetesSystem" ;;
+              "kube-scheduler.rules") echo "kubeSchedulerAlerting" ;;
+              "kubernetes-system-controller-manager") echo "kubeControllerManager" ;;
+              "kubernetes-system-kube-proxy") echo "kubeProxy" ;;
+              "kubernetes-system-scheduler") echo "kubeSchedulerRecording" ;;
+              "node-exporter") echo "nodeExporterAlerting" ;;
+              "node-exporter.rules") echo "nodeExporterRecording" ;;
+              "node-network") echo "network" ;;
+              *) echo "" ;;
+            esac
+          }
+
+          mkdir -p "bitnami/kube-prometheus/templates/prometheus/rules"
+          cd "bitnami/kube-prometheus/templates/prometheus/rules"
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>&1 >/dev/null 2>&1
+          helm repo update >/dev/null 2>&1
+          helm template prometheus-community/kube-prometheus-stack \
+            --set fullnameOverride=foo \
+            --set defaultRules.create=true \
+            --show-only templates/prometheus/rules-1.14/* \
+            | awk 'NF' | yq --no-doc -s '.metadata.name | sub("^foo-"; "") + ".yaml"'
+          for m in *.yaml; do
+            rule_name="${m%.yaml}"
+            rule_parameter="$(rule_parameter_from_rule_name "$rule_name")"
+            # We're just interested in the .spec given we build apiVersion, kind and metadata
+            # based in Bitnami standards
+            spec="$(yq '{"spec": .spec}' "$m")"
+            # We need to escape curly braces to avoid issues with Go templates
+            spec=$(echo "$spec" | sed -E 's/\{\{/__OPEN__/g' | sed -E 's/\}\}/__CLOSE__/g' | sed -E 's/__OPEN__/{{\`{{\`}}/g' | sed -E 's/__CLOSE__/{{\`}}\`}}/g')
+            cat > "$m" << EOF
+          {{- /*
+          Copyright Broadcom, Inc. All Rights Reserved.
+          SPDX-License-Identifier: APACHE-2.0
+          */}}
+
+          {{- if and .Values.prometheus.enabled .Values.prometheus.defaultRules.create .Values.prometheus.defaultRules.rules.$rule_parameter }}
+          apiVersion: monitoring.coreos.com/v1
+          kind: PrometheusRule
+          metadata:
+            name: {{ printf "%s-$rule_name" (include "kube-prometheus.prometheus.fullname" .) }}
+            namespace: {{ include "common.names.namespace" . | quote }}
+            labels: {{ include "kube-prometheus.prometheus.labels" . | nindent 4 }}
+            {{- if .Values.commonAnnotations }}
+            annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" . ) | nindent 4 }}
+            {{- end }}
+          $spec
+          {{- end }}
+          EOF
+          done
+
+          cd "${GITHUB_WORKSPACE}/charts"
+          if git status -s | grep "bitnami/kube-prometheus/templates/prometheus/rules"; then
+            git add "bitnami/kube-prometheus/templates/prometheus/rules"
+            git commit -m "Update Prometheus rules" --signoff
+          fi
+      - id: update-pr
+        name: Push changes
+        run: |
+          cd $GITHUB_WORKSPACE/charts
+          # Push all the new commits, if any
+          if [[ $(git cherry -v) ]]; then
+            git push
+            echo "result=ok" >> $GITHUB_OUTPUT
+          else
+            echo "result=skip" >> $GITHUB_OUTPUT
+          fi
+  auto-merge:
+    if: github.actor == 'bitnami-bot'
+    needs: [update-pr]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable auto-merge
+        run: gh pr merge "$PR_URL" --auto --squash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
