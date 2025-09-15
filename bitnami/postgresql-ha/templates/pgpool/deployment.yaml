@@ -166,6 +166,10 @@ spec:
                   fieldPath: metadata.namespace
             - name: PGPOOL_BACKEND_NODES
               value: {{ range $e, $i := until $postgresqlReplicaCount }}{{ $i }}:{{ $postgresqlFullname }}-{{ $i }}.{{ $postgresqlHeadlessServiceName }}.$(REPMGR_NAMESPACE).svc.{{ $clusterDomain }}:{{ $postgresalContainerPort }},{{ end }}
+            - name: PGPOOL_BACKEND_APPLICATION_NAMES
+              value: {{ range $e, $i := until $postgresqlReplicaCount }}{{ $postgresqlFullname }}-{{ $i }},{{ end }}
+            - name: PGPOOL_AUTO_FAILBACK
+              value: {{ ternary "yes" "no" .Values.pgpool.autoFailBack | quote }}
             - name: PGPOOL_SR_CHECK_USER
               value: {{ (include "postgresql-ha.pgoolSrCheckUsername" .) | quote }}
             {{- if .Values.pgpool.usePasswordFiles }}
@@ -283,10 +287,9 @@ spec:
             - name: PGPOOL_CHILD_MAX_CONNECTIONS
               value: {{ .Values.pgpool.childMaxConnections | quote }}
             {{- end }}
-            {{- $childlifetime := .Values.pgpool.childLifeTime | quote }}
-            {{- if or $childlifetime (eq "0" $childlifetime) }}
+            {{- if or .Values.pgpool.childLifeTime (eq "0" (.Values.pgpool.childLifeTime | toString)) }}
             - name: PGPOOL_CHILD_LIFE_TIME
-              value: {{ $childlifetime }}
+              value: {{ .Values.pgpool.childLifeTime | quote }}
             {{- end }}
             {{- if .Values.pgpool.clientIdleLimit }}
             - name: PGPOOL_CLIENT_IDLE_LIMIT
