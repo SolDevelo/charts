@@ -5,8 +5,8 @@ annotations:
   category: Infrastructure
   images: |
     - name: kaniko
-      version: 1.25.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kaniko:1.25.1-debian-12-r3
+      version: 1.25.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kaniko:1.25.2-debian-12-r0
     - name: strimzi-kafka
       version: 3.9.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka:3.9.0-debian-12-r0
@@ -52,4 +52,4 @@ maintainers:
 name: strimzi-kafka-operator
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/strimzi-kafka-operator
-version: 0.1.4
+version: 0.1.5
