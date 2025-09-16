@@ -6,7 +6,7 @@ file:
     exists: true
     filetype: symlink
     contents:
-      - /rootLogger.level = {{ .Vars.logLevel }}/'
+      - /rootLogger.level = {{ .Vars.logLevel }}/
 http:
   http://127.0.0.1:{{ .Vars.containerPorts.http }}/metrics:
     status: 200
