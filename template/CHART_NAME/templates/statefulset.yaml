@@ -10,6 +10,7 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
     app.kubernetes.io/component: %%COMPONENT_NAME%%
+    app.kubernetes.io/part-of: %%COMPONENT_NAME%%
   {{- if or .Values.%%MAIN_OBJECT_BLOCK%%.statefulsetAnnotations .Values.commonAnnotations }}
   {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.%%MAIN_OBJECT_BLOCK%%.statefulsetAnnotations .Values.commonAnnotations) "context" .) }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 4 }}
@@ -23,17 +24,23 @@ spec:
   selector:
     matchLabels: {{- include "common.labels.matchLabels" ( dict "customLabels" $podLabels "context" $ ) | nindent 6 }}
       app.kubernetes.io/component: %%COMPONENT_NAME%%
+      app.kubernetes.io/part-of: %%COMPONENT_NAME%%
   serviceName: {{ template "common.names.fullname" . }}
   {{- if .Values.%%MAIN_OBJECT_BLOCK%%.updateStrategy }}
   updateStrategy: {{- toYaml .Values.%%MAIN_OBJECT_BLOCK%%.updateStrategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
+      annotations:
+      {{- if not .Values.%%MAIN_OBJECT_BLOCK%%.existingConfigmap }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
       {{- if .Values.%%MAIN_OBJECT_BLOCK%%.podAnnotations }}
-      annotations: {{- include "common.tplvalues.render" (dict "value" .Values.%%MAIN_OBJECT_BLOCK%%.podAnnotations "context" $) | nindent 8 }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
       {{- end }}
       labels: {{- include "common.labels.standard" ( dict "customLabels" $podLabels "context" $ ) | nindent 8 }}
         app.kubernetes.io/component: %%COMPONENT_NAME%%
+        app.kubernetes.io/part-of: %%COMPONENT_NAME%%
     spec:
       {{- include "%%TEMPLATE_NAME%%.imagePullSecrets" . | nindent 6 }}
       serviceAccountName: {{ template "%%TEMPLATE_NAME%%.serviceAccountName" . }}
