@@ -125,7 +125,8 @@ extraDeploy:
 # As they are scratch containers, we need to deploy an extra container
 # for performing goss tests.
 # To do so, we deploy an os-shell container with extra kubectl binary
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: Deployment
   metadata:
     namespace: '{{ include "common.names.namespace" . }}'
@@ -141,6 +142,7 @@ extraDeploy:
           app: kubectl
       spec:
         serviceAccountName: '{{ include "grafana-k6-operator.serviceAccountName" . }}'
+        {{- include "grafana-k6-operator.imagePullSecrets" . | nindent 6 }}
         automountServiceAccountToken: true
         initContainers:
         - name: copy-kubectl
@@ -150,7 +152,7 @@ extraDeploy:
             - -ec
             - |
               cp /opt/bitnami/kubectl/bin/kubectl /out/kubectl
-          image: bitnami/kubectl
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kubectl:latest
           securityContext:
             runAsNonRoot: true
             privileged: false
@@ -182,7 +184,7 @@ extraDeploy:
             timeoutSeconds: 1
             failureThreshold: 15
             successThreshold: 1
-          image: bitnami/os-shell:latest
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:latest
           securityContext:
             runAsNonRoot: true
             privileged: false
