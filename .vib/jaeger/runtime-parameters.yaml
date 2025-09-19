@@ -18,7 +18,7 @@ query:
         seccompProfile:
           type: "RuntimeDefault"
     - name: trace-generator
-      image: bitnami/os-shell:11-debian-11-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:latest
       command:
         - /bin/bash
         - -ec

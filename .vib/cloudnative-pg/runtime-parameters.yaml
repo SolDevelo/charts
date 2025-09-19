@@ -69,6 +69,7 @@ extraDeploy:
           app.kubernetes.io/component: minio
           app.kubernetes.io/part-of: minio
       spec:
+        {{- include "cloudnative-pg.imagePullSecrets" . | nindent 6 }}
         securityContext:
           fsGroupChangePolicy: OnRootMismatch
           supplementalGroups: []
@@ -79,7 +80,7 @@ extraDeploy:
         initContainers:
         containers:
           - name: minio
-            image: docker.io/bitnami/minio:2025.5.24-debian-12-r5
+            image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.5.24-debian-12-r5
             imagePullPolicy: "IfNotPresent"
             securityContext:
               allowPrivilegeEscalation: false
@@ -235,7 +236,8 @@ extraDeploy:
 # 4) Create a Deployment for our goss tests. We cannot run goss in the operators because they are scratch. We cannot run the test in the Cluster instances because it's ReadOnlyRootFilesystem and it is not configurable. The testing deployment is comprised as follows:
 #    - First an init container with the PostgreSQL client checks that the cluster has been formed
 #    - Then a kubectl container will be used for running the goss tests. With it we can verify that the backup succeeded
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: Deployment
   metadata:
     labels:
@@ -252,9 +254,10 @@ extraDeploy:
           app: postgresql
       spec:
         serviceAccountName: '{{ template "cloudnative-pg.operator.serviceAccountName" . }}'
+        {{- include "cloudnative-pg.imagePullSecrets" . | nindent 6 }}
         automountServiceAccountToken: true
         initContainers:
-        - image: docker.io/bitnami/postgresql:latest
+        - image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:latest
           command:
             - /bin/bash
           args:
@@ -302,7 +305,7 @@ extraDeploy:
             - -ec
             - |
               cp /opt/bitnami/kubectl/bin/kubectl /out/kubectl
-          image: bitnami/kubectl
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kubectl:latest
           securityContext:
             runAsNonRoot: true
             privileged: false
@@ -334,7 +337,7 @@ extraDeploy:
               timeoutSeconds: 1
               failureThreshold: 15
               successThreshold: 1
-            image: bitnami/os-shell:latest
+            image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:latest
             securityContext:
               runAsNonRoot: true
               privileged: false

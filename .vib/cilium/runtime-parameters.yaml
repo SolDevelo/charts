@@ -101,12 +101,13 @@ extraDeploy:
   spec:
     template:
       spec:
+      {{- include "cilium.imagePullSecrets" . | nindent 6 }}
         automountServiceAccountToken: true
         serviceAccountName: deployment-restarter
         restartPolicy: OnFailure
         containers:
           - name: kubectl
-            image: docker.io/bitnami/kubectl:latest
+            image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kubectl:latest
             command:
               - /bin/bash
             args:

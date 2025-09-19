@@ -80,7 +80,8 @@ extraDeploy:
 # EXTRAS
 # In order to support airgapped envs, we deploy a custom nginx instead of
 # the external site the original example did
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: Deployment
   metadata:
     namespace: '{{ include "common.names.namespace" . }}'
@@ -95,9 +96,10 @@ extraDeploy:
         labels:
           app: nginx
       spec:
+        {{- include "grafana-k6-operator.imagePullSecrets" . | nindent 6 }}
         containers:
         - name: nginx
-          image: bitnami/nginx
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:latest
           ports:
           - containerPort: 8080
           securityContext:

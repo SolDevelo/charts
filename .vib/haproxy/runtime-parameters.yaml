@@ -33,7 +33,7 @@ service:
       targetPort: http
 sidecars:
   - name: nginx
-    image: docker.io/bitnami/nginx:1.25.2-debian-11-r5
+    image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:latest
     imagePullPolicy: Always
     ports:
       - name: web

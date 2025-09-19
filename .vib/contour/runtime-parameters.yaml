@@ -39,7 +39,8 @@ envoy:
 rbac:
   create: true
 extraDeploy:
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: Deployment
   metadata:
     labels:
@@ -55,8 +56,9 @@ extraDeploy:
         labels:
           app: apache
       spec:
+        {{- include "contour.imagePullSecrets" . | nindent 6 }}
         containers:
-        - image: bitnami/apache
+        - image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache:latest
           name: apache
           securityContext:
             runAsNonRoot: true

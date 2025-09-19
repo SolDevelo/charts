@@ -53,7 +53,8 @@ extraDeploy:
           targetPort: 8080
       selector:
         app: backend
-  - apiVersion: apps/v1
+  - |
+    apiVersion: apps/v1
     kind: Deployment
     metadata:
       name: backend
@@ -69,9 +70,10 @@ extraDeploy:
             app: backend
             version: v1
         spec:
+          {{- include "envoy-gateway.imagePullSecrets" . | nindent 6 }}
           serviceAccountName: backend
           containers:
-            - image: bitnami/nginx
+            - image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:latest
               imagePullPolicy: Always
               name: backend
               ports:

@@ -151,11 +151,12 @@ extraDeploy:
             helm.sh/chart: postgresql-15.5.6
             app.kubernetes.io/component: primary
         spec:
+          {{- include "dremio.imagePullSecrets" . | nindent 6 }}
           # Using the same security context as the master-coordinator to avoid issues with Openshift
           securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.masterCoordinator.podSecurityContext "context" $) | nindent 8 }}
           containers:
             - name: postgresql
-              image: docker.io/bitnami/postgresql:16.3.0-debian-12-r14
+              image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:latest
               imagePullPolicy: "IfNotPresent"
               # Using the same security context as the master-coordinator to avoid issues with Openshift
               securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.masterCoordinator.containerSecurityContext "context" $) | nindent 12 }}

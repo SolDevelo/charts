@@ -25,10 +25,11 @@ extraDeploy:
     spec:
       template:
         spec:
+          {{- include "zipkin.imagePullSecrets" . | nindent 6 }}
           restartPolicy: OnFailure
           containers:
             - name: zipkin-job
-              image: docker.io/bitnami/os-shell:latest
+              image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:latest
               command:
                 - /bin/bash
               args:

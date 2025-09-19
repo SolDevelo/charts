@@ -39,10 +39,11 @@ extraDeploy:
     spec:
       template:
         spec:
+          {{- include "nessie.imagePullSecrets" . | nindent 6 }}
           restartPolicy: OnFailure
           containers:
             - name: nessie-job
-              image: docker.io/bitnami/nessie-utils:latest
+              image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nessie-utils:latest
               command:
                 - /bin/bash
               args:

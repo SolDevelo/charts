@@ -79,9 +79,10 @@ extraDeploy:
         labels:
           app: openldap
       spec:
+        {{- include "pinniped.imagePullSecrets" . | nindent 6 }}
         containers:
           - name: openldap
-            image: docker.io/bitnami/openldap
+            image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/openldap:latest
             imagePullPolicy: Always
             ports:
               - name: openldap

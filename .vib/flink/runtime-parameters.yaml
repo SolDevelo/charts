@@ -27,10 +27,11 @@ extraDeploy:
     spec:
       template:
         spec:
+          {{- include "flink.imagePullSecrets" . | nindent 6 }}
           restartPolicy: OnFailure
           containers:
             - name: job-runner
-              image: docker.io/bitnami/flink:latest
+              image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/flink:latest
               command:
                 - /bin/bash
               args:

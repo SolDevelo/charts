@@ -6,6 +6,13 @@ SPDX-License-Identifier: APACHE-2.0
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
+Return the proper Docker Image Registry Secret Names
+*/}}
+{{- define "contour.imagePullSecrets" -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.contour.image .Values.envoy.image .Values.defaultBackend.image) "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
 Create the name of the envoy service account to use
 */}}
 {{- define "envoy.envoyServiceAccountName" -}}

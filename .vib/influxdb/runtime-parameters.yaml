@@ -45,11 +45,12 @@ extraDeploy:
   data:
     s3-access-key-id: "{{ .Values.s3.auth.accessKeyId | b64enc }}"
     s3-secret-access-key: "{{ .Values.s3.auth.secretAccessKey | b64enc }}"
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: StatefulSet
   metadata:
     name: seaweedfs
-    namespace: "{{ include \"common.names.namespace\" . }}"
+    namespace: "{{ include "common.names.namespace" . }}"
     labels:
       app.kubernetes.io/part-of: influxdb
       app.kubernetes.io/component: seaweedfs
@@ -66,9 +67,10 @@ extraDeploy:
           app.kubernetes.io/part-of: influxdb
           app.kubernetes.io/component: seaweedfs
       spec:
+        {{- include "influxdb.imagePullSecrets" . | nindent 6 }}
         initContainers:
         - name: auth-config-init
-          image: docker.io/bitnami/seaweedfs:latest
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/seaweedfs:latest
           command:
           - bash
           args:
@@ -113,7 +115,7 @@ extraDeploy:
             subPath: s3-dir
         containers:
         - name: seaweedfs
-          image: docker.io/bitnami/seaweedfs:latest
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/seaweedfs:latest
           securityContext:
             runAsNonRoot: true
             privileged: false
@@ -155,7 +157,7 @@ extraDeploy:
             subPath: s3-dir
             readOnly: true
         - name: bucket-creator
-          image: bitnami/aws-cli:latest
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/aws-cli:latest
           securityContext:
             runAsNonRoot: true
             privileged: false

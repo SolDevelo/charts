@@ -19,7 +19,7 @@ elasticsearch:
   port: 9200
 sidecars:
  - name: elasticsearch
-   image: bitnami/elasticsearch:latest
+   image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch:latest
    imagePullPolicy: IfNotPresent
    ports:
      - name: http

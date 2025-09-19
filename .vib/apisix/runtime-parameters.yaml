@@ -52,7 +52,8 @@ ingressController:
       https: 8008
 
 extraDeploy:
-- apiVersion: apps/v1
+- |
+  apiVersion: apps/v1
   kind: Deployment
   metadata:
     namespace: '{{ include "common.names.namespace" . }}'
@@ -67,9 +68,10 @@ extraDeploy:
         labels:
           app: nginx
       spec:
+        {{- include "apisix.imagePullSecrets" . | nindent 6 }}
         containers:
         - name: nginx
-          image: bitnami/nginx
+          image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:latest
           ports:
           - containerPort: 8080
           securityContext:

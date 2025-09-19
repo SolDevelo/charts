@@ -43,10 +43,11 @@ extraDeploy:
     spec:
       template:
         spec:
+          {{- include "versitygw.imagePullSecrets" . | nindent 6 }}
           restartPolicy: OnFailure
           containers:
             - name: bucket-creator
-              image: docker.io/bitnami/aws-cli:latest
+              image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/aws-cli:latest
               command:
               - bash
               args:

@@ -34,7 +34,7 @@ redis:
     password: oauth2-vib-password
 sidecars:
   - name: dex
-    image: bitnami/dex
+    image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:latest
     args: [serve, /config/config.yaml]
     ports:
       - name: http
