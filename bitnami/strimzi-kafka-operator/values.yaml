@@ -180,7 +180,7 @@ kafkaImages:
 kafkaBridgeImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka-bridge
-  tag: 0.33.0-debian-12-r0
+  tag: 0.33.1-debian-12-r0
   digest: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
