@@ -14,7 +14,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud-sidecar:0.6.0-debian-12-r1
     - name: postgresql
       version: 17.6.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:17.6.0-debian-12-r9
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:17.6.0-debian-12-r10
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -39,4 +39,4 @@ maintainers:
 name: cloudnative-pg
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/cloudnative-pg
-version: 1.0.20
+version: 1.0.21
