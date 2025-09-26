@@ -5,7 +5,7 @@ annotations:
   images: |
     - name: concourse
       version: 7.14.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/concourse:7.14.1-debian-12-r9
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/concourse:7.14.1-debian-12-r10
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
@@ -41,4 +41,4 @@ maintainers:
 name: concourse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/concourse
-version: 5.1.54
+version: 5.1.55
