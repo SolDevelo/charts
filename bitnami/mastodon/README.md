@@ -896,6 +896,10 @@ Find more information about how to deal with common errors related to Bitnami's 
 
 ## Upgrading
 
+### To 15.0.0
+
+This major updates the PostgreSQL subchart to its newest major, 18.0.0. Follow the [official instructions](https://www.postgresql.org/docs/18/upgrading.html) to upgrade to 18.x.
+
 ### To 14.0.0
 
 This major updates the Redis&reg; subchart to its newest major, 22.0.0, which updates Redis&reg; from 8.0 to 8.2. [Here](https://redis.io/docs/latest/operate/oss_and_stack/install/upgrade/cluster/) you can find more information about the changes introduced in that version. No major issues are expected during the upgrade.
