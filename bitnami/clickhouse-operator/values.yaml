@@ -109,7 +109,7 @@ image:
 clickHouseImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/clickhouse
-  tag: 25.8.7-debian-12-r1
+  tag: 25.9.2-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -136,7 +136,7 @@ clickHouseImage:
 keeperImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper
-  tag: 25.8.7-debian-12-r0
+  tag: 25.9.2-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
