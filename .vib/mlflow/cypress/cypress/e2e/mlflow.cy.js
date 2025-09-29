@@ -1,4 +1,4 @@
-/*
+  /*
  * Copyright Broadcom, Inc. All Rights Reserved.
  * SPDX-License-Identifier: APACHE-2.0
  */
@@ -19,7 +19,7 @@ it('can login and access the experiment run', () => {
   // it is not visible in the UI. In this case, we would need to reload the page
   // to see if the run is there or not. There is discussion in the Cypress repo on how to
   // workaround that: https://github.com/cypress-io/cypress/issues/3757
-  cy.contains('Evaluation');
+  cy.contains('Machine learning');
   const max_attempts = 5;
   let runFound = false;
   for (let i = 0; i < max_attempts && !runFound; i += 1)
@@ -32,7 +32,8 @@ it('can login and access the experiment run', () => {
       runFound = true;
     }
   });
-  cy.get('a[href*="runs"]').first().click();
+  cy.wait(5000);
+  cy.get('a[href*="runs"][tabindex="0"]').click();
   cy.fixture('scripts').then((script) => {
     // This ensures that the script in the job was run
     cy.contains(script.script.title);
