@@ -16,7 +16,6 @@ it('allows creating a bucket, uploading and retrieving a file', () => {
     cy.get('#bucket-name').type(`${bucketName}`);
     cy.get('#create-bucket').click();
     cy.visit(`/browser/${bucketName}`);
-    cy.get('#acknowledge-confirm').click();
   });
 
   const fileToUpload = 'example.json';
