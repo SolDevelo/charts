@@ -118,7 +118,7 @@ kafkaImages:
   "3.9.1":
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 3.9.1-debian-12-r0
+    tag: 3.9.1-debian-12-r1
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
@@ -138,7 +138,7 @@ kafkaImages:
   "4.0.0":
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 4.0.0-debian-12-r2
+    tag: 4.0.0-debian-12-r3
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
