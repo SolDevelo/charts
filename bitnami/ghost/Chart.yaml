@@ -4,15 +4,15 @@
 annotations:
   images: |
     - name: ghost
-      version: 6.0.10
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ghost:6.0.10-debian-12-r0
+      version: 6.1.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ghost:6.1.0-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 6.0.10
+appVersion: 6.1.0
 dependencies:
 - condition: mysql.enabled
   name: mysql
@@ -44,4 +44,4 @@ maintainers:
 name: ghost
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/ghost
-version: 25.0.10
+version: 25.0.11
