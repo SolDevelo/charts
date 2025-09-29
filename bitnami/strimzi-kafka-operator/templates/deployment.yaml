@@ -115,19 +115,16 @@ spec:
             # TODO: remove hardcoded references below
             - name: STRIMZI_KAFKA_IMAGES
               value: |
-                3.9.0={{ template "strimzi.kafka.image" (dict "version" "3.9.0" "context" .) }}
-                3.9.1={{ template "strimzi.kafka.image" (dict "version" "3.9.1" "context" .) }}
                 4.0.0={{ template "strimzi.kafka.image" (dict "version" "4.0.0" "context" .) }}
+                4.1.0={{ template "strimzi.kafka.image" (dict "version" "4.1.0" "context" .) }}
             - name: STRIMZI_KAFKA_CONNECT_IMAGES
               value: |
-                3.9.0={{ template "strimzi.kafka.image" (dict "version" "3.9.0" "context" .) }}
-                3.9.1={{ template "strimzi.kafka.image" (dict "version" "3.9.1" "context" .) }}
                 4.0.0={{ template "strimzi.kafka.image" (dict "version" "4.0.0" "context" .) }}
+                4.1.0={{ template "strimzi.kafka.image" (dict "version" "4.1.0" "context" .) }}
             - name: STRIMZI_KAFKA_MIRROR_MAKER_2_IMAGES
               value: |
-                3.9.0={{ template "strimzi.kafka.image" (dict "version" "3.9.0" "context" .) }}
-                3.9.1={{ template "strimzi.kafka.image" (dict "version" "3.9.1" "context" .) }}
                 4.0.0={{ template "strimzi.kafka.image" (dict "version" "4.0.0" "context" .) }}
+                4.1.0={{ template "strimzi.kafka.image" (dict "version" "4.1.0" "context" .) }}
             - name: STRIMZI_DEFAULT_TOPIC_OPERATOR_IMAGE
               value: {{ template "strimzi.image" . }}
             - name: STRIMZI_DEFAULT_USER_OPERATOR_IMAGE

@@ -32,9 +32,7 @@ Strimzi Kafka Operator won't be able to access resources in other namespaces. Yo
 
 {{- include "strimzi.checkRollingTags" . }}
 {{- include "common.warnings.resources" (dict "sections" (list "") "context" .) }}
-{{- $kafka390 := index .Values.kafkaImages "3.9.0" }}
-{{- $kafka391 := index .Values.kafkaImages "3.9.1" }}
 {{- $kafka400 := index .Values.kafkaImages "4.0.0" }}
 {{- $kafka410 := index .Values.kafkaImages "4.1.0" }}
-{{- include "common.warnings.modifiedImages" (dict "images" (list .Values.image $kafka390 $kafka391 $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) }}
-{{- include "common.errors.insecureImages" (dict "images" (list .Values.image $kafka390 $kafka391 $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) }}
+{{- include "common.warnings.modifiedImages" (dict "images" (list .Values.image $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) }}
+{{- include "common.errors.insecureImages" (dict "images" (list .Values.image $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) }}

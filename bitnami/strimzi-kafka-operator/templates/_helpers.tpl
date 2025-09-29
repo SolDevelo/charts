@@ -36,24 +36,18 @@ Return the proper Kaniko Executor image name
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "strimzi.imagePullSecrets" -}}
-{{- $kafka390 := index .Values.kafkaImages "3.9.0" -}}
-{{- $kafka391 := index .Values.kafkaImages "3.9.1" -}}
 {{- $kafka400 := index .Values.kafkaImages "4.0.0" -}}
 {{- $kafka410 := index .Values.kafkaImages "4.1.0" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.image $kafka390 $kafka391 $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.image $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) "context" .) -}}
 {{- end -}}
 
 {{/*
 Check if there are rolling tags in the images
 */}}
 {{- define "strimzi.checkRollingTags" -}}
-{{- $kafka390 := index .Values.kafkaImages "3.9.0" -}}
-{{- $kafka391 := index .Values.kafkaImages "3.9.1" -}}
 {{- $kafka400 := index .Values.kafkaImages "4.0.0" -}}
 {{- $kafka410 := index .Values.kafkaImages "4.1.0" -}}
 {{- include "common.warnings.rollingTag" .Values.image }}
-{{- include "common.warnings.rollingTag" $kafka390 }}
-{{- include "common.warnings.rollingTag" $kafka391 }}
 {{- include "common.warnings.rollingTag" $kafka400 }}
 {{- include "common.warnings.rollingTag" $kafka410 }}
 {{- include "common.warnings.rollingTag" .Values.kafkaBridgeImage }}
@@ -68,11 +62,9 @@ Return the proper Docker Image Registry Secret Names as a comma separated string
 {{- range ((.Values.global).imagePullSecrets) -}}
   {{- $pullSecrets = append $pullSecrets . -}}
 {{- end -}}
-{{- $kafka390 := index .Values.kafkaImages "3.9.0" -}}
-{{- $kafka391 := index .Values.kafkaImages "3.9.1" -}}
 {{- $kafka400 := index .Values.kafkaImages "4.0.0" -}}
 {{- $kafka410 := index .Values.kafkaImages "4.1.0" -}}
-{{- range (list .Values.image $kafka390 $kafka391 $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) -}}
+{{- range (list .Values.image $kafka400 $kafka410 .Values.kafkaBridgeImage .Values.kanikoImage) -}}
   {{- range .pullSecrets -}}
     {{- $pullSecrets = append $pullSecrets . -}}
   {{- end -}}

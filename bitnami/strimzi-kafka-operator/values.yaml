@@ -88,46 +88,6 @@ image:
 ## ref: https://hub.docker.com/r/bitnami/strimzi-kafka/tags/
 ##
 kafkaImages:
-  ## @param kafkaImages.3.9.0.registry [default: REGISTRY_NAME] Strimzi Kafka 3.9.0 image registry
-  ## @param kafkaImages.3.9.0.repository [default: REPOSITORY_NAME/strimzi-kafka] Strimzi Kafka 3.9.0 image repository
-  ## @skip kafkaImages.3.9.0.tag Strimzi Kafka 3.9.0 image tag (immutable tags are recommended)
-  ## @param kafkaImages.3.9.0.digest Strimzi Kafka 3.9.0 image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended)
-  ## @param kafkaImages.3.9.0.pullPolicy Strimzi Kafka 3.9.0 image pull policy
-  ## @param kafkaImages.3.9.0.pullSecrets Strimzi Kafka 3.9.0 image pull secrets
-  ##
-  "3.9.0":
-    registry: registry.app-catalog.vmware.com
-    repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 3.9.0-debian-12-r1
-    digest: ""
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ## e.g:
-    ## pullSecrets:
-    ##   - myRegistryKeySecretName
-    ##
-    pullSecrets: []
-  ## @param kafkaImages.3.9.1.registry [default: REGISTRY_NAME] Strimzi Kafka 3.9.1 image registry
-  ## @param kafkaImages.3.9.1.repository [default: REPOSITORY_NAME/strimzi-kafka] Strimzi Kafka 3.9.1 image repository
-  ## @skip kafkaImages.3.9.1.tag Strimzi Kafka 3.9.1 image tag (immutable tags are recommended)
-  ## @param kafkaImages.3.9.1.digest Strimzi Kafka 3.9.1 image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended)
-  ## @param kafkaImages.3.9.1.pullPolicy Strimzi Kafka 3.9.1 image pull policy
-  ## @param kafkaImages.3.9.1.pullSecrets Strimzi Kafka 3.9.1 image pull secrets
-  ##
-  "3.9.1":
-    registry: registry.app-catalog.vmware.com
-    repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 3.9.1-debian-12-r1
-    digest: ""
-    pullPolicy: IfNotPresent
-    ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
-    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-    ## e.g:
-    ## pullSecrets:
-    ##   - myRegistryKeySecretName
-    ##
-    pullSecrets: []
   ## @param kafkaImages.4.0.0.registry [default: REGISTRY_NAME] Strimzi Kafka 4.0.0 image registry
   ## @param kafkaImages.4.0.0.repository [default: REPOSITORY_NAME/strimzi-kafka] Strimzi Kafka 4.0.0 image repository
   ## @skip kafkaImages.4.0.0.tag Strimzi Kafka 4.0.0 image tag (immutable tags are recommended)
