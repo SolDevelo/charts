@@ -8,22 +8,23 @@ import { random } from '../support/utils';
 
 it('allows to upload and execute a python notebook', () => {
   cy.session('test_upload', () => {
-    const notebookName = `notebook_template_${random}.ipynb`;
     const userName = Cypress.env('username');
 
     cy.clearCookies()
     cy.login();
     cy.visit(`/user/${userName}/tree/tmp`);
     cy.contains('Upload').should('be.visible');
-    cy.get('[type=file]').selectFile('cypress/fixtures/notebook_template.ipynb', {
-      force: true,
+    cy.get('.jp-DirListing-content').selectFile('cypress/fixtures/notebook.ipynb', { action: 'drag-drop' });
+    // Click overwrite button if file exists
+    cy.get('body').then(($body) => {
+      if ($body.find('[aria-label="Overwrite Existing File"]').is(':visible')) {
+        cy.contains('Overwrite').click();
+      }
     });
-    cy.get('.filename_input').clear().type(notebookName);
-    cy.contains('button', 'Upload').click();
-    cy.contains('a', notebookName);
-
-    cy.visit(`/user/${userName}/notebooks/tmp/${notebookName}`);
-    cy.contains('button', 'Run').click();
+    cy.contains('li', 'notebook.ipynb');
+    cy.visit(`/user/${userName}/notebooks/tmp/notebook.ipynb`);
+    cy.contains('div', 'Run').click();
+    cy.contains('div', 'Run All Cells').click();
     cy.contains('Hello World!');
   });
 });
