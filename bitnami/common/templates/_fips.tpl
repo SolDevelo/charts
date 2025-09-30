@@ -6,6 +6,17 @@ SPDX-License-Identifier: APACHE-2.0
 {{/* vim: set filetype=mustache: */}}
 
 {{/*
+Enable FIPS features
+{{ include "common.fips.enabled" . }}
+*/}}
+{{- define "common.fips.enabled" -}}
+    {{- $fips := .Chart.Annotations.fips -}}
+    {{- if eq "true" $fips -}}
+        {{- true -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
 Get FIPS environment variable value for the given tech
 {{ include "common.fips.config" (dict "tech" "openssl|java|golang" "fips" .Values.fips "global" .Values.global) }}
 */}}

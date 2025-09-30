@@ -193,15 +193,10 @@ The following table lists the helpers available in the library which are scoped 
 
 ### FIPS
 
-| Helper identifier    | Description         | Expected Input                                                                  |
-| -------------------- | ------------------- | ------------------------------------------------------------------------------- |
-| `common.fips.config` | Configure FIPS Mode | `dict "tech" "openssl|java|golang" "fips" .Values.fips "global" .Values.global` |
-
-### BSI
-
-| Helper identifier    | Description                                                | Expected Input    |
-| -------------------- | ---------------------------------------------------------- | ----------------- |
-| `common.bsi.enabled` | Whether the [Bitnami Secure Images]() catalogue is enabled | `.` Chart context |
+| Helper identifier     | Description         | Expected Input                                                                  |
+| --------------------  | ------------------- | ------------------------------------------------------------------------------- |
+| `common.fips.enabled` | Enable FIPS mode    | `.` Chart context                                                               |
+| `common.fips.config`  | Configure FIPS mode | `dict "tech" "openssl|java|golang" "fips" .Values.fips "global" .Values.global` |
 
 ## Special input schemas
 
