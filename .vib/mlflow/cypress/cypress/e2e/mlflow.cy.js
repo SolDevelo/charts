@@ -37,6 +37,7 @@ it('can login and access the experiment run', () => {
   cy.fixture('scripts').then((script) => {
     // This ensures that the script in the job was run
     cy.contains(script.script.title);
+    cy.wait(5000);
     // This ensures that the communication with MinIO succeeded
     cy.contains('Artifacts').click();
     cy.contains(script.script.modelFile);
