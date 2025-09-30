@@ -5,7 +5,7 @@ annotations:
   images: |
     - name: janusgraph
       version: 1.1.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/janusgraph:1.1.0-debian-12-r23
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/janusgraph:1.1.0-debian-12-r24
     - name: jmx-exporter
       version: 1.4.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter:1.4.0-debian-12-r1
@@ -43,4 +43,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/janusgraph
 - https://github.com/bitnami/containers/tree/main/bitnami/janusgraph
 - https://github.com/janusgraph/janusgraph
-version: 1.4.13
+version: 1.4.14
