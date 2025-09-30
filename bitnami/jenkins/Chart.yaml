@@ -5,7 +5,7 @@ annotations:
   images: |
     - name: jenkins
       version: 2.516.3
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jenkins:2.516.3-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jenkins:2.516.3-debian-12-r1
     - name: jenkins-agent
       version: 0.3341.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jenkins-agent:0.3341.0-debian-12-r1
@@ -40,4 +40,4 @@ maintainers:
 name: jenkins
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/jenkins
-version: 13.6.22
+version: 13.6.23
