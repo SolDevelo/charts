@@ -60,8 +60,8 @@
             "resources": {
               "path": "/.vib/clickhouse/cypress"
             },
-            "endpoint": "lb-clickhouse-http",
-            "app_protocol": "HTTP"
+            "endpoint": "lb-clickhouse-https",
+            "app_protocol": "HTTPS"
           }
         },
         {

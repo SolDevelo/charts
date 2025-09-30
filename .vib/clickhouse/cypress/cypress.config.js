@@ -4,7 +4,7 @@ module.exports = {
     password: 'bitnami1234',
   },
   hosts: {
-    'vmware-clickhouse.my': '{{ TARGET_IP }}',
+    'clickhouse.com': '{{ TARGET_IP }}',
   },
   defaultCommandTimeout: 30000,
   e2e: {
