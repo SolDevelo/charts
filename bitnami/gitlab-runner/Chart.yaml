@@ -8,7 +8,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner:18.4.0-debian-12-r0
     - name: gitlab-runner-helper
       version: 18.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper:18.4.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper:18.4.0-debian-12-r1
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -33,4 +33,4 @@ maintainers:
 name: gitlab-runner
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/gitlab-runner
-version: 1.1.14
+version: 1.1.15
