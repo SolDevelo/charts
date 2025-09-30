@@ -11,7 +11,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dotnet-sdk:9.0.305-debian-12-r1
     - name: git
       version: 2.51.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r4
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -36,4 +36,4 @@ maintainers:
 name: aspnet-core
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/aspnet-core
-version: 8.0.5
+version: 8.0.6
