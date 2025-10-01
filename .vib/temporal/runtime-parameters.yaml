@@ -1,0 +1,24 @@
+logLevel: info
+frontend:
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1002
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1002
+  containerPorts:
+    rpc: 8233
+    http: 8243
+    membership: 8933
+    metrics: 9091
+  automountServiceAccountToken: true
+  service:
+    type: LoadBalancer
+    ports:
+      rpc: 18233
+      http: 18243
+metrics:
+  enabled: true
+  service:
+    ports:
+      metrics: 9091

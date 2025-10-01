@@ -1,0 +1,243 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
+kind: Deployment
+metadata:
+  name: {{ template "temporal.matching.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: matching
+    app.kubernetes.io/part-of: temporal
+  {{- if or .Values.matching.deploymentAnnotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.matching.deploymentAnnotations .Values.commonAnnotations) "context" .) }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.matching.autoscaling.hpa.enabled }}
+  replicas: {{ .Values.matching.replicaCount }}
+  {{- end }}
+  {{- if .Values.matching.updateStrategy }}
+  strategy: {{- toYaml .Values.matching.updateStrategy | nindent 4 }}
+  {{- end }}
+  {{- $podLabels := include "common.tplvalues.merge" (dict "values" (list .Values.matching.podLabels .Values.commonLabels) "context" .) }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" $podLabels "context" .) | nindent 6 }}
+      app.kubernetes.io/component: matching
+      app.kubernetes.io/part-of: temporal
+  template:
+    metadata:
+      annotations:
+      {{- if not .Values.existingConfigmap }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if .Values.matching.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" .) | nindent 8 }}
+      {{- end }}
+      labels: {{- include "common.labels.standard" (dict "customLabels" $podLabels "context" .) | nindent 8 }}
+        app.kubernetes.io/component: matching
+        app.kubernetes.io/part-of: temporal
+        {{- if .Values.metrics.enabled }}
+        temporal/metrics: "true"
+        {{- end }}
+    spec:
+      {{- include "temporal.imagePullSecrets" . | nindent 6 }}
+      serviceAccountName: {{ template "temporal.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.matching.automountServiceAccountToken }}
+      {{- if .Values.matching.hostAliases }}
+      hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.matching.hostAliases "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.matching.affinity "context" .) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.matching.podAffinityPreset "component" "matching" "customLabels" $podLabels "context" .) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.matching.podAntiAffinityPreset "component" "matching" "customLabels" $podLabels "context" .) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.matching.nodeAffinityPreset.type "key" .Values.matching.nodeAffinityPreset.key "values" .Values.matching.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.matching.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.matching.nodeSelector "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.matching.tolerations "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.priorityClassName }}
+      priorityClassName: {{ .Values.matching.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.matching.schedulerName }}
+      schedulerName: {{ .Values.matching.schedulerName | quote }}
+      {{- end }}
+      {{- if .Values.matching.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.matching.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.podSecurityContext.enabled }}
+      securityContext: {{- omit .Values.matching.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.matching.terminationGracePeriodSeconds }}
+      {{- end }}
+      initContainers:
+        {{- include "temporal.defaultInitContainers.renderConfig" (dict "component" "matching" "context" .) | nindent 8 }}
+      {{- if .Values.defaultInitContainers.waitForDB.enabled }}
+        {{- include "temporal.defaultInitContainers.waitForDB" (dict "initialized" true "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.matching.initContainers }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.matching.initContainers "context" .) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: temporal-matching
+          image: {{ template "temporal.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.matching.containerSecurityContext.enabled }}
+          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.matching.containerSecurityContext "context" .) | nindent 12 }}
+          {{- end }}
+          command:
+          {{- if .Values.diagnosticMode.enabled }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" .) | nindent 12 }}
+          {{- else if .Values.matching.command }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.matching.command "context" .) | nindent 12 }}
+          {{- end }}
+          args: 
+          {{- if .Values.diagnosticMode.enabled }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" .) | nindent 12 }}
+          {{- else if .Values.matching.args }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.matching.args "context" .) | nindent 12 }}
+          {{- end }}
+          env:
+            - name: TEMPORAL_SERVICES
+              value: matching
+          {{- if .Values.matching.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.matching.extraEnvVars "context" .) | nindent 12 }}
+          {{- end }}
+          envFrom:
+            {{- if .Values.matching.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.matching.extraEnvVarsCM "context" .) }}
+            {{- end }}
+            {{- if .Values.matching.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ include "common.tplvalues.render" (dict "value" .Values.matching.extraEnvVarsSecret "context" .) }}
+            {{- end }}
+          {{- if .Values.matching.resources }}
+          resources: {{- toYaml .Values.matching.resources | nindent 12 }}
+          {{- else if ne .Values.matching.resourcesPreset "none" }}
+          resources: {{- include "common.resources.preset" (dict "type" .Values.matching.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.matching.containerPorts.rpc }}
+            - name: membership
+              containerPort: {{ .Values.matching.containerPorts.membership }}
+            {{- if .Values.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.matching.containerPorts.metrics }}
+            {{- end }}
+            {{- if .Values.matching.extraContainerPorts }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.matching.extraContainerPorts "context" .) | nindent 12 }}
+            {{- end }}
+          {{- if not .Values.diagnosticMode.enabled }}
+          {{- if .Values.matching.customLivenessProbe }}
+          livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.matching.customLivenessProbe "context" .) | nindent 12 }}
+          {{- else if .Values.matching.livenessProbe.enabled }}
+          livenessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.matching.livenessProbe "enabled") "context" .) | nindent 12 }}
+            tcpSocket:
+              port: rpc
+          {{- end }}
+          {{- if .Values.matching.customReadinessProbe }}
+          readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.matching.customReadinessProbe "context" .) | nindent 12 }}
+          {{- else if .Values.matching.readinessProbe.enabled }}
+          readinessProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.matching.readinessProbe "enabled") "context" .) | nindent 12 }}
+            exec:
+              command:
+                - grpc-health-probe
+                - -addr=127.0.0.1:{{ .Values.matching.containerPorts.rpc }}
+                {{- if .Values.tls.enabled }}
+                - -tls
+                - -tls-ca-cert=/opt/bitnami/temporal/certs/ca.crt
+                - -tls-server-name=localhost
+                {{- end }}
+          {{- end }}
+          {{- if .Values.matching.customStartupProbe }}
+          startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.matching.customStartupProbe "context" .) | nindent 12 }}
+          {{- else if .Values.matching.startupProbe.enabled }}
+          startupProbe: {{- include "common.tplvalues.render" (dict "value" (omit .Values.matching.startupProbe "enabled") "context" .) | nindent 12 }}
+            tcpSocket:
+              port: rpc
+          {{- end }}
+          {{- end }}
+          {{- if .Values.matching.lifecycleHooks }}
+          lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.matching.lifecycleHooks "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: empty-dir
+              mountPath: /tmp
+              subPath: tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/temporal/config/docker.yaml
+              subPath: app-conf-dir/docker.yaml
+            {{- if .Values.dynamicConfig }}
+            - name: dynamic-config
+              mountPath: /opt/bitnami/temporal/config/dynamicconfig/dynamic_config.yaml
+              subPath: dynamic_config.yaml
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: tls-certs
+              mountPath: /opt/bitnami/temporal/certs
+              readOnly: true
+            {{- end }}
+          {{- if .Values.matching.extraVolumeMounts }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.matching.extraVolumeMounts "context" .) | nindent 12 }}
+          {{- end }}
+        {{- if .Values.matching.sidecars }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.matching.sidecars "context" .) | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: empty-dir
+          emptyDir: {}
+        - name: configuration
+          configMap:
+            name: {{ template "temporal.configMapName" . }}
+        {{- if .Values.usePasswordFiles }}
+        - name: db-credentials
+          projected:
+            sources:
+              - secret:
+                  name: {{ include "temporal.database.default.secretName" . }}
+                  items:
+                    - key: {{ include "temporal.database.default.secretPasswordKey" . }}
+                      path: default-store-password
+              - secret:
+                  name: {{ include "temporal.database.visibility.secretName" . }}
+                  items:
+                    - key: {{ include "temporal.database.visibility.secretPasswordKey" . }}
+                      path: visibility-store-password
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls-certs
+          projected:
+            sources:
+              - secret:
+                  name: {{ template "temporal.tls.ca.secretName" . }}
+                  items:
+                    - key: tls.crt
+                      path: ca.crt
+              - secret:
+                  name: {{ template "temporal.tls.internode.secretName" . }}
+                  items:
+                    - key: tls.crt
+                      path: internode.crt
+                    - key: tls.key
+                      path: internode.key
+              - secret:
+                  name: {{ template "temporal.tls.frontend.secretName" . }}
+                  items:
+                    - key: tls.crt
+                      path: frontend.crt
+                    - key: tls.key
+                      path: frontend.key
+        {{- end }}
+        {{- if .Values.matching.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.matching.extraVolumes "context" .) | nindent 8 }}
+        {{- end }}

@@ -1,0 +1,101 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if .Values.history.networkPolicy.enabled }}
+apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "temporal.history.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: history
+    app.kubernetes.io/part-of: temporal
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- $podLabels := include "common.tplvalues.merge" (dict "values" (list .Values.history.podLabels .Values.commonLabels) "context" .) }}
+  podSelector:
+    matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" $podLabels "context" .) | nindent 6 }}
+      app.kubernetes.io/component: history
+      app.kubernetes.io/part-of: temporal
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    {{- if .Values.history.networkPolicy.allowExternalEgress }}
+    - {}
+    {{- else }}
+    - ports:
+        # Allow dns resolution
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+        # Allow access to kube-apiserver
+        {{- range $port := .Values.history.networkPolicy.kubeAPIServerPorts }}
+        - port: {{ $port }}
+        {{- end }}
+    {{- if .Values.pgDefault.enabled }}
+    # Allow connection to PostgreSQL (default)
+    - ports:
+        - port: {{ include "temporal.database.default.port" . | int }}
+      to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ .Values.pgDefault.nameOverride }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- end }}
+    {{- if .Values.pgVisibility.enabled }}
+    # Allow connection to PostgreSQL (visibility)
+    - ports:
+        - port: {{ include "temporal.database.visibility.port" . | int }}
+      to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ .Values.pgVisibility.nameOverride }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- end }}
+    {{- if .Values.history.networkPolicy.extraEgress }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.history.networkPolicy.extraEgress "context" .) | nindent 4 }}
+    {{- end }}
+    {{- end }}
+  ingress:
+    - ports:
+        - port: {{ .Values.history.containerPorts.rpc }}
+        - port: {{ .Values.history.containerPorts.membership }}
+        {{- if .Values.metrics.enabled }}
+        - port: {{ .Values.history.containerPorts.metrics }}
+        {{- end }}
+        {{- range .Values.history.extraContainerPorts }}
+        - port: {{ .containerPort }}
+        {{- end }}
+      {{- if not .Values.history.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" .Values.commonLabels "context" .) | nindent 14 }}
+        {{- if .Values.history.networkPolicy.addExternalClientAccess }}
+        - podSelector:
+            matchLabels:
+              {{ template "common.names.fullname" . }}-client: "true"
+        {{- end }}
+        {{- if .Values.history.networkPolicy.ingressPodMatchLabels }}
+        - podSelector:
+            matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.history.networkPolicy.ingressPodMatchLabels "context" .) | nindent 14 }}
+        {{- end }}
+        {{- if .Values.history.networkPolicy.ingressNSMatchLabels }}
+        - namespaceSelector:
+            matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.history.networkPolicy.ingressNSMatchLabels "context" .) | nindent 14 }}
+          {{- if .Values.history.networkPolicy.ingressNSPodMatchLabels }}
+          podSelector:
+            matchLabels:
+              matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.history.networkPolicy.ingressNSPodMatchLabels "context" .) | nindent 14 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- if .Values.history.networkPolicy.extraIngress }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.history.networkPolicy.extraIngress "context" .) | nindent 4 }}
+    {{- end }}
+{{- end }}

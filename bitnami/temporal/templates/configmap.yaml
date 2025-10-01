@@ -1,0 +1,155 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{/*
+Return the Temporal Server configuration.
+ref: https://docs.temporal.io/temporal-service/configuration
+*/}}
+{{- define "temporal.configuration" -}}
+{{- if .Values.configuration }}
+{{- include "common.tplvalues.render" (dict "value" .Values.configuration "context" .) }}
+{{- else }}
+log:
+  stdout: true
+  level: {{ .Values.logLevel | quote }}
+persistence:
+  defaultStore: default
+  visibilityStore: visibility
+  numHistoryShards: 512
+  datastores:
+    default:
+      sql:
+        pluginName: postgres12
+        driverName: postgres
+        databaseName: {{ include "temporal.database.default.name" . }}
+        connectAddr: {{ printf "%s:%s" (include "temporal.database.default.host" .) (include "temporal.database.default.port" .) }}
+        connectProtocol: "tcp"
+        user: {{ include "temporal.database.default.username" . }}
+        password: {{ print "'{{ .Env.TEMPORAL_STORE_PASSWORD | quote }}'" }}
+        maxConnLifetime: 1h
+        maxConns: 20
+        maxIdleConns: 20
+    visibility:
+      sql:
+        pluginName: postgres12
+        driverName: postgres
+        databaseName: {{ include "temporal.database.visibility.name" . }}
+        connectAddr: {{ printf "%s:%s" (include "temporal.database.visibility.host" .) (include "temporal.database.visibility.port" .) }}
+        connectProtocol: "tcp"
+        user: {{ include "temporal.database.visibility.username" . }}
+        password: {{ print "'{{ .Env.TEMPORAL_VISIBILITY_STORE_PASSWORD | quote }}'" }}
+        maxConnLifetime: 1h
+        maxConns: 20
+        maxIdleConns: 20
+global:
+  membership:
+    name: temporal
+    maxJoinDuration: 30s
+    broadcastAddress: {{ print "'{{ default .Env.POD_IP \"0.0.0.0\" }}'" }}
+  pprof:
+    port: 7936
+  metrics:
+    tags:
+      type: {{ print "'{{ .Env.TEMPORAL_SERVICES }}'" }}
+    prometheus:
+      timerType: histogram
+      listenAddress: {{ printf "0.0.0.0:%d" (int .Values.frontend.containerPorts.metrics) }}
+  {{- if .Values.tls.enabled }}
+  tls:
+    internode:
+      server:
+        certFile: /opt/bitnami/temporal/certs/internode.crt
+        keyFile: /opt/bitnami/temporal/certs/internode.key
+        requireClientAuth: false
+        clientCaFiles:
+          - /opt/bitnami/temporal/certs/ca.crt
+      client:
+        serverName: {{ printf "%s.%s.svc.%s" (include "common.names.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain }}
+        rootCaFiles:
+          - /opt/bitnami/temporal/certs/ca.crt
+    frontend:
+      server:
+        certFile: /opt/bitnami/temporal/certs/frontend.crt
+        keyFile: /opt/bitnami/temporal/certs/frontend.key
+        requireClientAuth: false
+        clientCaFiles:
+          - /opt/bitnami/temporal/certs/ca.crt
+      client:
+        serverName: {{ printf "%s.%s.svc.%s" (include "temporal.frontend.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain }}
+        rootCaFiles:
+          - /opt/bitnami/temporal/certs/ca.crt
+  {{- end }}
+services:
+  frontend:
+    rpc:
+      grpcPort: {{ .Values.frontend.containerPorts.rpc }}
+      httpPort: {{ .Values.frontend.containerPorts.http }}
+      membershipPort: {{ .Values.frontend.containerPorts.membership }}
+      bindOnIP: "0.0.0.0"
+  history:
+    rpc:
+      grpcPort: {{ .Values.history.containerPorts.rpc }}
+      membershipPort: {{ .Values.history.containerPorts.membership }}
+      bindOnIP: "0.0.0.0"
+  matching:
+    rpc:
+      grpcPort: {{ .Values.matching.containerPorts.rpc }}
+      membershipPort: {{ .Values.matching.containerPorts.membership }}
+      bindOnIP: "0.0.0.0"
+  worker:
+    rpc:
+      membershipPort: {{ .Values.worker.containerPorts.membership }}
+      bindOnIP: "0.0.0.0"
+clusterMetadata:
+  enableGlobalDomain: false
+  failoverVersionIncrement: 10
+  masterClusterName: "active"
+  currentClusterName: "active"
+  clusterInformation:
+    active:
+      enabled: true
+      initialFailoverVersion: 1
+      rpcName: "temporal-frontend"
+      rpcAddress: {{ printf "127.0.0.1:%d" (int .Values.frontend.containerPorts.rpc) }}
+      httpAddress: {{ printf "127.0.0.1:%d" (int .Values.frontend.containerPorts.http) }}
+dcRedirectionPolicy:
+  policy: "noop"
+  toDC: ""
+archival:
+  status: "disabled"
+publicClient:
+  hostPort: {{ printf "%s:%d" (include "temporal.frontend.fullname" .) (int .Values.frontend.service.ports.rpc) }}
+{{- if .Values.dynamicConfig }}
+dynamicConfigClient:
+  filepath: "/opt/bitnami/temporal/config/dynamicconfig/dynamic_config.yaml"
+  pollInterval: "10s"
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- if not .Values.existingConfigmap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "common.names.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/part-of: temporal
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  {{- end }}
+data:
+  {{- $configuration := include "temporal.configuration" . | fromYaml -}}
+  {{- if .Values.overrideConfiguration }}
+    {{- $overrideConfiguration := include "common.tplvalues.render" (dict "value" .Values.overrideConfiguration "context" .) | fromYaml }}
+    {{- $configuration = mustMergeOverwrite $configuration $overrideConfiguration }}
+  {{- end }}
+  config_template.yaml: |-
+    {{- $configuration | toYaml | replace "'" "" | nindent 4 }}
+  {{- if .Values.dynamicConfig }}
+  dynamic_config.yaml: |-
+    {{- include "common.tplvalues.render" (dict "value" .Values.dynamicConfig "context" .) | nindent 4 }}
+  {{- end }}
+{{- end }}

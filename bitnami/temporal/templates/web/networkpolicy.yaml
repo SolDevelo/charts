@@ -1,0 +1,87 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if and .Values.web.enabled .Values.web.networkPolicy.enabled }}
+apiVersion: {{ include "common.capabilities.networkPolicy.apiVersion" . }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "temporal.web.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  {{- $versionLabel := dict "app.kubernetes.io/version" (include "common.images.version" (dict "imageRoot" .Values.web.image "chart" .Chart)) }}
+  {{- $labels := include "common.tplvalues.merge" (dict "values" (list .Values.commonLabels $versionLabel) "context" .) }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" $labels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: temporal
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- $podLabels := include "common.tplvalues.merge" (dict "values" (list .Values.web.podLabels $versionLabel .Values.commonLabels) "context" .) }}
+  podSelector:
+    matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" $podLabels "context" .) | nindent 6 }}
+      app.kubernetes.io/component: web
+      app.kubernetes.io/part-of: temporal
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    {{- if .Values.web.networkPolicy.allowExternalEgress }}
+    - {}
+    {{- else }}
+    - ports:
+        # Allow dns resolution
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+        # Allow access to kube-apiserver
+        {{- range $port := .Values.web.networkPolicy.kubeAPIServerPorts }}
+        - port: {{ $port }}
+        {{- end }}
+    # Allow connection to Frontend Service
+    - ports:
+        - port: {{ .Values.frontend.containerPorts.http }}
+      to:
+        - podSelector:
+            matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" .Values.commonLabels "context" .) | nindent 14 }}
+              app.kubernetes.io/component: frontend
+              app.kubernetes.io/part-of: temporal
+    {{- if .Values.web.networkPolicy.extraEgress }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.web.networkPolicy.extraEgress "context" .) | nindent 4 }}
+    {{- end }}
+    {{- end }}
+  ingress:
+    - ports:
+        - port: {{ .Values.web.containerPorts.http }}
+        {{- range .Values.web.extraContainerPorts }}
+        - port: {{ .containerPort }}
+        {{- end }}
+      {{- if not .Values.web.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" .Values.commonLabels "context" .) | nindent 14 }}
+        {{- if .Values.web.networkPolicy.addExternalClientAccess }}
+        - podSelector:
+            matchLabels:
+              {{ template "common.names.fullname" . }}-client: "true"
+        {{- end }}
+        {{- if .Values.web.networkPolicy.ingressPodMatchLabels }}
+        - podSelector:
+            matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.web.networkPolicy.ingressPodMatchLabels "context" .) | nindent 14 }}
+        {{- end }}
+        {{- if .Values.web.networkPolicy.ingressNSMatchLabels }}
+        - namespaceSelector:
+            matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.web.networkPolicy.ingressNSMatchLabels "context" .) | nindent 14 }}
+          {{- if .Values.web.networkPolicy.ingressNSPodMatchLabels }}
+          podSelector:
+            matchLabels:
+              matchLabels: {{- include "common.tplvalues.render" (dict "value" .Values.web.networkPolicy.ingressNSPodMatchLabels "context" .) | nindent 14 }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- if .Values.web.networkPolicy.extraIngress }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.web.networkPolicy.extraIngress "context" .) | nindent 4 }}
+    {{- end }}
+{{- end }}

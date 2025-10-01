@@ -1,0 +1,118 @@
+CHART NAME: {{ .Chart.Name }}
+CHART VERSION: {{ .Chart.Version }}
+APP VERSION: {{ .Chart.AppVersion }}
+
+** Please be patient while the chart is being deployed **
+
+{{- if .Values.diagnosticMode.enabled }}
+The chart has been deployed in diagnostic mode. All probes have been disabled and the command has been overwritten with:
+
+  command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" .) | nindent 4 }}
+  args: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" .) | nindent 4 }}
+
+Get the list of pods by executing:
+
+  kubectl get pods --namespace {{ include "common.names.namespace" . | quote }} -l app.kubernetes.io/instance={{ .Release.Name }}
+
+Access the pod you want to debug by executing
+
+  kubectl exec --namespace {{ include "common.names.namespace" . | quote }} -ti <NAME OF THE POD> -- bash
+
+In order to replicate the container startup scripts execute this command:
+
+    /opt/bitnami/scripts/temporal/entrypoint.sh /opt/bitnami/scripts/temporal/run.sh
+
+{{- else }}
+
+Temporal services can be accessed through the following DNS names from within your cluster:
+
+  {{ include "temporal.frontend.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (Frontend Service)
+  {{ include "temporal.history.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (History Service)
+  {{ include "temporal.matching.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (Matching Service)
+  {{ include "temporal.worker.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (Worker Service)
+  {{- if .Values.web.enabled }}
+  {{ include "temporal.web.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }} (Web UI)
+  {{- end }}
+
+To access Temporal Frontend gRPC API from outside the cluster execute the following commands:
+
+1. Get the Temporal Frontend gRPC API URL by running these commands:
+
+{{- if contains "NodePort" .Values.frontend.service.type }}
+
+    echo "Host: $(kubectl get nodes --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")"
+    echo "Port: $(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='grpc-rpc')].nodePort}" services {{ include "common.names.fullname" . }})"
+
+{{- else if contains "LoadBalancer" .Values.frontend.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch its status by running 'kubectl get --namespace {{ include "common.names.namespace" . }} svc -w {{ include "temporal.frontend.fullname" . }}'
+
+    echo "Host: $(kubectl get svc --namespace {{ include "common.names.namespace" . }} {{ include "temporal.frontend.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+    echo "Port: $(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='grpc-rpc')].port}" services {{ include "temporal.frontend.fullname" . }})"
+
+{{- else if contains "ClusterIP" .Values.frontend.service.type }}
+
+    export SERVICE_PORT=$(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='grpc-rpc')].port}" services {{ include "temporal.frontend.fullname" . }})
+    kubectl port-forward --namespace {{ include "common.names.namespace" . }} svc/{{ include "temporal.frontend.fullname" . }} ${SERVICE_PORT}:${SERVICE_PORT} &
+    echo "Host: 127.0.0.1"
+    echo "Port: ${SERVICE_PORT}"
+
+{{- end }}
+
+2. Access Temporal Frontend gRPC API using the obtained URL.
+
+{{- if .Values.web.enabled }}
+
+To access Temporal Web UI from outside the cluster execute the following commands:
+
+{{- if .Values.web.ingress.enabled }}
+
+1. Get the Temporal Web UI URL and associate its hostname to your cluster external IP:
+
+   export CLUSTER_IP=$(minikube ip) # On Minikube. Use: `kubectl cluster-info` on others K8s clusters
+   echo "Temporal Web UI URL: http{{ if .Values.web.ingress.tls }}s{{ end }}://{{ (tpl .Values.web.ingress.hostname .) }}/"
+   echo "$CLUSTER_IP  {{ (tpl .Values.web.ingress.hostname .) }}" | sudo tee -a /etc/hosts
+
+{{- else }}
+
+1. Get the Temporal Web UI URL by running these commands:
+
+{{- if contains "NodePort" .Values.web.service.type }}
+
+    export NODE_PORT=$(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='http')].nodePort}" services {{ include "common.names.fullname" . }})
+    export NODE_IP=$(kubectl get nodes --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
+    echo "http://${NODE_IP}:${NODE_PORT}/"
+
+{{- else if contains "LoadBalancer" .Values.web.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch its status by running 'kubectl get --namespace {{ include "common.names.namespace" . }} svc -w {{ include "temporal.web.fullname" . }}'
+
+    export SERVICE_PORT=$(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='http')].port}" services {{ include "temporal.web.fullname" . }})
+    export SERVICE_IP=$(kubectl get svc --namespace {{ include "common.names.namespace" . }} {{ include "temporal.web.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+    echo "http://${SERVICE_IP}:${SERVICE_PORT}/"
+
+{{- else if contains "ClusterIP" .Values.web.service.type }}
+
+    export SERVICE_PORT=$(kubectl get --namespace {{ include "common.names.namespace" . }} -o jsonpath="{.spec.ports[?(@.name=='http')].port}" services {{ include "temporal.web.fullname" . }})
+    kubectl port-forward --namespace {{ include "common.names.namespace" . }} svc/{{ include "temporal.web.fullname" . }} ${SERVICE_PORT}:${SERVICE_PORT} &
+
+    echo "http://127.0.0.1:${SERVICE_PORT}/"
+
+{{- end }}
+{{- end }}
+
+2. Access Temporal Web UI using the obtained URL.
+
+{{- end }}
+{{- end }}
+
+{{- include "common.warnings.rollingTag" .Values.image }}
+{{- include "common.warnings.rollingTag" .Values.web.image }}
+{{- include "common.warnings.rollingTag" .Values.defaultInitContainers.waitForDB.image }}
+{{- include "common.warnings.resources" (dict "sections" (list "frontend" "history" "matching" "web" "worker" "defaultInitContainers.waitForDB" "defaultInitContainers.renderConfig") "context" .) }}
+{{- include "common.warnings.modifiedImages" (dict "images" (list .Values.image .Values.web.image .Values.defaultInitContainers.waitForDB.image) "context" .) }}
+{{- include "common.errors.insecureImages" (dict "images" (list .Values.image .Values.web.image .Values.defaultInitContainers.waitForDB.image) "context" .) }}

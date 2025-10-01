@@ -1,0 +1,186 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- define "temporal.setupdb.container" -}}
+image: {{ template "temporal.image" .context }}
+imagePullPolicy: {{ .context.Values.image.pullPolicy }}
+{{- if .context.Values.setupDBJob.containerSecurityContext.enabled }}
+securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .context.Values.setupDBJob.containerSecurityContext "context" .context) | nindent 2 }}
+{{- end }}
+{{- if .context.Values.setupDBJob.resources }}
+resources: {{- toYaml .context.Values.setupDBJob.resources | nindent 2 }}
+{{- else if ne .context.Values.setupDBJob.resourcesPreset "none" }}
+resources: {{- include "common.resources.preset" (dict "type" .context.Values.setupDBJob.resourcesPreset) | nindent 2 }}
+{{- end }}
+{{- if not (empty .database) }}
+env:
+  {{- $dbHelperPrefix := printf "temporal.database.%s" .database }}
+  - name: SQL_PLUGIN
+    value: postgres12
+  - name: SQL_HOST
+    value: {{ include (printf "%s.host" $dbHelperPrefix) .context | quote }}
+  - name: SQL_PORT
+    value: {{ include (printf "%s.port" $dbHelperPrefix) .context | quote }}
+  - name: SQL_DATABASE
+    value: {{ include (printf "%s.name" $dbHelperPrefix) .context | quote }}
+  - name: SQL_USER
+    value: {{ include (printf "%s.username" $dbHelperPrefix) .context | quote }}
+  {{- if .context.Values.usePasswordFiles }}
+  - name: SQL_PASSWORD_FILE
+    value: {{ printf "/opt/bitnami/temporal/db-credentials/%s-store-password" .database | quote }}
+  {{- else }}
+  - name: SQL_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ include (printf "%s.secretName" $dbHelperPrefix) .context }}
+        key: {{ include (printf "%s.secretPasswordKey" $dbHelperPrefix) .context }}
+  {{- end }}
+{{- end }}
+{{- if or (and (not (empty .database)) .context.Values.usePasswordFiles) .context.Values.tls.enabled }}
+volumeMounts:
+{{- if and (not (empty .database)) .context.Values.usePasswordFiles }}
+  - name: db-credentials
+    mountPath: /opt/bitnami/temporal/db-credentials
+{{- end }}
+{{- if .context.Values.tls.enabled }}
+  - name: tls-certs
+    mountPath: /opt/bitnami/temporal/certs
+    readOnly: true
+{{- end }}
+{{- end }}
+command:
+  - /bin/bash
+args:
+  - -ec
+  - |
+    {{- if and (not (empty .database)) .context.Values.usePasswordFiles }}
+    export SQL_PASSWORD="$(< $SQL_PASSWORD_FILE)"
+    {{- end }}
+{{- end }}
+
+{{- if .Values.setupDBJob.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-setup-db" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/part-of: temporal
+    app.kubernetes.io/component: setup-db
+  {{- $defaultAnnotations := dict "helm.sh/hook" "post-install,post-upgrade" "helm.sh/hook-delete-policy" "before-hook-creation,hook-succeeded" }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.setupDBJob.annotations .Values.commonAnnotations $defaultAnnotations) "context" . ) }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
+spec:
+  backoffLimit: {{ .Values.setupDBJob.backoffLimit }}
+  template:
+    metadata:
+      {{- $podLabels := include "common.tplvalues.merge" (dict "values" (list .Values.setupDBJob.podLabels .Values.commonLabels) "context" . ) }}
+      labels: {{- include "common.labels.standard" (dict "customLabels" $podLabels "context" .) | nindent 8 }}
+        app.kubernetes.io/part-of: temporal
+        app.kubernetes.io/component: setup-db
+      {{- if .Values.setupDBJob.podAnnotations }}
+      annotations: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.podAnnotations "context" .) | nindent 8 }}
+      {{- end }}
+    spec:
+     {{- include "temporal.imagePullSecrets" . | nindent 6 }}
+      restartPolicy: OnFailure
+      {{- if .Values.setupDBJob.podSecurityContext.enabled }}
+      securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.setupDBJob.podSecurityContext "context" .) | nindent 8 }}
+      {{- end }}
+      automountServiceAccountToken: {{ .Values.setupDBJob.automountServiceAccountToken }}
+      serviceAccountName: {{ include "temporal.serviceAccountName" . }}
+      {{- if .Values.setupDBJob.hostAliases }}
+      hostAliases: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.hostAliases "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.setupDBJob.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.affinity "context" .) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.setupDBJob.podAffinityPreset "component" "setup-db" "customLabels" $podLabels "topologyKey" .Values.setupDBJob.topologyKey "context" .) | nindent 10 }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.setupDBJob.podAntiAffinityPreset "component" "setup-db" "customLabels" $podLabels "topologyKey" .Values.setupDBJob.topologyKey "context" .) | nindent 10 }}
+        nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.setupDBJob.nodeAffinityPreset.type "key" .Values.setupDBJob.nodeAffinityPreset.key "values" .Values.setupDBJob.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- if .Values.setupDBJob.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.nodeSelector "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.setupDBJob.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.setupDBJob.terminationGracePeriodSeconds }}
+      {{- end }}
+      {{- if .Values.setupDBJob.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.tolerations "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.setupDBJob.topologySpreadConstraints }}
+      topologySpreadConstraints: {{- include "common.tplvalues.render" (dict "value" .Values.setupDBJob.topologySpreadConstraints "context" .) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.setupDBJob.priorityClassName }}
+      priorityClassName: {{ .Values.setupDBJob.priorityClassName | quote }}
+      {{- end }}
+      {{- if .Values.setupDBJob.schedulerName }}
+      schedulerName: {{ .Values.setupDBJob.schedulerName }}
+      {{- end }}
+      {{- if .Values.defaultInitContainers.waitForDB.enabled }}
+      initContainers: {{- include "temporal.defaultInitContainers.waitForDB" (dict "initialized" false "context" .) | nindent 8 }}
+      {{- end }}
+      containers:
+        {{- range $store := (list "default" "visibility") }}
+        - name: setup-{{ $store }}-store
+          {{- include "temporal.setupdb.container" (dict "database" $store "context" $) | nindent 10 }}
+              temporal-sql-tool setup-schema -v "0.0"
+        - name: update-{{ $store }}-store
+          {{- include "temporal.setupdb.container" (dict "database" $store "context" $) | nindent 10 }}
+              temporal-sql-tool update-schema --schema-dir /opt/bitnami/temporal/schema/postgresql/v12/{{ ternary "temporal" $store (eq $store "default") }}/versioned
+        {{- end }}
+        {{- if not (empty .Values.namespaces) }}
+        - name: create-namespaces
+          {{- include "temporal.setupdb.container" (dict "context" .) | nindent 10 }}
+              retry_while() {
+                local -r cmd="${1:?cmd is missing}"
+                local -r retries="${2:-12}"
+                local -r sleep_time="${3:-5}"
+                local return_value=1
+                read -r -a command <<< "$cmd"
+                for ((i = 1 ; i <= retries ; i+=1 )); do
+                    "${command[@]}" && return_value=0 && break
+                    sleep "$sleep_time"
+                done
+                return $return_value
+              }
+              echo "Checking cluster health"
+              retry_while "temporal operator {{ if $.Values.tls.enabled }}--tls --tls-ca-path /opt/bitnami/temporal/certs/ca.crt{{ end }} cluster health" || exit 1
+              echo "Cluster is healthy, creating namespaces"
+              {{- range $namespace := .Values.namespaces }}
+              temporal operator {{ if $.Values.tls.enabled }}--tls --tls-ca-path /opt/bitnami/temporal/certs/ca.crt{{ end }} namespace describe -n {{ $namespace.name }} || temporal operator {{ if $.Values.tls.enabled }}--tls --tls-ca-path /opt/bitnami/temporal/certs/ca.crt{{ end }} namespace create -n {{ $namespace.name }}{{- if hasKey $namespace "retention" }} --retention {{ $namespace.retention }}{{- end }}
+              {{- end }}
+          env:
+            - name: TEMPORAL_ADDRESS
+              value: {{ printf "%s.%s.svc.%s:%d" (include "temporal.frontend.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain (int .Values.frontend.service.ports.rpc) | quote }}
+        {{- end }}
+      volumes:
+        - name: empty-dir
+          emptyDir: {}
+        {{- if .Values.usePasswordFiles }}
+        - name: db-credentials
+          projected:
+            sources:
+              - secret:
+                  name: {{ include "temporal.database.default.secretName" . }}
+                  items:
+                    - key: {{ include "temporal.database.default.secretPasswordKey" . }}
+                      path: default-store-password
+              - secret:
+                  name: {{ include "temporal.database.visibility.secretName" . }}
+                  items:
+                    - key: {{ include "temporal.database.visibility.secretPasswordKey" . }}
+                      path: visibility-store-password
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls-certs
+          secret:
+            secretName: {{ template "temporal.tls.ca.secretName" . }}
+            items:
+              - key: tls.crt
+                path: ca.crt
+        {{- end }}
+{{- end }}

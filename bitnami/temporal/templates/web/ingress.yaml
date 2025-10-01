@@ -1,0 +1,59 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if and .Values.web.enabled .Values.web.ingress.enabled }}
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
+kind: Ingress
+metadata:
+   name: {{ template "temporal.web.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  {{- $versionLabel := dict "app.kubernetes.io/version" (include "common.images.version" (dict "imageRoot" .Values.web.image "chart" .Chart)) }}
+  {{- $labels := include "common.tplvalues.merge" (dict "values" (list .Values.commonLabels $versionLabel) "context" .) }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" $labels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/part-of: temporal
+  {{- if or .Values.web.ingress.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.web.ingress.annotations .Values.commonAnnotations) "context" .) }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.web.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.web.ingress.ingressClassName | quote }}
+  {{- end }}
+  rules:
+    {{- if .Values.web.ingress.hostname }}
+    - host: {{ tpl .Values.web.ingress.hostname . }}
+      http:
+        paths:
+          {{- if .Values.web.ingress.extraPaths }}
+          {{- toYaml .Values.web.ingress.extraPaths | nindent 10 }}
+          {{- end }}
+          - path: {{ .Values.web.ingress.path }}
+            pathType: {{ .Values.web.ingress.pathType }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "temporal.web.fullname" .) "servicePort" "http" "context" .)  | nindent 14 }}
+    {{- end }}
+    {{- range .Values.web.ingress.extraHosts }}
+    - host: {{ .name | quote }}
+      http:
+        paths:
+          - path: {{ default "/" .path }}
+            pathType: {{ default "ImplementationSpecific" .pathType }}
+            backend: {{- include "common.ingress.backend" (dict "serviceName" (include "temporal.web.fullname" $) "servicePort" "http" "context" $) | nindent 14 }}
+    {{- end }}
+    {{- if .Values.web.ingress.extraRules }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.web.ingress.extraRules "context" .) | nindent 4 }}
+    {{- end }}
+  {{- if or (and .Values.web.ingress.tls (or (include "common.ingress.certManagerRequest" (dict "annotations" .Values.web.ingress.annotations )) .Values.web.ingress.selfSigned)) .Values.web.ingress.extraTls }}
+  tls:
+    {{- if and .Values.web.ingress.tls (or (include "common.ingress.certManagerRequest" (dict "annotations" .Values.web.ingress.annotations )) .Values.web.ingress.selfSigned) }}
+    - hosts:
+        - {{ tpl .Values.web.ingress.hostname . | quote }}
+      secretName: {{ printf "%s-tls" (tpl .Values.web.ingress.hostname .) }}
+    {{- end }}
+    {{- if .Values.web.ingress.extraTls }}
+    {{- include "common.tplvalues.render" (dict "value" .Values.web.ingress.extraTls "context" .) | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end }}
