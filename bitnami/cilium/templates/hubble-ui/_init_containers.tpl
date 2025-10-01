@@ -55,10 +55,10 @@ Returns an init-container that waits for Hubble Relay to be ready
       value: {{ printf "%s.%s.svc.%s:%d" (include "cilium.hubble.relay.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain (int .Values.hubble.relay.service.ports.grpc) | quote }}
   {{- if not .Values.hubble.tls.enabled }}
     - name: GRPC_FLAGS
-      value: "-rpc-timeout=2s"
+      value: "-rpc-timeout=5s -connect-timeout=5s"
   {{- else }}
     - name: GRPC_FLAGS
-      value: "-rpc-timeout=2s -tls -tls-ca-cert=/certs/client/ca.crt -tls-client-cert=/certs/client/tls.crt -tls-client-key=/certs/client/tls.key"
+      value: "-rpc-timeout=5s -connect-timeout=5s -tls -tls-ca-cert=/certs/client/ca.crt -tls-client-cert=/certs/client/tls.crt -tls-client-key=/certs/client/tls.key"
   volumeMounts:
     - name: client-cert
       readOnly: true
