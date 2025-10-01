@@ -4,9 +4,11 @@
 annotations:
   images: |
     - name: tensorflow-resnet
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-resnet:2.19.1-debian-12-r0
+      version: 2.19.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-resnet:2.19.1-debian-12-r1
     - name: tensorflow-serving
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-serving:2.19.1-debian-12-r1
+      version: 2.19.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-serving:2.19.1-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -34,4 +36,4 @@ maintainers:
 name: tensorflow-resnet
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/tensorflow-resnet
-version: 4.3.16
+version: 4.3.17
