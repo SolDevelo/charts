@@ -4,12 +4,12 @@
 annotations:
   images: |
     - name: odoo
-      version: 18.0.20250905
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/odoo:18.0.20250905-debian-12-r2
+      version: 19.0.20251001
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/odoo:19.0.20251001-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 18.0.20250905
+appVersion: 19.0.20251001
 dependencies:
 - condition: postgresql.enabled
   name: postgresql
@@ -37,4 +37,4 @@ maintainers:
 name: odoo
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/odoo
-version: 29.0.1
+version: 30.0.0
