@@ -4,11 +4,14 @@
 annotations:
   images: |
     - name: opensearch
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/opensearch:3.2.0-debian-12-r0
+      version: 3.2.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/opensearch:3.2.0-debian-12-r1
     - name: opensearch-dashboards
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/opensearch-dashboards:3.2.0-debian-12-r0
+      version: 3.2.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/opensearch-dashboards:3.2.0-debian-12-r1
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      version: "12"
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -32,4 +35,4 @@ maintainers:
 name: opensearch
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/opensearch
-version: 2.0.12
+version: 2.0.13
