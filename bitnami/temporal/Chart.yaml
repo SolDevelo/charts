@@ -4,15 +4,15 @@
 annotations:
   category: Infrastructure
   images: |
+    - name: postgresql
+      version: 18.0.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r5
     - name: temporal
-      version: 1.29.0
+      version: 1.28.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.28.1-debian-12-r5
     - name: temporal-ui
       version: 2.40.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.40.1-debian-12-r1
-    - name: postgresql
-      version: 18.0.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -33,7 +33,8 @@ dependencies:
   name: postgresql
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
   version: 18.x.x
-description: Temporal is a durable execution platform that enables developers to build scalable applications without sacrificing productivity or reliability.
+description: Temporal is a durable execution platform that enables developers to build
+  scalable applications without sacrificing productivity or reliability.
 home: https://bitnami.com
 icon: https://dyltqmyl993wv.cloudfront.net/assets/stacks/temporal/img/temporal-stack-220x234.png
 keywords:
@@ -47,4 +48,4 @@ sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/temporal
 - https://github.com/bitnami/containers-private/tree/main/bitnami/temporal
 - https://github.com/temporalio/temporal
-version: 0.1.0
+version: 0.1.1
