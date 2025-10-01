@@ -1,7 +1,7 @@
 adminEmail: vib-user@changeme.com
 adminPassword: bitnami!1234
 
-webDomain: bitnami-mastodon.my
+webDomain: mastodon.com
 
 serviceAccount:
   create: true

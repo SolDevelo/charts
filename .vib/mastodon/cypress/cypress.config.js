@@ -4,7 +4,7 @@ module.exports = {
     password: 'bitnami!1234',
   },
   hosts: {
-    'bitnami-mastodon.my': '{{ TARGET_IP }}',
+    'mastodon.com': '{{ TARGET_IP }}',
   },
   viewportWidth: 1920,
   viewportHeight: 1080,
