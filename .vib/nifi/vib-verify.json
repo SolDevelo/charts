@@ -49,7 +49,7 @@
             "vars_file": "nifi/runtime-parameters.yaml",
             "remote": {
               "pod": {
-                "workload": "deploy-nifi-data-plane"
+                "workload": "sts-nifi"
               }
             }
           }
