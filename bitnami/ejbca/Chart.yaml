@@ -4,7 +4,8 @@
 annotations:
   images: |
     - name: ejbca
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ejbca:9.1.1-debian-12-r12
+      version: 9.1.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ejbca:9.1.1-debian-12-r13
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -36,4 +37,4 @@ maintainers:
 name: ejbca
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/ejbca
-version: 19.0.2
+version: 19.0.3
