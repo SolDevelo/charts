@@ -4,7 +4,8 @@
 annotations:
   images: |
     - name: fluentd
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluentd:1.19.0-debian-12-r2
+      version: 1.19.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluentd:1.19.0-debian-12-r4
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -31,4 +32,4 @@ maintainers:
 name: fluentd
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/fluentd
-version: 7.2.7
+version: 7.2.8
