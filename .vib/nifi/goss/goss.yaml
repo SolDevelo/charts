@@ -1,0 +1,54 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+http:
+  https://nifi:{{ .Vars.service.ports.web }}:
+    status: 200
+    allow-insecure: true
+  # We cannot use 127.0.0.1 because it is listening in its FQDN, so 127.0.0.1 returns connection refused
+  https://nifi-0.nifi-headless:{{ .Vars.containerPorts.web }}:
+    status: 200
+    allow-insecure: true
+    request-headers:
+      - "Host: nifi"
+addr:
+  tcp://nifi:{{ .Vars.service.ports.loadBalance }}:
+    reachable: true
+    timeout: 500
+  # We cannot test the container port for load balancer because it is only active in the cluster coordinator
+  tcp://127.0.0.1:{{ .Vars.containerPorts.cluster }}:
+    reachable: true
+    timeout: 500
+file:
+  /opt/bitnami/nifi/conf/nifi.properties:
+    exists: true
+    filetype: file
+    mode: '0644'
+    contents:
+      - /nifi.analytics.predict.interval.*{{ index .Vars.configuration.overrideNifiProperties "nifi.analytics.predict.interval" }}/
+command:
+  check-cluster:
+    # We use the nifi-toolkit cli.sh command to:
+    #   1) Get an API TOKEN
+    #   2) Get the node list
+    {{- $commonParams := printf "--baseUrl https://nifi-0.nifi-headless:%v --truststoreType JKS --truststore /opt/bitnami/java/lib/security/cacerts  --truststorePasswd changeit" .Vars.containerPorts.web }}
+    exec: export NIFI_TOKEN=$(cli.sh nifi get-access-token {{ $commonParams }} --username "{{ .Vars.auth.username }}" --password "{{ .Vars.auth.password }}") ; cli.sh nifi get-nodes {{ $commonParams }} --bearerToken $NIFI_TOKEN
+    exit-status: 0
+    stdout:
+    {{- range $i, $e := until .Vars.replicaCount }}
+    - /nifi-{{$i}}.* CONNECTED/
+    {{- end }}
+  {{- $uid := .Vars.containerSecurityContext.runAsUser }}
+  {{- $gid := .Vars.podSecurityContext.fsGroup }}
+  check-user-info:
+    # The UID and GID should always be either the one specified as vars (always a bigger number that the def<ault)
+    # or the one randomly defined by openshift (larger values). Otherwise, the chart is still using the default value.
+    exec: if [ $(id -u) -lt {{ $uid }} ] || [ $(id -G | awk '{print $2}') -lt {{ $gid }} ]; then exit 1; fi
+    exit-status: 0
+  {{ if .Vars.automountServiceAccountToken }}
+  check-sa:
+    exec: cat /var/run/secrets/kubernetes.io/serviceaccount/token | cut -d '.' -f 2 | xargs -I '{}' echo '{}====' | fold -w 4 | sed '$ d' | tr -d '\n' | base64 -d
+    exit-status: 0
+    stdout:
+    - /serviceaccount.*name.*nifi/
+  {{ end }}

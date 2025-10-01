@@ -1,0 +1,39 @@
+auth:
+  enabled: true
+  username: vib-user
+  password: ComplicatedPassword123!4
+tls:
+  enabled: true
+configuration:
+  overrideNifiProperties:
+    nifi.analytics.predict.interval: 2 min
+webProxyHosts:
+  - bitnami-nifi.my
+replicaCount: 3
+containerPorts:
+  web: 8444
+  cluster: 8446
+podSecurityContext:
+  enabled: true
+  fsGroup: 1002
+containerSecurityContext:
+  enabled: true
+  runAsUser: 1002
+
+# The following two parameters are necessary for running the tests and ensuring that the
+# cluster voting has finished. Not recommended in production
+podManagementPolicy: Parallel
+readinessProbe:
+  initialDelaySeconds: 60
+
+service:
+  type: LoadBalancer
+  ports:
+    web: 443
+    loadBalance: 2443
+  # Neccesary section for the proper functioning of the Cypress tests
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 1000
+automountServiceAccountToken: true

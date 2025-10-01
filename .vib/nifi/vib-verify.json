@@ -1,0 +1,81 @@
+{
+  "phases": {
+    "package": {
+      "context": {
+        "credentials": [
+          {
+            "url": "{VIB_ENV_CHARTS_REGISTRY}",
+            "authn": {
+              "username": "{VIB_ENV_CHARTS_REGISTRY_USERNAME}",
+              "password": "{VIB_ENV_CHARTS_REGISTRY_PASSWORD}"
+            }
+          }
+        ],
+        "resources": {
+          "url": "{SHA_ARCHIVE}",
+          "path": "/bitnami/nifi"
+        }
+      },
+      "actions": [
+        {
+          "action_id": "helm-package"
+        },
+        {
+          "action_id": "helm-lint"
+        }
+      ]
+    },
+    "verify": {
+      "context": {
+        "resources": {
+          "url": "{SHA_ARCHIVE}",
+          "path": "/bitnami/nifi"
+        },
+        "target_platform": {
+          "target_platform_id": "{VIB_ENV_TARGET_PLATFORM}",
+          "size": {
+            "name": "L4"
+          }
+        }
+      },
+      "actions": [
+        {
+          "action_id": "goss",
+          "params": {
+            "resources": {
+              "path": "/.vib"
+            },
+            "tests_file": "nifi/goss/goss.yaml",
+            "vars_file": "nifi/runtime-parameters.yaml",
+            "remote": {
+              "pod": {
+                "workload": "deploy-nifi-data-plane"
+              }
+            }
+          }
+        },
+        {
+          "action_id": "cypress",
+          "params": {
+            "resources": {
+              "path": "/.vib/nifi/cypress"
+            },
+            "endpoint": "lb-nifi-https-web",
+            "app_protocol": "HTTPS",
+            "env": {
+              "username": "vib-user",
+              "password": "ComplicatedPassword123!4"
+            }
+          }
+        },
+        {
+          "action_id": "kubescape",
+          "params": {
+            "threshold": {VIB_ENV_KUBESCAPE_SCORE_THRESHOLD
+            }
+          }
+        }
+      ]
+    }
+  }
+}

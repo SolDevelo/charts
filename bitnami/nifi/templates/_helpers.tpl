@@ -1,0 +1,165 @@
+{{/*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{/*
+Return the proper nifi image name
+*/}}
+{{- define "nifi.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global) }}
+{{- end -}}
+
+{{/*
+Return the proper image name (for the init container volume-permissions image)
+*/}}
+{{- define "nifi.init-containers.default-image" -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.defaultInitContainers.defaultImage "global" .Values.global ) -}}
+{{- end -}}
+
+{{/*
+Return the proper Docker Image Registry Secret Names
+*/}}
+{{- define "nifi.imagePullSecrets" -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.image .Values.defaultInitContainers.defaultImage) "context" $) -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "nifi.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "common.names.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the secret name
+*/}}
+{{- define "nifi.configuration.secretName" -}}
+{{- if .Values.configuration.existingSecret -}}
+  {{- tpl .Values.configuration.existingSecret $ -}}
+{{- else -}}
+  {{- printf "%s-configuration" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the secret name
+*/}}
+{{- define "nifi.auth.secretName" -}}
+{{- if .Values.auth.existingSecret -}}
+  {{- tpl .Values.auth.existingSecret $ -}}
+{{- else -}}
+  {{- printf "%s-auth" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Get the secret key
+*/}}
+{{- define "nifi.auth.secretUsernameKey" -}}
+  {{- ternary "username" (tpl .Values.auth.existingSecretUsernameKey $) (empty .Values.auth.existingSecretUsernameKey) -}}
+{{- end -}}
+
+{{/*
+Get the secret key
+*/}}
+{{- define "nifi.auth.secretPasswordKey" -}}
+  {{- ternary "password" (tpl .Values.auth.existingSecretPasswordKey $) (empty .Values.auth.existingSecretPasswordKey) -}}
+{{- end -}}
+
+{{/*
+Get the headless service
+*/}}
+{{- define "nifi.headlessServiceName" -}}
+  {{- printf "%s-headless" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Get the secret name
+*/}}
+{{- define "nifi.sensitive-props.secretName" -}}
+{{- if .Values.sensitiveProps.existingSecret -}}
+  {{- tpl .Values.sensitiveProps.existingSecret $ -}}
+{{- else -}}
+  {{- printf "%s-sensitive-props" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the secret key
+*/}}
+{{- define "nifi.sensitive-props.secretKey" -}}
+  {{- ternary "sensitive-props-key" (tpl .Values.sensitiveProps.existingSecretKey $) (empty .Values.sensitiveProps.existingSecretKey) -}}
+{{- end -}}
+
+{{/*
+Convert yaml to NiFi properties file
+*/}}
+{{- define "nifi.yamlToProperties" -}}
+{{- range $key, $val := . }}
+{{ $key }}={{ $val}}
+{{- end }}
+{{- end -}}
+
+{{/*
+Return true if a TLS credentials secret object should be created
+*/}}
+{{- define "nifi.tls.createSecret" -}}
+{{- if and .Values.tls.enabled (not .Values.tls.existingSecret)  }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set the allowed hosts for the NiFi installation
+*/}}
+{{- define "nifi.web.proxyHosts" -}}
+{{- $proxyHosts := list "localhost" "127.0.0.1" "{{ POD_IP }}" -}}
+{{- if .Values.ingress.enabled -}}
+{{- $proxyHosts = append $proxyHosts .Values.ingress.hostname -}}
+{{- end -}}
+{{- if and (eq .Values.service.type "LoadBalancer") .Values.service.loadBalancerIP -}}
+{{- $proxyHosts = append $proxyHosts .Values.service.loadBalancerIP -}}
+{{- end -}}
+{{- if .Values.webProxyHosts -}}
+{{- $proxyHosts = concat $proxyHosts .Values.webProxyHosts -}}
+{{- end -}}
+{{- join "," $proxyHosts -}}
+{{- end -}}
+
+{{/*
+Return the TLS secret
+*/}}
+{{- define "nifi.tls.secretName" -}}
+{{- if .Values.tls.existingSecret -}}
+    {{- print (tpl .Values.tls.existingSecret $) -}}
+{{- else -}}
+    {{- printf "%s-crt" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Compile all warnings into a single message.
+*/}}
+{{- define "nifi.validateValues" -}}
+{{- $messages := list -}}
+{{- $messages := append $messages (include "nifi.validateValues.auth" .) -}}
+{{- $messages := without $messages "" -}}
+{{- $message := join "\n" $messages -}}
+{{- if $message -}}
+{{-   printf "\nVALUES VALIDATION:\n%s" $message -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Validate values of NiFi - Auth and TLS */}}
+{{- define "nifi.validateValues.auth" -}}
+{{- if and .Values.auth.enabled (not .Values.tls.enabled) (not (index .Values.configuration.overrideNifiProperties "nifi.web.https.port")) (not (contains .Values.configuration.nifiProperties "nifi.web.https.port")) (not .Values.configuration.existingSecret) -}}
+kyverno: Auth and Secure mode
+    In order to enable auth NiFi needs to be run in secure mode. In order to do set tls.enabled=true or set the configuration.overrideNifiProperties with the proper TLS settings: https://nifi.apache.org/docs/nifi-docs/html/walkthroughs.html#securing-nifi-with-tls
+{{- end -}}
+{{- end -}}
