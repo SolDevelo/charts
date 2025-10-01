@@ -4,7 +4,8 @@
 annotations:
   images: |
     - name: superset
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/superset:5.0.0-debian-12-r71
+      version: 5.0.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/superset:5.0.0-debian-12-r85
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -37,4 +38,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/superset
 - https://github.com/bitnami/containers/tree/main/bitnami/superset
 - https://github.com/apache/superset
-version: 6.0.1
+version: 6.0.2
