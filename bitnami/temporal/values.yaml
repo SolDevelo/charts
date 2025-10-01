@@ -57,6 +57,9 @@ commonAnnotations: {}
 ## @param clusterDomain Kubernetes cluster domain name
 ##
 clusterDomain: cluster.local
+## @param useHelmHooks Enable use of Helm hooks if needed, e.g. on pre-install jobs
+##
+useHelmHooks: true
 ## @param extraDeploy Array of extra objects to deploy with the release
 ##
 extraDeploy: []

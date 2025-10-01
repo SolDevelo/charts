@@ -1,3 +1,4 @@
+useHelmHooks: false
 logLevel: info
 frontend:
   podSecurityContext:

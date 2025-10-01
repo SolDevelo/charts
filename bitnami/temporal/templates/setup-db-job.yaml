@@ -69,7 +69,7 @@ metadata:
   labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
     app.kubernetes.io/part-of: temporal
     app.kubernetes.io/component: setup-db
-  {{- $defaultAnnotations := dict "helm.sh/hook" "post-install,post-upgrade" "helm.sh/hook-delete-policy" "before-hook-creation,hook-succeeded" }}
+  {{- $defaultAnnotations := ternary (dict "helm.sh/hook" "post-install,post-upgrade" "helm.sh/hook-delete-policy" "before-hook-creation,hook-succeeded") (dict) .Values.useHelmHooks  }}
   {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.setupDBJob.annotations .Values.commonAnnotations $defaultAnnotations) "context" . ) }}
   annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
 spec:

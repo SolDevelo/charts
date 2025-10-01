@@ -217,6 +217,7 @@ To back up and restore Helm chart deployments on Kubernetes, you need to back up
 | `commonLabels`           | Labels to add to all deployed objects                                                   | `{}`            |
 | `commonAnnotations`      | Annotations to add to all deployed objects                                              | `{}`            |
 | `clusterDomain`          | Kubernetes cluster domain name                                                          | `cluster.local` |
+| `useHelmHooks`           | Enable use of Helm hooks if needed, e.g. on pre-install jobs                            | `true`          |
 | `extraDeploy`            | Array of extra objects to deploy with the release                                       | `[]`            |
 | `diagnosticMode.enabled` | Enable diagnostic mode (all probes will be disabled and the command will be overridden) | `false`         |
 | `diagnosticMode.command` | Command to override all containers in the chart release                                 | `["sleep"]`     |
