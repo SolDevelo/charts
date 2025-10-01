@@ -6,10 +6,10 @@ module.exports = {
   defaultCommandTimeout: 30000,
   e2e: {
     setupNodeEvents(on, config) {},
-    baseUrl: 'https://bitnami-nifi.my',
+    baseUrl: 'https://nifi.com',
   },
   hosts: {
-    'bitnami-nifi.my': '{{ TARGET_IP }}',
+    'nifi.com': '{{ TARGET_IP }}',
   },
   retries: 5
 }

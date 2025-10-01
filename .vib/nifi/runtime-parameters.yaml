@@ -8,7 +8,7 @@ configuration:
   overrideNifiProperties:
     nifi.analytics.predict.interval: 2 min
 webProxyHosts:
-  - bitnami-nifi.my
+  - nifi.com
 replicaCount: 3
 containerPorts:
   web: 8444
