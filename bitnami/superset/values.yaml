@@ -1794,7 +1794,7 @@ flower:
   service:
     ## @param flower.service.type Superset celery flower service type
     ##
-    type: LoadBalancer
+    type: ClusterIP
     ## @param flower.service.ports.flower Superset celery flower service port
     ##
     ports:
