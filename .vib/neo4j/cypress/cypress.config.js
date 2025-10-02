@@ -6,7 +6,7 @@ module.exports = {
     password: 'ComplicatedPassword123!4',
   },
   hosts: {
-    'bitnami-neo4j.my': '{{ TARGET_IP }}',
+    'neo4j.com': '{{ TARGET_IP }}',
   },
   e2e: {
     setupNodeEvents(on, config) {},

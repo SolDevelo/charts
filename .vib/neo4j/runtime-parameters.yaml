@@ -1,4 +1,4 @@
-advertisedHost: bitnami-neo4j.my
+advertisedHost: neo4j.com
 auth:
   password: ComplicatedPassword123!4
 tls:
