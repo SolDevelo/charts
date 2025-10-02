@@ -2565,7 +2565,7 @@ externalDatabaseDefault:
 
 ## @param useDefaultDbServerForVisibility Use the same DB server as the default store
 ##
-useDefaultDbServerForVisibility: false
+useDefaultDbServerForVisibility: true
 ## PostgreSQL chart configuration
 ## ref: https://github.com/bitnami/charts-private/blob/main/bitnami/postgresql/values.yaml
 ## @param pgVisibility.enabled Switch to enable or disable the PostgreSQL chart to satisfy the database requirements for visibility store
@@ -2579,7 +2579,7 @@ useDefaultDbServerForVisibility: false
 ## @param pgVisibility.primary.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge)
 ##
 pgVisibility:
-  enabled: true
+  enabled: false
   nameOverride: pg-visibility
   auth:
     database: temporal_visibility
