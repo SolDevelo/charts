@@ -12,8 +12,8 @@ containerPorts:
 service:
   ports:
     http: 80
-    https: 8443
-    bolt: 443
+    https: 443
+    bolt: 8443
   type: LoadBalancer
 podSecurityContext:
   enabled: true
