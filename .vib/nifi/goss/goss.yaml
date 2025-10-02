@@ -34,6 +34,7 @@ command:
     {{- $commonParams := printf "--baseUrl https://nifi-0.nifi-headless:%v --truststoreType JKS --truststore /opt/bitnami/java/lib/security/cacerts  --truststorePasswd changeit" .Vars.containerPorts.web }}
     exec: export NIFI_TOKEN=$(cli.sh nifi get-access-token {{ $commonParams }} --username "{{ .Vars.auth.username }}" --password "{{ .Vars.auth.password }}") ; cli.sh nifi get-nodes {{ $commonParams }} --bearerToken $NIFI_TOKEN
     exit-status: 0
+    timeout: 40000
     stdout:
     {{- range $i, $e := until .Vars.replicaCount }}
     - /nifi-{{$i}}.* CONNECTED/
