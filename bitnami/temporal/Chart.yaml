@@ -49,4 +49,4 @@ sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/temporal
 - https://github.com/bitnami/containers-private/tree/main/bitnami/temporal
 - https://github.com/temporalio/temporal
-version: 0.1.4
+version: 0.2.0

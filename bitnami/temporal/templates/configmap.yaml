@@ -81,6 +81,9 @@ global:
         rootCaFiles:
           - /opt/bitnami/temporal/certs/ca.crt
   {{- end }}
+  {{- with .Values.authorization }}
+  authorization: {{- toYaml . | nindent 4 }}
+  {{- end }}
 services:
   frontend:
     rpc:

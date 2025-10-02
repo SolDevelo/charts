@@ -174,6 +174,19 @@ tls:
     cert: ""
     key: ""
     existingSecret: ""
+## @param authorization Define Temporal Authorization and ClaimMapper configuration (not set by default)
+## ref: https://docs.temporal.io/self-hosted-guide/security#authorization
+## E.g:
+## authorization:
+##   jwtKeyProvider:
+##     keySourceURIs:
+##       - http://localhost:/jwks.json
+##     refreshInterval: 1m
+##   permissionsClaimName: permissions
+##   authorizer: default
+##   claimMapper: default
+##
+authorization: {}
 
 ## @section Frontend Service parameters
 

@@ -10,7 +10,7 @@ frontend:
   containerPorts:
     rpc: 8233
     http: 8243
-    membership: 8933
+    membership: 7933
     metrics: 9091
   automountServiceAccountToken: true
   service:
@@ -18,6 +18,20 @@ frontend:
     ports:
       rpc: 18233
       http: 18243
+history:
+  containerPorts:
+    rpc: 8234
+    membership: 7934
+    metrics: 9091
+matching:
+  containerPorts:
+    rpc: 8235
+    membership: 7935
+    metrics: 9091
+worker:
+  containerPorts:
+    membership: 7939
+    metrics: 9091
 metrics:
   enabled: true
   service:

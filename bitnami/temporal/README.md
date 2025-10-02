@@ -261,6 +261,7 @@ To back up and restore Helm chart deployments on Kubernetes, you need to back up
 | `tls.frontend.cert`                                | TLS certificate for Temporal frontend-to-client communications. Ignored if `tls.frontend.existingSecret` is set | `""`    |
 | `tls.frontend.key`                                 | TLS key for Temporal frontend-to-client communications. Ignored if `tls.frontend.existingSecret` is set         | `""`    |
 | `tls.frontend.existingSecret`                      | The name of an existing Secret containing the TLS certificates for Temporal frontend-to-client communications   | `""`    |
+| `authorization`                                    | Define Temporal Authorization and ClaimMapper configuration (not set by default)                                | `{}`    |
 
 ### Frontend Service parameters
 
