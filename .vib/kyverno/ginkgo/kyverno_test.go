@@ -36,6 +36,9 @@ var _ = Describe("kyverno:", func() {
 		var testingPod *v1.Pod
 
 		BeforeEach(func() {
+			// Give the application some time to sync the data
+			time.Sleep(20 * time.Second)
+
 			testingPod = createTestingPodOrDie(ctx, coreclient)
 			isPodRunning := false
 			// We need to make sure the pod is out of the "ContainerCreating" phase
