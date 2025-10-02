@@ -3,13 +3,14 @@
 
 annotations:
   category: Infrastructure
+  fips: "false"
   images: |
     - name: postgresql
       version: 18.0.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r5
     - name: temporal
       version: 1.28.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.28.1-debian-12-r5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.28.1-debian-12-r6
     - name: temporal-ui
       version: 2.40.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.40.1-debian-12-r1
@@ -48,4 +49,4 @@ sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/temporal
 - https://github.com/bitnami/containers-private/tree/main/bitnami/temporal
 - https://github.com/temporalio/temporal
-version: 0.1.2
+version: 0.1.3
