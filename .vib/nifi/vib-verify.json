@@ -55,20 +55,6 @@
           }
         },
         {
-          "action_id": "cypress",
-          "params": {
-            "resources": {
-              "path": "/.vib/nifi/cypress"
-            },
-            "endpoint": "lb-nifi-https-web",
-            "app_protocol": "HTTPS",
-            "env": {
-              "username": "vib-user",
-              "password": "ComplicatedPassword123!4"
-            }
-          }
-        },
-        {
           "action_id": "kubescape",
           "params": {
             "threshold": {VIB_ENV_KUBESCAPE_SCORE_THRESHOLD}
