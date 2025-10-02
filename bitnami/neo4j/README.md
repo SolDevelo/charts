@@ -334,6 +334,7 @@ If you encounter errors when working with persistent volumes, refer to our [trou
 | `service.loadBalancerIP`                | neo4j service Load Balancer IP                                                                                                   | `""`                     |
 | `service.loadBalancerSourceRanges`      | neo4j service Load Balancer sources                                                                                              | `[]`                     |
 | `service.externalTrafficPolicy`         | neo4j service external traffic policy                                                                                            | `Cluster`                |
+| `service.labels`                        | Additional custom labels for neo4j service                                                                                       | `{}`                     |
 | `service.annotations`                   | Additional custom annotations for neo4j service                                                                                  | `{}`                     |
 | `service.extraPorts`                    | Extra ports to expose in neo4j service (normally used with the `sidecars` value)                                                 | `[]`                     |
 | `service.sessionAffinity`               | Control where client requests go, to the same pod or round-robin                                                                 | `None`                   |
