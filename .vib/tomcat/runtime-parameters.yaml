@@ -15,3 +15,7 @@ podSecurityContext:
 containerSecurityContext:
   enabled: true
   runAsUser: 1002
+# Ensure default apps are installed (including examples)
+extraEnvVars:
+  - name: TOMCAT_INSTALL_DEFAULT_WEBAPPS
+    value: yes
