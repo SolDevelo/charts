@@ -2,10 +2,8 @@ useHelmHooks: false
 logLevel: info
 frontend:
   podSecurityContext:
-    enabled: true
     fsGroup: 1002
   containerSecurityContext:
-    enabled: true
     runAsUser: 1002
   containerPorts:
     rpc: 8233
@@ -19,16 +17,28 @@ frontend:
       rpc: 18233
       http: 18243
 history:
+  podSecurityContext:
+    fsGroup: 1002
+  containerSecurityContext:
+    runAsUser: 1002
   containerPorts:
     rpc: 8234
     membership: 7934
     metrics: 9091
 matching:
+  podSecurityContext:
+    fsGroup: 1002
+  containerSecurityContext:
+    runAsUser: 1002
   containerPorts:
     rpc: 8235
     membership: 7935
     metrics: 9091
 worker:
+  podSecurityContext:
+    fsGroup: 1002
+  containerSecurityContext:
+    runAsUser: 1002
   containerPorts:
     membership: 7939
     metrics: 9091
@@ -37,3 +47,15 @@ metrics:
   service:
     ports:
       metrics: 9091
+defaultInitContainers:
+  waitForDB:
+    containerSecurityContext:
+      runAsUser: 1002
+  renderConfig:
+    containerSecurityContext:
+      runAsUser: 1002
+setupDBJob:
+  podSecurityContext:
+    fsGroup: 1002
+  containerSecurityContext:
+    runAsUser: 1002
