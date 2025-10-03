@@ -75,7 +75,7 @@ kubeVersion: ""
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/external-dns
-  tag: 0.19.0-debian-12-r1
+  tag: 0.19.0-debian-12-r2
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images

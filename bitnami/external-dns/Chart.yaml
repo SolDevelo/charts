@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: external-dns
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/external-dns:0.19.0-debian-12-r1
+      version: 0.19.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/external-dns:0.19.0-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -29,4 +31,4 @@ maintainers:
 name: external-dns
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/external-dns
-version: 9.0.7
+version: 9.0.8
