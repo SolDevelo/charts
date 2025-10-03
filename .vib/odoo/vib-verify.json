@@ -40,6 +40,20 @@
       },
       "actions": [
         {
+          "action_id": "cypress",
+          "params": {
+            "resources": {
+              "path": "/.vib/odoo/cypress"
+            },
+            "endpoint": "lb-odoo-http",
+            "app_protocol": "HTTP",
+            "env": {
+              "email": "user@example.com",
+              "password": "ComplicatedPassword123!4"
+            }
+          }
+        },
+        {
           "action_id": "goss",
           "params": {
             "resources": {
