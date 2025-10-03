@@ -75,8 +75,8 @@
             "resources": {
               "path": "/.vib/temporal/cypress"
             },
-            "endpoint": "lb-temporal-web-http",
-            "app_protocol": "HTTP"
+            "endpoint": "lb-temporal-web-https",
+            "app_protocol": "HTTPS"
           }
         },
         {
