@@ -3,11 +3,14 @@
 
 annotations:
   category: Analytics
+  fips: "false"
   images: |
     - name: grafana-pyroscope
+      version: 1.14.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-pyroscope:1.14.1-debian-12-r1
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      version: "12"
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -42,4 +45,4 @@ maintainers:
 name: grafana-pyroscope
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/grafana-pyroscope
-version: 0.1.4
+version: 0.1.5
