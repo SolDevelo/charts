@@ -31,9 +31,9 @@ service:
   ports:
     web: 443
     loadBalance: 2443
-  # Neccesary section for the proper functioning of the Cypress tests
-  sessionAffinity: ClientIP
-  sessionAffinityConfig:
-    clientIP:
-      timeoutSeconds: 1000
+  # Neccesary section for the proper functioning of the Cypress tests (Disabled because it is not compatible with EKS)
+  # sessionAffinity: ClientIP
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 1000
 automountServiceAccountToken: true
