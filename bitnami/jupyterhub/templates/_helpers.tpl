@@ -93,10 +93,21 @@ Usage:
 {{- end }}
 
 {{/*
-Return the proper hub image name
+Return the proper Jupyterhub proxy fullname
 */}}
-{{- define "jupyterhub.proxy.name" -}}
+{{- define "jupyterhub.proxy.fullname" -}}
 {{- printf "%s-proxy" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Return the proper Jupyterhub proxy TLS secret name
+*/}}
+{{- define "jupyterhub.proxy.tlsSecretName" -}}
+{{- if .Values.proxy.tls.existingSecret -}}
+    {{- include "common.tplvalues.render" (dict "value" .Values.proxy.tls.existingSecret "context" $) -}}
+{{- else -}}
+    {{- printf "%s-tls" (include "jupyterhub.proxy.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*

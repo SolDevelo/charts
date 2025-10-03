@@ -61,7 +61,7 @@
               "path": "/.vib/jupyterhub/cypress"
             },
             "endpoint": "lb-jupyterhub-proxy-public-http",
-            "app_protocol": "HTTP",
+            "app_protocol": "HTTPS",
             "env": {
               "username": "test_user",
               "password": "BitnamiComplicatedPassword123!45678"

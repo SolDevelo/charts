@@ -22,6 +22,8 @@ hub:
     ports:
       http: 8082
 proxy:
+  tls:
+    enabled: true
   service:
     api:
       ports:
@@ -29,7 +31,7 @@ proxy:
     public:
       type: LoadBalancer
       ports:
-        http: 80
+        http: 443
 imagePuller:
   enabled: true
 singleuser:

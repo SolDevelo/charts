@@ -6,7 +6,7 @@ SPDX-License-Identifier: APACHE-2.0
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
-  name: {{ include "jupyterhub.proxy.name" . }}
+  name: {{ include "jupyterhub.proxy.fullname" . }}
   namespace: {{ .Release.Namespace | quote }}
   {{- $versionLabel := dict "app.kubernetes.io/version" ( include "common.images.version" ( dict "imageRoot" .Values.proxy.image "chart" .Chart ) ) }}
   {{- $labels := include "common.tplvalues.merge" ( dict "values" ( list .Values.commonLabels $versionLabel ) "context" . ) }}
@@ -100,6 +100,11 @@ spec:
             - --default-target=http://{{ template "common.names.fullname" . }}-hub:{{ .Values.hub.service.ports.http }}
             - --error-target=http://{{ template "common.names.fullname" . }}-hub:{{ .Values.hub.service.ports.http }}/hub/error
             - --port={{ .Values.proxy.containerPort.http }}
+            {{- if .Values.proxy.tls.enabled }}
+            - --ssl-key=/bitnami/certs/tls.key
+            - --ssl-cert=/bitnami/certs/tls.crt
+            - --ssl-ca=/bitnami/certs/ca.crt
+            {{- end }}
             {{- if .Values.proxy.metrics.serviceMonitor.enabled }}
             - "--metrics-ip=::"
             - --metrics-port={{ .Values.proxy.containerPort.metrics }}
@@ -151,6 +156,7 @@ spec:
             httpGet:
               path: /_chp_healthz
               port: http
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.proxy.tls.enabled }}
           {{- end }}
           {{- if .Values.proxy.customLivenessProbe }}
           livenessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.proxy.customLivenessProbe "context" $) | nindent 12 }}
@@ -166,12 +172,17 @@ spec:
             httpGet:
               path: /_chp_healthz
               port: http
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.proxy.tls.enabled }}
           {{- end }}
           {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+            {{- if .Values.proxy.tls.enabled }}
+            - name: certs
+              mountPath: /bitnami/certs
+            {{- end }}
             {{- if .Values.proxy.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.proxy.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -181,6 +192,11 @@ spec:
       volumes:
         - name: empty-dir
           emptyDir: {}
+        {{- if .Values.proxy.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ include "jupyterhub.proxy.tlsSecretName" . }}
+        {{ end }}
         {{- if .Values.proxy.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.proxy.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

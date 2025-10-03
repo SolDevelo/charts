@@ -732,6 +732,16 @@ proxy:
   ## @param proxy.secretToken Proxy secret token (used for communication with the Hub)
   ##
   secretToken: ""
+  ## Proxy TLS certificates
+  ##
+  tls:
+    ## @param proxy.tls.enabled If disabled, the configurable-http-proxy container will be configured without HTTP certificates
+    ##
+    enabled: false
+    ## @param proxy.tls.existingSecret Name of a Secret containing the proxy TLS certificates
+    ## If unset, the Jupyterhub proxy will use self-signed development TLS certificates
+    ##
+    existingSecret: ""
   ## @param proxy.command Override Proxy default command
   ##
   command: []
