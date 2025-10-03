@@ -12,7 +12,6 @@ frontend:
     metrics: 9091
   automountServiceAccountToken: true
   service:
-    type: LoadBalancer
     ports:
       rpc: 18233
       http: 18243
