@@ -1,4 +1,6 @@
 module.exports = {
+  viewportWidth: 1920,
+  viewportHeight: 1080,
   env: {
     email: 'user@example.com',
     password: 'ComplicatedPassword123!4',
@@ -8,5 +10,6 @@ module.exports = {
   e2e: {
     setupNodeEvents(on, config) {},
     baseUrl: 'http://localhost/',
+    defaultBrowser: 'chromium',
   },
 }
