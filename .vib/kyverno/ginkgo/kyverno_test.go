@@ -36,8 +36,20 @@ var _ = Describe("kyverno:", func() {
 		var testingPod *v1.Pod
 
 		BeforeEach(func() {
-			// Give the application some time to sync the data
-			time.Sleep(20 * time.Second)
+			// We need to make sure every Kyverno pods are running before launching the tests
+			kyvernoPods := utils.GetPodsByLabelOrDie(ctx, coreclient, *namespace, "app.kubernetes.io/name=kyverno")
+			for _, p := range kyvernoPods.Items {
+				isPodRunning := false
+				err := utils.Retry("IsPodRunning", 5, 5000, func() (bool, error) {
+					res, err2 := utils.IsPodRunning(ctx, coreclient, *namespace, p.GetName())
+					isPodRunning = res
+					return res, err2
+				})
+				if err != nil {
+					panic(err.Error())
+				}
+				Expect(isPodRunning).To(BeTrue())
+			}
 
 			testingPod = createTestingPodOrDie(ctx, coreclient)
 			isPodRunning := false
