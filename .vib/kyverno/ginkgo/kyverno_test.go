@@ -103,6 +103,14 @@ var _ = Describe("kyverno:", func() {
 					fmt.Println("##### CLI LOGS: #####")
 					fmt.Println(sampleLogs)
 					fmt.Println("###############")
+					kyvernoPods := utils.GetPodsByLabelOrDie(ctx, coreclient, *namespace, "app.kubernetes.io/name=kyverno")
+					for _, p := range kyvernoPods.Items {
+						podLog := utils.GetContainerLogsOrDie(ctx, coreclient, *namespace, p.GetName(), "kyverno")
+						fmt.Println("##### LOGS Kyverno POD: #####")
+						fmt.Println(p.GetName())
+						fmt.Println(podLog)
+						fmt.Println("###############")
+					}
 				}
 				Expect(patternFound).To(BeTrue())
 			})
