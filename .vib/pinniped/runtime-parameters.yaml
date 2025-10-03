@@ -22,6 +22,7 @@ concierge:
         type: LoadBalancer
         annotations:
           service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "4000"
+          networking.gke.io/load-balancer-type: "Internal"
 extraDeploy:
 - |
   {{- $ca := genCA "pinniped-ca" 365 }}
