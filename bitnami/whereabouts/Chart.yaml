@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: whereabouts
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/whereabouts:0.9.2-debian-12-r3
+      version: 0.9.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/whereabouts:0.9.2-debian-12-r4
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -30,4 +32,4 @@ maintainers:
 name: whereabouts
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/whereabouts
-version: 1.2.22
+version: 1.2.23
