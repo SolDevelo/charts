@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: dremio
       version: 26.0.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dremio:26.0.5-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dremio:26.0.5-debian-12-r2
     - name: jmx-exporter
       version: 1.4.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter:1.4.0-debian-12-r1
@@ -45,4 +46,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/dremio
 - https://github.com/bitnami/containers/tree/main/bitnami/dremio
 - https://github.com/dremio/dremio-oss
-version: 3.0.19
+version: 3.0.20
