@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: metrics-server
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/metrics-server:0.8.0-debian-12-r5
+      version: 0.8.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/metrics-server:0.8.0-debian-12-r6
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -30,4 +32,4 @@ maintainers:
 name: metrics-server
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/metrics-server
-version: 7.4.15
+version: 7.4.16
