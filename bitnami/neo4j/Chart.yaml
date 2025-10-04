@@ -2,11 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: neo4j
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/neo4j:5.26.12-debian-12-r0
+      version: 5.26.12
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/neo4j:5.26.12-debian-12-r1
     - name: os-shell
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r51
+      version: "12"
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -36,4 +39,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/neo4j
 - https://github.com/bitnami/containers/tree/main/bitnami/neo4j
 - https://github.com/neo4j/neo4j
-version: 0.5.0
+version: 0.5.1
