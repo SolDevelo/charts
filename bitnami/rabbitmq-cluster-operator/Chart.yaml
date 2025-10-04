@@ -2,15 +2,20 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: rabbitmq
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.1.4-debian-12-r0
+      version: 4.1.4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.1.4-debian-12-r1
     - name: rabbitmq-cluster-operator
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq-cluster-operator:2.16.1-debian-12-r1
+      version: 2.16.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq-cluster-operator:2.16.1-debian-12-r2
     - name: rmq-default-credential-updater
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rmq-default-credential-updater:1.0.8-debian-12-r1
+      version: 1.0.8
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rmq-default-credential-updater:1.0.8-debian-12-r2
     - name: rmq-messaging-topology-operator
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rmq-messaging-topology-operator:1.17.4-debian-12-r1
+      version: 1.17.4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rmq-messaging-topology-operator:1.17.4-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -38,4 +43,4 @@ maintainers:
 name: rabbitmq-cluster-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
-version: 4.4.39
+version: 4.4.40
