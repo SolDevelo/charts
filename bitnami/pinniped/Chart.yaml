@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: pinniped
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pinniped:0.41.0-debian-12-r1
+      version: 0.41.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pinniped:0.41.0-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -29,4 +31,4 @@ maintainers:
 name: pinniped
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/pinniped
-version: 2.4.26
+version: 2.4.27
