@@ -13,8 +13,8 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: cadvisor
     app.kubernetes.io/component: cadvisor
-  {{- if or .Values.service.annotations .Values.metrics.enabled }}
-  {{- $annotations := dict }}
+  {{- if or .Values.service.annotations .Values.commonAnnotations .Values.metrics.enabled }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.service.annotations .Values.commonAnnotations) "context" .) }}
   {{- if .Values.metrics.enabled }}
   {{- $defaultMetricsAnnotations := dict "prometheus.io/scrape" "true" "prometheus.io/port" (.Values.service.ports.http | toString) "prometheus.io/path" "/metrics" }}
   {{- $annotations = include "common.tplvalues.merge" (dict "values" (list $annotations $defaultMetricsAnnotations .Values.metrics.annotations) "context" .) }}
