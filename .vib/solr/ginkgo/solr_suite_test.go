@@ -56,7 +56,7 @@ func createJob(ctx context.Context, c kubernetes.Interface, name string, port st
 	}
 	command := []string{"solr"}
 	command = append(command, args[:]...)
-	command = append(command, "--solr-url", fmt.Sprintf("http://%s:%s", stsName, port))
+	command = append(command, "--solr-url", fmt.Sprintf("https://%s:%s", stsName, port))
 
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
@@ -70,6 +70,43 @@ func createJob(ctx context.Context, c kubernetes.Interface, name string, port st
 			Template: v1.PodTemplateSpec{
 				Spec: v1.PodSpec{
 					RestartPolicy: "Never",
+					InitContainers: []v1.Container{
+						{
+							Name:    "init-certs",
+							Image:   image,
+							Command: []string{"/scripts/init-certs.sh"},
+							Env: []v1.EnvVar{
+								{
+									Name:  "SOLR_SSL_KEY_STORE_PASSWORD_FILE",
+									Value: "/opt/bitnami/solr/secrets/tls/keystore-password",
+								},
+								{
+									Name:  "SOLR_SSL_TRUST_STORE_PASSWORD_FILE",
+									Value: "/opt/bitnami/solr/secrets/tls/truststore-password",
+								},
+							},
+							SecurityContext: securityContext,
+							VolumeMounts: []v1.VolumeMount{{
+								Name:      "certs",
+								MountPath: "/certs",
+							}, {
+								Name:      "solr-scripts",
+								MountPath: "/scripts/init-certs.sh",
+								SubPath:   "init-certs.sh",
+							}, {
+								Name:      "solr-tls-secret",
+								MountPath: "/opt/bitnami/solr/secrets/tls",
+							}, {
+								Name:      "empty-dir",
+								MountPath: "/tmp",
+								SubPath:   "tmp-dir",
+							}, {
+								Name:      "empty-dir",
+								MountPath: "/opt/bitnami/solr/certs",
+								SubPath:   "app-certs-dir",
+							}},
+						},
+					},
 					Containers: []v1.Container{
 						{
 							Name:    "solr",
@@ -84,10 +121,83 @@ func createJob(ctx context.Context, c kubernetes.Interface, name string, port st
 									Name:  "SOLR_AUTH_TYPE",
 									Value: "basic",
 								},
+								{
+									Name:  "SOLR_SSL_ENABLED",
+									Value: "true",
+								},
+								{
+									Name: "SOLR_SSL_KEY_STORE_PASSWORD",
+									ValueFrom: &v1.EnvVarSource{
+										SecretKeyRef: &v1.SecretKeySelector{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-tls-pass", stsName),
+											},
+											Key: "keystore-password",
+										},
+									},
+								},
+								{
+									Name: "SOLR_SSL_TRUST_STORE_PASSWORD",
+									ValueFrom: &v1.EnvVarSource{
+										SecretKeyRef: &v1.SecretKeySelector{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-tls-pass", stsName),
+											},
+											Key: "truststore-password",
+										},
+									},
+								},
+								{
+									Name:  "SOLR_SSL_KEY_STORE",
+									Value: "/opt/bitnami/solr/certs/keystore.p12",
+								},
+								{
+									Name:  "SOLR_SSL_TRUST_STORE",
+									Value: "/opt/bitnami/solr/certs/truststore.p12",
+								},
 							},
 							SecurityContext: securityContext,
+							VolumeMounts: []v1.VolumeMount{{
+								Name:      "empty-dir",
+								MountPath: "/tmp",
+								SubPath:   "tmp-dir",
+							}, {
+								Name:      "empty-dir",
+								MountPath: "/opt/bitnami/solr/certs",
+								SubPath:   "app-certs-dir",
+							}},
 						},
 					},
+					Volumes: []v1.Volume{{
+						Name: "empty-dir",
+						VolumeSource: v1.VolumeSource{
+							EmptyDir: &v1.EmptyDirVolumeSource{},
+						},
+					}, {
+						Name: "certs",
+						VolumeSource: v1.VolumeSource{
+							Secret: &v1.SecretVolumeSource{
+								SecretName: fmt.Sprintf("%s-crt", stsName),
+							},
+						},
+					}, {
+						Name: "solr-scripts",
+						VolumeSource: v1.VolumeSource{
+							ConfigMap: &v1.ConfigMapVolumeSource{
+								LocalObjectReference: v1.LocalObjectReference{
+									Name: fmt.Sprintf("%s-scripts", stsName),
+								},
+								DefaultMode: func(i int32) *int32 { return &i }(493),
+							},
+						},
+					}, {
+						Name: "solr-tls-secret",
+						VolumeSource: v1.VolumeSource{
+							Secret: &v1.SecretVolumeSource{
+								SecretName: fmt.Sprintf("%s-tls-pass", stsName),
+							},
+						},
+					}},
 				},
 			},
 		},
