@@ -1,0 +1,47 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+name: '[CI/CD] Push common chart tag'
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'bitnami/common/Chart.yaml'
+permissions: {}
+jobs:
+  push-common-chart-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    name: Push tag
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        with:
+          path: charts
+          fetch-depth: 2 # to be able to obtain files changed in the latest commit
+      - id: push-common-chart-tag
+        name: 'Push tag'
+        env:
+          CHART: 'common'
+        run: |
+          cd charts
+          # Get chart version and list of tags
+          chart_version="$(yq e '.version' bitnami/${CHART}/Chart.yaml)"
+          git fetch --tags
+          # If the tag does not exist, create and push it (this allows re-executing the job)
+          if ! git tag | grep ${CHART}/${chart_version}; then
+            git tag ${CHART}/${chart_version}
+            git push --tags
+          fi
+  notify:
+    name: Send notification
+    needs:
+      - push-common-chart-tag
+    if: ${{ always() && (needs.push-common-chart-tag.result == 'failure') }}
+    uses: bitnami/support/.github/workflows/gchat-notification.yml@main
+    with:
+      workflow: ${{ github.workflow }}
+      job-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      webhook-url: ${{ secrets.GCHAT_CONTENT_ALERTS_WEBHOOK_URL }}
