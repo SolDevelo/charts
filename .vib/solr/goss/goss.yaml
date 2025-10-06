@@ -2,24 +2,15 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 command:
-  {{- $auth := printf "SOLR_AUTHENTICATION_OPTS=-Dbasicauth=%s:%s" .Vars.auth.adminUsername .Vars.auth.adminPassword }}
   {{- $collection := printf "test.%s" (randNumeric 5) }}
-  {{- $replicas := .Vars.replicaCount }}
   solr-manage-collection:
-    exec: |
-      export SOLR_SSL_ENABLED=true && \
-      export SOLR_SSL_KEY_STORE_PASSWORD=$(</opt/bitnami/solr/secrets/tls/keystore-password) && \
-      export SOLR_SSL_TRUST_STORE_PASSWORD=$(</opt/bitnami/solr/secrets/tls/truststore-password) && \
-      export SOLR_SSL_KEY_STORE=/opt/bitnami/solr/certs/keystore.p12 && \
-      export SOLR_SSL_TRUST_STORE=/opt/bitnami/solr/certs/truststore.p12 && \
-      export SOLR_AUTH_TYPE=basic && \
-      export {{ $auth }} && \
-      solr create_collection --solr-url https://127.0.0.1:{{ .Vars.containerPorts.http }} -replicationFactor {{ $replicas }} -c {{ $collection }}
+    exec: bash -ec '. /opt/bitnami/scripts/solr-env.sh; SOLR_SSL_ENABLED=true SOLR_AUTH_TYPE=basic SOLR_AUTHENTICATION_OPTS=-Dbasicauth=$SOLR_ADMIN_USERNAME:$SOLR_ADMIN_PASSWORD solr create_collection --solr-url https://127.0.0.1:{{ .Vars.containerPorts.http }} -replicationFactor {{ .Vars.collectionReplicas }} -c {{ $collection }}'
     # TODO: solr healthcheck is broken in version 9.7.0. In newer versions that contain the commit below it will be fixed. Uncomment and indent when it gets released
     # https://github.com/apache/solr/commit/463e093d336ff129e7b4fbe736cc3a2bb4725d39
     # solr healthcheck -z solr-zookeeper:2181/solr -c {{ $collection }}
     exit-status: 0
     # TODO: Uncomment when a new version gets released
+    # {{- $replicas := .Vars.replicaCount }}
     # stdout:
     #  - "healthy"
     # {{ range $e, $i := until $replicas }}

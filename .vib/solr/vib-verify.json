@@ -61,7 +61,7 @@
               "path": "/.vib/solr/cypress"
             },
             "endpoint": "lb-solr-tcp-client",
-            "app_protocol": "HTTP"
+            "app_protocol": "HTTPS"
           }
         },
         {
