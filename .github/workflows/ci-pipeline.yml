@@ -39,6 +39,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [get-chart]
     name: Look for hardcoded images
+    permissions:
+      contents: read
     if: needs.get-chart.outputs.result == 'ok'
     steps:
       - name: Checkout bitnami/charts-private
@@ -141,7 +143,11 @@ jobs:
       - name: Run helm-dep-build
         env:
           CHART: ${{ needs.get-chart.outputs.chart }}
+          DISTRIBUTION_REGISTRY_HOST: ${{ vars.DISTRIBUTION_REGISTRY_HOST }}
+          DISTRIBUTION_REGISTRY_USERNAME: ${{ secrets.DISTRIBUTION_REGISTRY_USERNAME }}
+          DISTRIBUTION_REGISTRY_PASSWORD: ${{ secrets.DISTRIBUTION_REGISTRY_PASSWORD }}
         run: |
+          echo "${DISTRIBUTION_REGISTRY_PASSWORD}" | helm registry login "${DISTRIBUTION_REGISTRY_HOST}" -u "${DISTRIBUTION_REGISTRY_USERNAME}" --password-stdin
           if [ -d "charts-main/bitnami/${CHART}" ]; then
             helm dep build charts-main/bitnami/${CHART}
             if [ -d "charts-main/bitnami/${CHART}/charts" ]; then
@@ -241,7 +247,7 @@ jobs:
           # Set kubescape score threshold
           VIB_ENV_KUBESCAPE_SCORE_THRESHOLD: ${{ needs.chart-score.outputs.threshold }}
           # Set docker credentials
-          VIB_ENV_DISTRIBUTION_REGISTRY: oci://registry.app-catalog.vmware.com/eam
+          VIB_ENV_DISTRIBUTION_REGISTRY: oci://${{ vars.DISTRIBUTION_REGISTRY_HOST }}
           VIB_ENV_DISTRIBUTION_REGISTRY_USERNAME: ${{ secrets.DISTRIBUTION_REGISTRY_USERNAME }}
           VIB_ENV_DISTRIBUTION_REGISTRY_PASSWORD: ${{ secrets.DISTRIBUTION_REGISTRY_PASSWORD }}
           VIB_ENV_GIT_USERNAME: bitnami-bot
