@@ -4,7 +4,7 @@
  */
 
 const COMMAND_DELAY = 2000;
-const BASE_URL = 'http://bitnami-neo4j.my';
+const BASE_URL = 'http://neo4j.com';
 
 for (const command of ['click']) {
   Cypress.Commands.overwrite(command, (originalFn, ...args) => {
