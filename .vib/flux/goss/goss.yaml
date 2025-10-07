@@ -29,7 +29,7 @@ command:
   {{ end }}
 
 {{- $podinfoGitRepo := (index .Vars.extraDeploy 0).metadata.name }}
-{{- $chartGitRepo := (index .Vars.extraDeploy 2).metadata.name }}
+{{- $chartOciRepo := (index .Vars.extraDeploy 2).metadata.name }}
 {{- $chartReleaseName := (index .Vars.extraDeploy 3).metadata.name }}
 {{- $receiverName := (index .Vars.extraDeploy 4).metadata.name }}
 {{- $imageRepositoryName := (index .Vars.extraDeploy 5).metadata.name }}
@@ -40,9 +40,9 @@ file:
     filetype: directory
     mode: "2775"
     owner: root
-  # Verify the two cloned git repositories
+  # Verify repositories
   {{ if not ( has "air-gapped" .Vars.target_platform_properties ) }}
-  {{ .Vars.sourceController.persistence.mountPath }}/gitrepository/{{ .Env.RUNTIME_NAMESPACE }}/{{ $chartGitRepo }}:
+  {{ .Vars.sourceController.persistence.mountPath }}/ocirepository/{{ .Env.RUNTIME_NAMESPACE }}/{{ $chartOciRepo }}:
     exists: true
     filetype: directory
     mode: "2700"
