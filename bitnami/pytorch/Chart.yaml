@@ -2,16 +2,17 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: git
       version: 2.51.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r6
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: pytorch
       version: 2.8.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pytorch:2.8.0-debian-12-r11
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pytorch:2.8.0-debian-12-r13
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -38,4 +39,4 @@ maintainers:
 name: pytorch
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/pytorch
-version: 5.0.4
+version: 5.0.5
