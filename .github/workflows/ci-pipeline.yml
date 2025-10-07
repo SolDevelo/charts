@@ -165,9 +165,9 @@ jobs:
         run: |
           export PATH="$PATH:$HOME/.kubescape/bin"
           if [ -d "charts-main/bitnami/${CHART}" ]; then
-              kubescape scan framework MITRE,NSA,SOC2,cis-v1.10.0 charts-main/bitnami/${CHART} --format json -o /out/report.json
+              kubescape scan framework MITRE,NSA,SOC2,cis-v1.10.0 charts-main/bitnami/${CHART} --format json -o /tmp/report.json
               # Truncate score to 2 decimals
-              printf "%s.%.2s" $(echo "$(jq .summaryDetails.complianceScore /out/report.json)" | tr '.' ' ') | sed 's/\.$//' > /out/score
+              printf "%s.%.2s" $(echo "$(jq .summaryDetails.complianceScore /tmp/report.json)" | tr '.' ' ') | sed 's/\.$//' > /tmp/score
           else
               echo "Chart not found at charts-main/bitnami/${CHART}. It will be assumed that the upstream chart does not exist."
           fi
