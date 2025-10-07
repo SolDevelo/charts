@@ -9,10 +9,10 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-adapter-trivy:2.14.0-debian-12-r1
     - name: harbor-core
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-core:2.14.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-core:2.14.0-debian-12-r4
     - name: harbor-exporter
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-exporter:2.14.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-exporter:2.14.0-debian-12-r4
     - name: harbor-jobservice
       version: 2.14.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-jobservice:2.14.0-debian-12-r4
@@ -24,7 +24,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registry:2.14.0-debian-12-r1
     - name: harbor-registryctl
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registryctl:2.14.0-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registryctl:2.14.0-debian-12-r3
     - name: nginx
       version: 1.29.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:1.29.1-debian-12-r2
@@ -65,4 +65,4 @@ maintainers:
 name: harbor
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/harbor
-version: 28.0.5
+version: 28.0.6
