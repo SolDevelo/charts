@@ -5,11 +5,11 @@ annotations:
   fips: "false"
   images: |
     - name: jmx-exporter
-      version: 1.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter:1.4.0-debian-12-r1
+      version: 1.5.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter:1.5.0-debian-12-r0
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: sonarqube
       version: 25.10.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/sonarqube:25.10.0-debian-12-r0
@@ -43,4 +43,4 @@ maintainers:
 name: sonarqube
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/sonarqube
-version: 9.0.1
+version: 9.0.2

@@ -722,7 +722,7 @@ caCerts:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -811,7 +811,7 @@ plugins:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -920,7 +920,7 @@ volumePermissions:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -982,7 +982,7 @@ sysctl:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
@@ -1082,7 +1082,7 @@ metrics:
     image:
       registry: registry.app-catalog.vmware.com
       repository: eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter
-      tag: 1.4.0-debian-12-r1
+      tag: 1.5.0-debian-12-r0
       digest: ""
       pullPolicy: IfNotPresent
       ## Optionally specify an array of imagePullSecrets.
