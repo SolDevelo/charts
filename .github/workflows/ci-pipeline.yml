@@ -163,6 +163,7 @@ jobs:
         env:
           CHART: ${{ needs.get-chart.outputs.chart }}
         run: |
+          export PATH="$PATH:$HOME/.kubescape/bin"
           if [ -d "charts-main/bitnami/${CHART}" ]; then
               kubescape scan framework MITRE,NSA,SOC2,cis-v1.10.0 charts-main/bitnami/${CHART} --format json -o /out/report.json
               # Truncate score to 2 decimals
