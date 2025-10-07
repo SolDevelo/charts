@@ -85,7 +85,7 @@ diagnosticMode:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/seaweedfs
-  tag: 3.97.0-debian-12-r2
+  tag: 3.97.0-debian-12-r3
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3723,7 +3723,7 @@ volumePermissions:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -3807,7 +3807,7 @@ mariadb:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/mariadb
-    tag: 12.0.2-debian-12-r1
+    tag: 12.0.2-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3906,7 +3906,7 @@ postgresql:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/postgresql
-    tag: 18.0.0-debian-12-r5
+    tag: 18.0.0-debian-12-r6
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
