@@ -6,14 +6,14 @@ annotations:
   images: |
     - name: arangodb
       version: 3.11.14
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/arangodb:3.11.14-debian-12-r5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/arangodb:3.11.14-debian-12-r6
     - name: kube-arangodb
-      version: 1.3.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kube-arangodb:1.3.0-debian-12-r6
+      version: 1.3.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kube-arangodb:1.3.1-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 1.3.0
+appVersion: 1.3.1
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -35,4 +35,4 @@ maintainers:
 name: kube-arangodb
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kube-arangodb
-version: 0.1.27
+version: 0.1.28
