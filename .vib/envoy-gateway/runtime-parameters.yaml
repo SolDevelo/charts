@@ -19,6 +19,9 @@ extraDeploy:
           envoyDeployment:
             pod:
               {{- include "envoy-gateway.imagePullSecrets" . | nindent 10 }}
+          envoyService:
+              annotations:
+                networking.gke.io/load-balancer-type: "Internal"
   - |
     apiVersion: gateway.networking.k8s.io/v1
     kind: Gateway
