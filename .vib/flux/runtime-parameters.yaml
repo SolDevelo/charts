@@ -111,17 +111,17 @@ extraDeploy:
   # This is for helm-controller and source-controller
   # We use bitnami charts for not causing conflicts with the deployment above
   - apiVersion: source.toolkit.fluxcd.io/v1
-    kind: GitRepository
+    kind: OCIRepository
     metadata:
-      name: vib-bitnami-charts
+      name: vib-bitnami-nginx
       namespace: '{{ include "common.names.namespace" . }}'
       annotations:
         "helm.sh/hook": post-install
     spec:
       interval: 5m0s
-      url: https://github.com/bitnami/charts
+      url: oci://registry-1.docker.io/bitnamicharts/nginx
       ref:
-        branch: main
+        semver: '*'
   - apiVersion: helm.toolkit.fluxcd.io/v2beta2
     kind: HelmRelease
     metadata:
@@ -130,23 +130,21 @@ extraDeploy:
       annotations:
         "helm.sh/hook": post-install
     spec:
+      chartRef:
+        kind: OCIRepository
+        name: vib-bitnami-nginx
+        namespace: '{{ include "common.names.namespace" . }}'
       interval: 5m
-      chart:
-        spec:
-          chart: ./bitnami/nginx
-          sourceRef:
-            kind: GitRepository
-            name: vib-bitnami-charts
-            namespace: '{{ include "common.names.namespace" . }}'
-          interval: 1m
       values:
+        fullnameOverride: vib-nginx
         global:
           compatibility:
             openshift:
               adaptSecurityContext: auto
-        fullnameOverride: vib-nginx
         persistence:
           enabled: false
+        service:
+          type: ClusterIP
   # This is for image-notification-controller. We will use the metrics to ensure that it is consumed
   # and therefore RBAC is correct. The values do not need to be correct
   # Source: https://fluxcd.io/flux/components/notification/receiver/
