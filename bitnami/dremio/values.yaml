@@ -1956,7 +1956,7 @@ defaultInitContainers:
   defaultImage:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
     ## Secrets must be manually created in the namespace.
@@ -2337,7 +2337,7 @@ metrics:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/jmx-exporter
-    tag: 1.4.0-debian-12-r1
+    tag: 1.5.0-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
