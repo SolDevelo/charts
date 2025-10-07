@@ -23,9 +23,9 @@ extraDeploy:
   kind: Service
   metadata:
     name: extra-svc
-  spec:
     annotations:
       networking.gke.io/load-balancer-type: Internal
+  spec:
     type: LoadBalancer
     ports:
       - appProtocol: http
