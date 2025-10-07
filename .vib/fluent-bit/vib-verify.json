@@ -4,10 +4,17 @@
       "context": {
         "credentials": [
           {
-            "url": "{VIB_ENV_CHARTS_REGISTRY}",
+            "url": "{SHA_ARCHIVE}",
             "authn": {
-              "username": "{VIB_ENV_CHARTS_REGISTRY_USERNAME}",
-              "password": "{VIB_ENV_CHARTS_REGISTRY_PASSWORD}"
+              "username": "{VIB_ENV_GIT_USERNAME}",
+              "password": "{VIB_ENV_GIT_PASSWORD}"
+            }
+          },
+          {
+            "url": "{VIB_ENV_DISTRIBUTION_REGISTRY}",
+            "authn": {
+              "username": "{VIB_ENV_DISTRIBUTION_REGISTRY_USERNAME}",
+              "password": "{VIB_ENV_DISTRIBUTION_REGISTRY_PASSWORD}"
             }
           }
         ],
