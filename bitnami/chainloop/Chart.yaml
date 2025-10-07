@@ -15,7 +15,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/chainloop-control-plane-migrations:1.46.0-debian-12-r0
     - name: dex
       version: 2.44.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:2.44.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:2.44.0-debian-12-r4
   license: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -69,4 +69,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/chainloop-control-plane-migrations
 - https://github.com/bitnami/containers/tree/main/bitnami/chainloop-artifact-cas
 - https://github.com/chainloop-dev/chainloop
-version: 5.0.4
+version: 5.0.5
