@@ -98,7 +98,7 @@ var _ = Describe("kyverno:", func() {
 			})
 
 			It("the env var is present", func() {
-				patternFound, _ := utils.ContainsPattern(sampleLogs, "K8S_IMAGE=[^/]*/bitnami/os-shell")
+				patternFound, _ := utils.ContainsPattern(sampleLogs, "K8S_IMAGE=[^/]os-shell")
 				if !patternFound {
 					fmt.Println("##### CLI LOGS: #####")
 					fmt.Println(sampleLogs)
