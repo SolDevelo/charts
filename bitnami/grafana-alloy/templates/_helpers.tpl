@@ -55,6 +55,25 @@ alloy: resource-type
 {{- end -}}
 {{- end -}}
 
+
+{{/*
+Return the proper Grafana Alloy TLS secret name
+*/}}
+{{- define "grafana-alloy.tls.secretName" -}}
+{{- if .Values.alloy.tls.existingSecret -}}
+    {{- include "common.tplvalues.render" (dict "value" .Values.alloy.tls.existingSecret "context" $) -}}
+{{- else -}}
+    {{- printf "%s-crt" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Fully Qualified Domain Name (FQDN) Grafana Alloy.
+*/}}
+{{- define "grafana-alloy.service.fqdn" -}}
+    {{- printf "%s.%s.svc.%s" (include "common.names.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain -}}
+{{- end -}}
+
 {{/*
 Compile all warnings into a single message.
 */}}

@@ -4,6 +4,8 @@ podSecurityContext:
   enabled: true
   fsGroup: 1002
 alloy:
+  tls:
+    enabled: true
   clustering:
     enabled: true
   mounts:
@@ -13,13 +15,13 @@ alloy:
     enabled: true
     runAsUser: 1002
   containerPorts:
-    http: 8081
+    http: 8443
 configReloader:
   containerPorts:
     http: 9999
 service:
   ports:
-    http: 8081
+    http: 443
   type: LoadBalancer
 serviceAccount:
   create: true

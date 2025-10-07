@@ -2,20 +2,24 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 http:
-  http://127.0.0.1:{{ .Vars.alloy.containerPorts.http }}/-/healthy:
+  https://127.0.0.1:{{ .Vars.alloy.containerPorts.http }}/-/healthy:
     status: 200
+    allow-insecure: true
     body:
       - /All Alloy components are healthy./
-  http://grafana-alloy:{{ .Vars.service.ports.http }}/-/healthy:
+  https://grafana-alloy:{{ .Vars.service.ports.http }}/-/healthy:
     status: 200
+    allow-insecure: true
     body:
       - /All Alloy components are healthy./
-  http://127.0.0.1:{{ .Vars.alloy.containerPorts.http }}/metrics:
+  https://127.0.0.1:{{ .Vars.alloy.containerPorts.http }}/metrics:
     status: 200
+    allow-insecure: true
     body:
       - /alloy_build_info/
-  http://grafana-alloy:{{ .Vars.service.ports.http }}/metrics:
+  https://grafana-alloy:{{ .Vars.service.ports.http }}/metrics:
     status: 200
+    allow-insecure: true
     body:
       - /alloy_build_info/
 file:

@@ -127,6 +127,13 @@ spec:
             {{- if .Values.alloy.clustering.enabled }}
             - --cluster.enabled=true
             - --cluster.join-addresses={{ printf "%s-cluster" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
+            {{- if .Values.alloy.tls.enabled }}
+            - --cluster.enable-tls=true
+            - --cluster.tls-ca-path=/tls/alloy/ca.crt
+            - --cluster.tls-cert-path=/tls/alloy/tls.crt
+            - --cluster.tls-key-path=/tls/alloy/tls.key
+            - --cluster.tls-server-name={{ include "grafana-alloy.service.fqdn" . }}
+            {{- end }}
             {{- if .Values.alloy.clustering.name }}
             - --cluster.name={{ .Values.alloy.clustering.name }}
             {{- end }}
@@ -155,7 +162,7 @@ spec:
                 name: {{ include "common.tplvalues.render" (dict "value" .Values.alloy.extraEnvVarsSecret "context" $) }}
             {{- end }}
           ports:
-            - name: http
+            - name: {{ ternary "https" "http" .Values.alloy.tls.enabled }}
               containerPort: {{ .Values.alloy.containerPorts.http }}
             {{- if .Values.alloy.extraContainerPorts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.alloy.extraContainerPorts "context" $) | nindent 12 }}
@@ -172,7 +179,8 @@ spec:
           livenessProbe:
             httpGet:
               path: /-/healthy
-              port: http
+              port: {{ ternary "https" "http" .Values.alloy.tls.enabled }}
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.alloy.tls.enabled }}
             initialDelaySeconds: {{ .Values.alloy.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.alloy.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.alloy.livenessProbe.timeoutSeconds }}
@@ -185,7 +193,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /-/ready
-              port: http
+              port: {{ ternary "https" "http" .Values.alloy.tls.enabled }}
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.alloy.tls.enabled }}
             initialDelaySeconds: {{ .Values.alloy.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.alloy.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.alloy.readinessProbe.timeoutSeconds }}
@@ -198,7 +207,8 @@ spec:
           startupProbe:
             httpGet:
               path: /-/ready
-              port: http
+              port: {{ ternary "https" "http" .Values.alloy.tls.enabled }}
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.alloy.tls.enabled }}
             initialDelaySeconds: {{ .Values.alloy.startupProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.alloy.startupProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.alloy.startupProbe.timeoutSeconds }}
@@ -228,6 +238,11 @@ spec:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+            {{- if .Values.alloy.tls.enabled }}
+            - name: certs
+              mountPath: /tls/alloy
+              readOnly: true
+            {{- end }}
             {{- if .Values.alloy.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.alloy.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -344,6 +359,11 @@ spec:
         {{- end }}
         - name: empty-dir
           emptyDir: {}
+        {{- if .Values.alloy.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ include "grafana-alloy.tls.secretName" . }}
+        {{ end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
