@@ -30,7 +30,7 @@ scheduler:
     periodSeconds: 30
     timeoutSeconds: 20
 web:
-  baseUrl: 'http://vmware-airflow.my'
+  baseUrl: 'http://airflow.apache.org'
   extraConfiguration: |
     # Theme CONFIG
     APP_THEME = "amelia.css"

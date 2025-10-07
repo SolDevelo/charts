@@ -7,12 +7,12 @@ module.exports = {
   env: {
     username: 'user',
     password: 'ComplicatedPassword123!4',
-    baseUrl: 'http://vmware-airflow.my',
+    baseUrl: 'http://airflow.apache.org',
   },
   e2e: {
     setupNodeEvents(on, config) {},
   },
   hosts: {
-    'vmware-airflow.my': '{{ TARGET_IP }}',
+    'airflow.apache.org': '{{ TARGET_IP }}',
   },
 }
