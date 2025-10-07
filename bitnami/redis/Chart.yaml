@@ -9,13 +9,13 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kubectl:1.34.1-debian-12-r0
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: redis
       version: 8.2.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis:8.2.2-debian-12-r0
     - name: redis-exporter
-      version: 1.77.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.77.0-debian-12-r0
+      version: 1.78.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.78.0-debian-12-r0
     - name: redis-sentinel
       version: 8.2.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-sentinel:8.2.2-debian-12-r0
@@ -44,4 +44,4 @@ maintainers:
 name: redis
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/redis
-version: 23.0.8
+version: 23.0.9
