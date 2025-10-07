@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 http:
-  http://localhost:{{ .Vars.containerPort }}:
+  https://localhost:{{ .Vars.containerPort }}:
     status: 403
+    allow-insecure: true
 command:
   check-redis-auth:
     exec: \[ $OAUTH2_PROXY_REDIS_PASSWORD = {{ .Vars.redis.auth.password }} ]
