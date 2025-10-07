@@ -6,16 +6,16 @@ annotations:
   images: |
     - name: grafana-tempo
       version: 2.8.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo:2.8.2-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo:2.8.2-debian-12-r4
     - name: grafana-tempo-query
       version: 2.8.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo-query:2.8.2-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo-query:2.8.2-debian-12-r6
     - name: grafana-tempo-vulture
       version: 2.8.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo-vulture:2.8.2-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-tempo-vulture:2.8.2-debian-12-r4
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -46,4 +46,4 @@ maintainers:
 name: grafana-tempo
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana-tempo
-version: 5.0.6
+version: 5.0.7
