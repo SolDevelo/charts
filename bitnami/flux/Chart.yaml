@@ -12,7 +12,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-image-automation-controller:1.0.1-debian-12-r2
     - name: fluxcd-image-reflector-controller
       version: 1.0.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-image-reflector-controller:1.0.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-image-reflector-controller:1.0.1-debian-12-r2
     - name: fluxcd-kustomize-controller
       version: 1.7.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-kustomize-controller:1.7.0-debian-12-r1
@@ -52,4 +52,4 @@ maintainers:
 name: flux
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/flux
-version: 2.4.52
+version: 2.4.53
