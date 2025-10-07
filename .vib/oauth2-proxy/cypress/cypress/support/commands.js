@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: APACHE-2.0
  */
 
-const BASE_URL = 'https://oauth2-proxy.com';
+const BASE_URL = 'https://vib.com';
 
 // DEX is deployed at localhost:5556/dex/, which is not exposed (only port 80 is).
 // A proxy pass in localhost/dex/ is configured to allow communication with it, but

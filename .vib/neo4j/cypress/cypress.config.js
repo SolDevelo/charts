@@ -6,7 +6,7 @@ module.exports = {
     password: 'ComplicatedPassword123!4',
   },
   hosts: {
-    'neo4j.com': '{{ TARGET_IP }}',
+    'vib.com': '{{ TARGET_IP }}',
   },
   e2e: {
     setupNodeEvents(on, config) {},

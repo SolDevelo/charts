@@ -1,4 +1,4 @@
-advertisedHost: neo4j.com
+advertisedHost: vib.com
 auth:
   password: ComplicatedPassword123!4
 tls:
