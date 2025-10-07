@@ -2,26 +2,27 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: alertmanager
       version: 0.28.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/alertmanager:0.28.1-debian-12-r17
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/alertmanager:0.28.1-debian-12-r18
     - name: blackbox-exporter
       version: 0.27.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/blackbox-exporter:0.27.0-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/blackbox-exporter:0.27.0-debian-12-r7
     - name: prometheus
       version: 3.6.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.6.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.6.0-debian-12-r1
     - name: prometheus-operator
-      version: 0.85.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus-operator:0.85.0-debian-12-r2
+      version: 0.86.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus-operator:0.86.0-debian-12-r0
     - name: thanos
       version: 0.39.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.39.2-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.39.2-debian-12-r4
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
-appVersion: 0.85.0
+appVersion: 0.86.0
 dependencies:
 - condition: exporters.enabled,exporters.node-exporter.enabled
   name: node-exporter
@@ -55,4 +56,4 @@ maintainers:
 name: kube-prometheus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus
-version: 11.3.17
+version: 11.3.18
