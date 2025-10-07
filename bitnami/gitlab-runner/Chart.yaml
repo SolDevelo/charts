@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: gitlab-runner
       version: 18.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner:18.4.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner:18.4.0-debian-12-r4
     - name: gitlab-runner-helper
       version: 18.4.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper:18.4.0-debian-12-r4
@@ -34,4 +34,4 @@ maintainers:
 name: gitlab-runner
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/gitlab-runner
-version: 1.1.18
+version: 1.1.19
