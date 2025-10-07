@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: pgpool
       version: 4.6.3
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pgpool:4.6.3-debian-12-r2
@@ -14,7 +15,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgres-exporter:0.18.1-debian-12-r0
     - name: postgresql-repmgr
       version: 18.0.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr:18.0.0-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr:18.0.0-debian-12-r7
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -46,4 +47,4 @@ maintainers:
 name: postgresql-ha
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/postgresql-ha
-version: 17.0.8
+version: 17.0.9
