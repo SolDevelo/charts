@@ -1,7 +1,7 @@
 module.exports = {
   chromeWebSecurity: false,
   hosts: {
-    'vmware-oauth2-proxy.my': '{{TARGET_IP}}',
+    'oauth2-proxy.com': '{{TARGET_IP}}',
   },
   env: {
     upstreamURL: '/bitnami/oauth2-proxy/conf/',

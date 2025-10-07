@@ -8,21 +8,21 @@ configuration:
   content: |
     email_domains = [ "*" ]
     provider = "oidc"
-    oidc_issuer_url = "https://vmware-oauth2-proxy.my:5556/dex"
+    oidc_issuer_url = "https://oauth2-proxy.com:5556/dex"
     provider_ca_files = [ "/certs/ca.crt" ]
-    redirect_url = "https://vmware-oauth2-proxy.my/oauth2/callback"
+    redirect_url = "https://oauth2-proxy.com/oauth2/callback"
     cookie_secure = false
     skip_auth_routes = [ "^/dex/.*" ]
-    upstreams = [ "file:///bitnami/oauth2-proxy/conf/", "https://vmware-oauth2-proxy.my:5556/dex/" ]
+    upstreams = [ "file:///bitnami/oauth2-proxy/conf/", "https://oauth2-proxy.com:5556/dex/" ]
 tls:
   enabled: true
   extraSANs:
-    - vmware-oauth2-proxy.my
+    - oauth2-proxy.com
 containerPort: 4181
 hostAliases:
   - ip: 127.0.0.1
     hostnames:
-      - vmware-oauth2-proxy.my
+      - oauth2-proxy.com
 podSecurityContext:
   enabled: true
   fsGroup: 1002
@@ -69,7 +69,7 @@ extraDeploy:
       name: {{ printf "%s-dex-config" (include "common.names.fullname" .) }}
     data:
       config.yaml: |-
-        issuer: https://vmware-oauth2-proxy.my:5556/dex
+        issuer: https://oauth2-proxy.com:5556/dex
         storage:
           type: sqlite3
           config:
@@ -83,7 +83,7 @@ extraDeploy:
         staticClients:
           - id: vib-dex-client
             redirectURIs:
-              - https://vmware-oauth2-proxy.my/oauth2/callback
+              - https://oauth2-proxy.com/oauth2/callback
             name: 'VIB-Dex'
             secret: ZXhhbXBsZS1hcHAtc2VjcmV0
         connectors:
