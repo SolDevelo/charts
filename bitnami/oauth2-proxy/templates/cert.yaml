@@ -24,13 +24,10 @@ spec:
     organizations:
       - "OAuth2 Proxy"
   dnsNames:
-    - '{{ include "common.names.namespace" . }}'
-    - '{{ include "common.names.namespace" . }}.svc'
-    - '{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}'
-    - '*.{{ include "common.names.fullname" . }}'
-    - '*.{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}'
-    - '*.{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc'
-    - '*.{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}'
+    - '{{ include "common.names.fullname" . }}'
+    - '{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}'
+    - '{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc'
+    - '{{ include "common.names.fullname" . }}.{{ include "common.names.namespace" . }}.svc.{{ .Values.clusterDomain }}'
     {{- range .Values.tls.extraSANs }}
     - {{ . }}
     {{- end }}
