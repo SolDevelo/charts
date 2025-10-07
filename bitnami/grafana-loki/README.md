@@ -1535,6 +1535,10 @@ Find more information about how to deal with common errors related to Bitnami's 
 
 ## Upgrading
 
+### To 7.0.0
+
+This major release bumps the Grafana Alloy chart version to [2.x.x](https://github.com/bitnami/charts-private/pull/729). Find more information about the changes in this chart version in [the upstream changelog](https://github.com/grafana/alloy/blob/main/CHANGELOG.md#v1110). No major issues are expected during the upgrade.
+
 ### To 6.0.0
 
 This major release bumps the Grafana Alloy chart version to [1.x.x](https://github.com/bitnami/charts/pull/35172). Find more information about the changes in this chart version in [the upstream changelog](https://github.com/grafana/alloy/blob/main/CHANGELOG.md#v1100). No major issues are expected during the upgrade.
