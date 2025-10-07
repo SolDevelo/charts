@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: alertmanager
       version: 0.28.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/alertmanager:0.28.1-debian-12-r18
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/alertmanager:0.28.1-debian-12-r19
     - name: blackbox-exporter
       version: 0.27.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/blackbox-exporter:0.27.0-debian-12-r7
@@ -56,4 +56,4 @@ maintainers:
 name: kube-prometheus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus
-version: 11.3.18
+version: 11.3.19
