@@ -60,8 +60,8 @@
             "resources": {
               "path": "/.vib/oauth2-proxy/cypress"
             },
-            "endpoint": "lb-oauth2-proxy-http",
-            "app_protocol": "HTTP",
+            "endpoint": "lb-oauth2-proxy-https",
+            "app_protocol": "HTTPS",
             "env": {
               "upstreamURL": "/bitnami/oauth2-proxy/conf/",
               "upstreamContent": "oauth2_proxy.cfg",

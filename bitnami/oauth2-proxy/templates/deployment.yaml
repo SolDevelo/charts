@@ -90,7 +90,13 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.args "context" $) | nindent 12 }}
           {{- else }}
           args:
+            {{- if .Values.tls.enabled }}
+            - --https-address=0.0.0.0:{{ .Values.containerPort }}
+            - --tls-cert-file=/certs/tls.crt
+            - --tls-key-file=/certs/tls.key
+            {{- else }}
             - --http-address=0.0.0.0:{{ .Values.containerPort }}
+            {{- end }}
             {{- if or .Values.configuration.existingConfigmap .Values.configuration.content }}
             - --config=/bitnami/oauth2-proxy/conf/oauth2_proxy.cfg
             {{- end }}
@@ -187,7 +193,7 @@ spec:
             {{- end }}
           ports:
             - containerPort: {{ .Values.containerPort }}
-              name: http
+              name: {{ ternary "https" "http" .Values.tls.enabled }}
               protocol: TCP
             {{- if .Values.extraContainerPorts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraContainerPorts "context" $) | nindent 12 }}
@@ -204,8 +210,8 @@ spec:
           startupProbe:
             httpGet:
               path: /ping
-              port: http
-              scheme: HTTP
+              port: {{ ternary "https" "http" .Values.tls.enabled }}
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.tls.enabled }}
             initialDelaySeconds: {{ .Values.startupProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.startupProbe.timeoutSeconds }}
@@ -217,7 +223,7 @@ spec:
           {{- else if .Values.livenessProbe.enabled }}
           livenessProbe:
             tcpSocket:
-              port: http
+              port: {{ ternary "https" "http" .Values.tls.enabled }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
@@ -230,8 +236,8 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: http
-              scheme: HTTP
+              port: {{ ternary "https" "http" .Values.tls.enabled }}
+              scheme: {{ ternary "HTTPS" "HTTP" .Values.tls.enabled }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
@@ -260,6 +266,11 @@ spec:
           {{- if .Values.configuration.htpasswdFile.enabled }}
             - name: htpasswd-file
               mountPath: /bitnami/oauth2-proxy/conf/htpasswd
+              readOnly: true
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+            - name: tls-certs
+              mountPath: /certs
               readOnly: true
           {{- end }}
           {{- if .Values.extraVolumeMounts }}
@@ -294,6 +305,11 @@ spec:
           configMap:
             defaultMode: 420
             name: {{ include "oauth2-proxy.configmapName" . }}
+        {{- end }}
+        {{- if .Values.tls.enabled }}
+        - name: tls-certs
+          secret:
+            secretName: {{ include "oauth2-proxy.tls.secretName" . }}
         {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}

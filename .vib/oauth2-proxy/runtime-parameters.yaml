@@ -1,6 +1,6 @@
 service:
   type: LoadBalancer
-  port: 80
+  port: 443
 configuration:
   clientID: vib-dex-client
   clientSecret: ZXhhbXBsZS1hcHAtc2VjcmV0
@@ -8,11 +8,16 @@ configuration:
   content: |
     email_domains = [ "*" ]
     provider = "oidc"
-    oidc_issuer_url = "http://vmware-oauth2-proxy.my:5556/dex"
-    redirect_url = "http://vmware-oauth2-proxy.my/oauth2/callback"
+    oidc_issuer_url = "https://vmware-oauth2-proxy.my:5556/dex"
+    provider_ca_files = [ "/certs/ca.crt" ]
+    redirect_url = "https://vmware-oauth2-proxy.my/oauth2/callback"
     cookie_secure = false
     skip_auth_routes = [ "^/dex/.*" ]
-    upstreams = [ "file:///bitnami/oauth2-proxy/conf/", "http://vmware-oauth2-proxy.my:5556/dex/" ]
+    upstreams = [ "file:///bitnami/oauth2-proxy/conf/", "https://vmware-oauth2-proxy.my:5556/dex/" ]
+tls:
+  enabled: true
+  extraSANs:
+    - vmware-oauth2-proxy.my
 containerPort: 4181
 hostAliases:
   - ip: 127.0.0.1
@@ -37,11 +42,8 @@ sidecars:
     image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:latest
     args: [serve, /config/config.yaml]
     ports:
-      - name: http
+      - name: dex
         containerPort: 5556
-    volumeMounts:
-      - name: dex-vib-config
-        mountPath: /config
     securityContext:
       runAsNonRoot: true
       privileged: false
@@ -50,31 +52,38 @@ sidecars:
         drop: ["ALL"]
       seccompProfile:
         type: "RuntimeDefault"
-
+    volumeMounts:
+      - name: dex-vib-config
+        mountPath: /config
+      - name: tls-certs
+        mountPath: /certs
 extraVolumes:
   - name: dex-vib-config
     configMap:
-      name: dex-vib-config
+      name: "{{ printf \"%s-dex-config\" (include \"common.names.fullname\" .) }}"
 extraDeploy:
-  - apiVersion: v1
+  - |
+    apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: dex-vib-config
+      name: {{ printf "%s-dex-config" (include "common.names.fullname" .) }}
     data:
       config.yaml: |-
-        issuer: http://vmware-oauth2-proxy.my:5556/dex
+        issuer: https://vmware-oauth2-proxy.my:5556/dex
         storage:
           type: sqlite3
           config:
             file: /tmp/dex.db
         web:
-          http: 0.0.0.0:5556
+          https: 0.0.0.0:5556
+          tlsCert: /certs/tls.crt
+          tlsKey: /certs/tls.key
         frontend:
           dir: /opt/bitnami/dex/web
         staticClients:
           - id: vib-dex-client
             redirectURIs:
-              - "http://vmware-oauth2-proxy.my/oauth2/callback"
+              - https://vmware-oauth2-proxy.my/oauth2/callback
             name: 'VIB-Dex'
             secret: ZXhhbXBsZS1hcHAtc2VjcmV0
         connectors:
