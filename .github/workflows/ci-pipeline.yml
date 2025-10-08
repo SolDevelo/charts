@@ -236,7 +236,7 @@ jobs:
               - 'cp-pullsecret-3'
           EOF
             # The path is relative to the .vib folder
-            runtime_parameters_file=".vib/tmp-${{ needs.get-chart.outputs.chart }}.yaml"
+            runtime_parameters_file="tmp-${{ needs.get-chart.outputs.chart }}.yaml"
           fi
           echo "verification_mode=${verification_mode}" >> $GITHUB_OUTPUT
           echo "runtime_parameters_file=${runtime_parameters_file}" >> $GITHUB_OUTPUT
