@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: whereabouts
       version: 0.9.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/whereabouts:0.9.2-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/whereabouts:0.9.2-debian-12-r6
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -32,4 +32,4 @@ maintainers:
 name: whereabouts
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/whereabouts
-version: 1.2.23
+version: 1.2.24
