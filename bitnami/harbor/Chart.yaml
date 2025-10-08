@@ -12,7 +12,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-core:2.14.0-debian-12-r4
     - name: harbor-exporter
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-exporter:2.14.0-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-exporter:2.14.0-debian-12-r5
     - name: harbor-jobservice
       version: 2.14.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-jobservice:2.14.0-debian-12-r4
@@ -65,4 +65,4 @@ maintainers:
 name: harbor
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/harbor
-version: 28.0.6
+version: 28.0.7
