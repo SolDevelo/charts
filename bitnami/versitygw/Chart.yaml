@@ -3,13 +3,14 @@
 
 annotations:
   category: Infrastructure
+  fips: "false"
   images: |
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: versitygw
       version: 1.0.18
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/versitygw:1.0.18-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/versitygw:1.0.18-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -33,4 +34,4 @@ maintainers:
 name: versitygw
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/versitygw
-version: 0.1.6
+version: 0.1.7
