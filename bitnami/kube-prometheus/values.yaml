@@ -1440,7 +1440,7 @@ prometheus:
     image:
       registry: registry.app-catalog.vmware.com
       repository: eam/prd/containers/verified/common/minideb-bookworm/thanos
-      tag: 0.39.2-debian-12-r4
+      tag: 0.39.2-debian-12-r5
       digest: ""
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
       ##
@@ -3372,7 +3372,7 @@ thanosRuler:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/thanos
-    tag: 0.39.2-debian-12-r4
+    tag: 0.39.2-debian-12-r5
     digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
