@@ -12,10 +12,10 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmagent:1.127.0-debian-12-r0
     - name: victoriametrics-vmalert
       version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmalert:1.127.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmalert:1.127.0-debian-12-r1
     - name: victoriametrics-vmauth
       version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmauth:1.127.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmauth:1.127.0-debian-12-r1
     - name: victoriametrics-vminsert
       version: 1.127.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vminsert:1.127.0-debian-12-r0
@@ -47,4 +47,4 @@ maintainers:
 name: victoriametrics
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/victoriametrics
-version: 0.1.40
+version: 0.1.41
