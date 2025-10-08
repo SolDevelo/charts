@@ -226,8 +226,17 @@ jobs:
           fi
           runtime_parameters_file=""
           if [[ -f ".vib/${{ needs.get-chart.outputs.chart }}/runtime-parameters.yaml" ]]; then
+            # Add imagePullSecrets
+            cat << EOF | cat - ".vib/${{ needs.get-chart.outputs.chart }}/runtime-parameters.yaml" > ".vib/tmp-${{ needs.get-chart.outputs.chart }}.yaml"
+          global:
+            imagePullSecrets:
+              - 'cp-pullsecret-0'
+              - 'cp-pullsecret-1'
+              - 'cp-pullsecret-2'
+              - 'cp-pullsecret-3'
+          EOF
             # The path is relative to the .vib folder
-            runtime_parameters_file="${{ needs.get-chart.outputs.chart }}/runtime-parameters.yaml"
+            runtime_parameters_file=".vib/tmp-${{ needs.get-chart.outputs.chart }}.yaml"
           fi
           echo "verification_mode=${verification_mode}" >> $GITHUB_OUTPUT
           echo "runtime_parameters_file=${runtime_parameters_file}" >> $GITHUB_OUTPUT
@@ -251,5 +260,4 @@ jobs:
           VIB_ENV_DISTRIBUTION_REGISTRY: oci://${{ vars.DISTRIBUTION_REGISTRY_HOST }}
           VIB_ENV_DISTRIBUTION_REGISTRY_USERNAME: ${{ secrets.DISTRIBUTION_REGISTRY_USERNAME }}
           VIB_ENV_DISTRIBUTION_REGISTRY_PASSWORD: ${{ secrets.DISTRIBUTION_REGISTRY_PASSWORD }}
-          VIB_ENV_GIT_USERNAME: bitnami-bot
-          VIB_ENV_GIT_PASSWORD: ${{ secrets.BITNAMI_BOT_TOKEN }}
+          VIB_ENV_GIT_TOKEN: "Bearer ${{ secrets.BITNAMI_BOT_TOKEN }}"

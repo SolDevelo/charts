@@ -6,8 +6,8 @@
           {
             "url": "{SHA_ARCHIVE}",
             "authn": {
-              "username": "{VIB_ENV_GIT_USERNAME}",
-              "password": "{VIB_ENV_GIT_PASSWORD}"
+              "header": "Authorization",
+              "token": "{VIB_ENV_GIT_TOKEN}"
             }
           },
           {
