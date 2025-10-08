@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: fluxcd-helm-controller
-      version: 1.4.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-helm-controller:1.4.1-debian-12-r1
+      version: 1.4.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-helm-controller:1.4.2-debian-12-r0
     - name: fluxcd-image-automation-controller
       version: 1.0.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/fluxcd-image-automation-controller:1.0.1-debian-12-r2
@@ -52,4 +52,4 @@ maintainers:
 name: flux
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/flux
-version: 2.4.58
+version: 2.4.59
