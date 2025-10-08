@@ -95,7 +95,7 @@ server:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/vault
-    tag: 1.20.4-debian-12-r0
+    tag: 1.20.4-debian-12-r1
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -909,7 +909,7 @@ csiProvider:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/vault-csi-provider
-    tag: 1.6.0-debian-12-r1
+    tag: 1.6.0-debian-12-r3
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1413,7 +1413,7 @@ injector:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/vault-k8s
-    tag: 1.7.0-debian-12-r6
+    tag: 1.7.0-debian-12-r8
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1880,7 +1880,7 @@ volumePermissions:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.
