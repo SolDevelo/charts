@@ -251,7 +251,7 @@ admissionController:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/kyverno
-    tag: 1.15.2-debian-12-r0
+    tag: 1.15.2-debian-12-r1
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
