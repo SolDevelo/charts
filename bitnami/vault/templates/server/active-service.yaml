@@ -43,7 +43,7 @@ spec:
   loadBalancerIP: {{ .Values.server.service.active.loadBalancerIP }}
   {{- end }}
   ports:
-    - name: http
+    - name: {{ ternary "https" "http" .Values.server.tls.enabled }}
       port: {{ .Values.server.service.active.ports.http }}
       protocol: TCP
       {{- if and (or (eq .Values.server.service.active.type "NodePort") (eq .Values.server.service.active.type "LoadBalancer")) (not (empty .Values.server.service.active.nodePorts.http)) }}
@@ -51,7 +51,7 @@ spec:
       {{- else if eq .Values.server.service.active.type "ClusterIP" }}
       nodePort: null
       {{- end }}
-      targetPort: http
+      targetPort: {{ ternary "https" "http" .Values.server.tls.enabled }}
     - name: https-internal
       port: {{ .Values.server.service.active.ports.internal }}
       protocol: TCP

@@ -70,6 +70,8 @@ server:
 
       vault write auth/userpass/users/vib-user password='ComplicatedPassword123!4' policies=admins,rootpolicy
       sleep infinity
+  tls:
+    enabled: true
   containerPorts:
     http: 8100
     internal: 8300
@@ -77,8 +79,8 @@ server:
     active:
       type: LoadBalancer
       ports:
-        http: 80
-        internal: 8600
+        http: 443
+        internal: 8443
     general:
       type: ClusterIP
       ports:

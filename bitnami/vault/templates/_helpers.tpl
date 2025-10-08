@@ -130,6 +130,24 @@ Name of the server ConfigMap
 {{- end -}}
 
 {{/*
+Return the proper Vault server TLS secret name
+*/}}
+{{- define "vault.server.tls.secretName" -}}
+{{- if .Values.server.tls.existingSecret -}}
+    {{- include "common.tplvalues.render" (dict "value" .Values.server.tls.existingSecret "context" $) -}}
+{{- else -}}
+    {{- printf "%s-crt" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Fully Qualified Domain Name (FQDN) for Vault server.
+*/}}
+{{- define "vault.server.service.fqdn" -}}
+    {{- printf "%s.%s.svc.%s" (include "common.names.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain -}}
+{{- end -}}
+
+{{/*
 Return the proper image name (for the init container volume-permissions image)
 */}}
 {{- define "vault.volumePermissions.image" -}}

@@ -141,9 +141,13 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: VAULT_ADDR
-              value: {{ printf "http://127.0.0.1:%v" .Values.server.containerPorts.http | quote }}
+              value: {{ printf "%s://127.0.0.1:%v" (ternary "https" "http" .Values.server.tls.enabled) .Values.server.containerPorts.http | quote }}
             - name: VAULT_API_ADDR
-              value: {{ printf "http://$(POD_IP):%v" .Values.server.containerPorts.http | quote }}
+              value: {{ printf "%s://$(POD_IP):%v" (ternary "https" "http" .Values.server.tls.enabled) .Values.server.containerPorts.http | quote }}
+            {{- if .Values.server.tls.enabled }}
+            - name: VAULT_CACERT
+              value: "/tls/vault/ca.crt"
+            {{- end }}
             - name: HOSTNAME
               valueFrom:
                 fieldRef:
@@ -170,7 +174,7 @@ spec:
           resources: {{- include "common.resources.preset" (dict "type" .Values.server.resourcesPreset) | nindent 12 }}
           {{- end }}
           ports:
-            - name: http
+            - name: {{ ternary "https" "http" .Values.server.tls.enabled }}
               containerPort: {{ .Values.server.containerPorts.http }}
             - name: https-internal
               containerPort: {{ .Values.server.containerPorts.internal }}
@@ -183,7 +187,9 @@ spec:
               command:
                 - vault
                 - status
+                {{- if not .Values.server.tls.enabled }}
                 - -tls-skip-verify
+                {{- end }}
           {{- end }}
           {{- if .Values.server.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.server.customReadinessProbe "context" $) | nindent 12 }}
@@ -193,7 +199,9 @@ spec:
               command:
                 - vault
                 - status
+                {{- if not .Values.server.tls.enabled }}
                 - -tls-skip-verify
+                {{- end }}
           {{- end }}
           {{- if .Values.server.customStartupProbe }}
           startupProbe: {{- include "common.tplvalues.render" (dict "value" .Values.server.customStartupProbe "context" $) | nindent 12 }}
@@ -203,7 +211,9 @@ spec:
               command:
                 - vault
                 - status
+                {{- if not .Values.server.tls.enabled }}
                 - -tls-skip-verify
+                {{- end }}
           {{- end }}
           {{- end }}
           {{- if .Values.server.lifecycleHooks }}
@@ -234,6 +244,11 @@ spec:
               mountPath: /bitnami/vault/config
             - name: home
               mountPath: /bitnami/vault/home
+            {{- if .Values.server.tls.enabled }}
+            - name: certs
+              mountPath: /tls/vault
+              readOnly: true
+            {{- end }}
           {{- if .Values.server.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.server.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
@@ -250,6 +265,11 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Values.server.persistence.existingClaim }}
+        {{- end }}
+        {{- if .Values.server.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ include "vault.server.tls.secretName" . }}
         {{- end }}
         {{- if .Values.server.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.server.extraVolumes "context" $) | nindent 8 }}

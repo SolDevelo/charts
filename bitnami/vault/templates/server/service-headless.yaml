@@ -21,9 +21,9 @@ spec:
   clusterIP: None
   publishNotReadyAddresses: true
   ports:
-    - name: http
+    - name: {{ ternary "https" "http" .Values.server.tls.enabled }}
       port: {{ .Values.server.service.general.ports.http }}
-      targetPort: http
+      targetPort: {{ ternary "https" "http" .Values.server.tls.enabled }}
     - name: https-internal
       port: {{ .Values.server.service.general.ports.internal }}
       targetPort: https-internal
