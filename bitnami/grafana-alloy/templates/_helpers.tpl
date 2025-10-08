@@ -68,7 +68,7 @@ Return the proper Grafana Alloy TLS secret name
 {{- end -}}
 
 {{/*
-Return the Fully Qualified Domain Name (FQDN) Grafana Alloy.
+Return the Fully Qualified Domain Name (FQDN) for Grafana Alloy.
 */}}
 {{- define "grafana-alloy.service.fqdn" -}}
     {{- printf "%s.%s.svc.%s" (include "common.names.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain -}}
