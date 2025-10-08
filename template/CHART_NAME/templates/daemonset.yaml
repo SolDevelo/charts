@@ -154,6 +154,11 @@ spec:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+            {{- if .Values.%%MAIN_OBJECT_BLOCK%%.tls.enabled }}
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+            {{- end }}
             {{- if .Values.%%MAIN_OBJECT_BLOCK%%.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.%%MAIN_OBJECT_BLOCK%%.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -169,6 +174,11 @@ spec:
             claimName: {{ default (include "common.names.fullname" .) .Values.persistence.existingClaim }}
         {{- else }}
           emptyDir: {}
+        {{- end }}
+        {{- if .Values.%%MAIN_OBJECT_BLOCK%%.tls.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ include "%%TEMPLATE_NAME%%.tls.secretName" . }}
         {{- end }}
         {{- if .Values.%%MAIN_OBJECT_BLOCK%%.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.%%MAIN_OBJECT_BLOCK%%.extraVolumes "context" $) | nindent 8 }}

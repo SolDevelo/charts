@@ -38,10 +38,8 @@ spec:
   ports:
     - name: %%PORT_NAME%%
       port: {{ .Values.service.ports.http }}
-      {{- if not (eq .Values.service.ports.http .Values.%%MAIN_OBJECT_BLOCK%%.containerPorts.http) }}
-      targetPort: {{ .Values.%%MAIN_OBJECT_BLOCK%%.containerPorts.http }}
-      {{- end }}
-      protocol: bar
+      targetPort: {{ ternary "https" "http" .Values.%%MAIN_OBJECT_BLOCK%%.tls.enabled }}
+      protocol: TCP
       {{- if and (or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer")) (not (empty .Values.service.nodePorts.http)) }}
       nodePort: {{ .Values.service.nodePorts.http }}
       {{- else if eq .Values.service.type "ClusterIP" }}
