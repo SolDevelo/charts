@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: attu
       version: 2.5.12
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/attu:2.5.12-debian-12-r28
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/attu:2.5.12-debian-12-r29
     - name: milvus
       version: 2.6.3
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/milvus:2.6.3-debian-12-r2
@@ -55,4 +55,4 @@ maintainers:
 name: milvus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/milvus
-version: 16.0.8
+version: 16.0.9
