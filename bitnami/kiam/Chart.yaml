@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: kiam
       version: 4.2.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kiam:4.2.0-debian-12-r72
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kiam:4.2.0-debian-12-r74
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -31,4 +31,4 @@ maintainers:
 name: kiam
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kiam
-version: 2.3.20
+version: 2.3.21
