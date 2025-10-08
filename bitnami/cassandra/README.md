@@ -224,7 +224,7 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 | `cluster.seedCount`                      | Number of seed nodes                                                                                                                  | `1`                         |
 | `cluster.numTokens`                      | Number of tokens for each node                                                                                                        | `256`                       |
 | `cluster.datacenter`                     | Datacenter name                                                                                                                       | `dc1`                       |
-| `cluster.rack`                           | Rack name                                                                                                                             | `rack1`                     |
+| `cluster.racks`                          | Rack names. It will generate a cassandra cluster per rack. The number of racks is determined by the length of this array.             | `["rack1"]`                 |
 | `cluster.endpointSnitch`                 | Endpoint Snitch                                                                                                                       | `SimpleSnitch`              |
 | `cluster.clientEncryption`               | Client Encryption                                                                                                                     | `false`                     |
 | `cluster.extraSeeds`                     | For an external/second cassandra ring.                                                                                                | `[]`                        |
@@ -262,6 +262,7 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 | `nodeAffinityPreset.key`                            | Node label key to match. Ignored if `affinity` is set                                                                                                                                                             | `""`             |
 | `nodeAffinityPreset.values`                         | Node label values to match. Ignored if `affinity` is set                                                                                                                                                          | `[]`             |
 | `affinity`                                          | Affinity for pod assignment                                                                                                                                                                                       | `{}`             |
+| `affinityPerRack`                                   | Affinity for pod assignment per rack                                                                                                                                                                              | `{}`             |
 | `nodeSelector`                                      | Node labels for pod assignment                                                                                                                                                                                    | `{}`             |
 | `tolerations`                                       | Tolerations for pod assignment                                                                                                                                                                                    | `[]`             |
 | `topologySpreadConstraints`                         | Topology Spread Constraints for pod assignment                                                                                                                                                                    | `[]`             |
@@ -475,6 +476,19 @@ helm upgrade my-release oci://REGISTRY_NAME/REPOSITORY_NAME/cassandra --set dbUs
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
 
 | Note: you need to substitute the placeholder *[PASSWORD]* with the value obtained in the installation notes.
+
+### To 13.0.0
+
+This major version introduces support for multi-rack Cassandra installations. The following breaking changes have been made:
+
+- The `cluster.rack` parameter has been renamed to `cluster.racks` (now an array). The chart will create one StatefulSet per rack defined in this array.
+- The `cluster.endpointSnitch` must be changed to a rack-aware snitch such as `GossipingPropertyFileSnitch` when using multiple racks. The default `SimpleSnitch` is not compatible with multi-rack deployments.
+
+**Migration steps:**
+
+1. Back up your data before upgrading (refer to the [official Cassandra backup guide](https://cassandra.apache.org/doc/latest/operating/backups.html#snapshots)).
+2. Update your `values.yaml` to change `cluster.rack` to `cluster.racks` as an array (e.g., `racks: ["rack1"]`).
+3. If using multiple racks, set `cluster.endpointSnitch: GossipingPropertyFileSnitch`.
 
 ### To 12.1.0
 

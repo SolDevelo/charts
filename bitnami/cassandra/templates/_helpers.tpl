@@ -61,8 +61,11 @@ Return the list of Cassandra seed nodes
 {{- $releaseNamespace := include "common.names.namespace" . }}
 {{- $clusterDomain := .Values.clusterDomain }}
 {{- $seedCount := .Values.cluster.seedCount | int }}
+{{- range .Values.cluster.racks -}}
+{{- $rack := . }}
 {{- range $e, $i := until $seedCount }}
-{{- $seeds = append $seeds (printf "%s-%d.%s-headless.%s.svc.%s" $fullname $i $fullname $releaseNamespace $clusterDomain) }}
+{{- $seeds = append $seeds (printf "%s-%s-%d.%s-headless.%s.svc.%s" $fullname $rack $i $fullname $releaseNamespace $clusterDomain) }}
+{{- end }}
 {{- end }}
 {{- range .Values.cluster.extraSeeds }}
 {{- $seeds = append $seeds . }}
@@ -76,6 +79,7 @@ Compile all warnings into a single message, and call fail.
 {{- define "cassandra.validateValues" -}}
 {{- $messages := list -}}
 {{- $messages := append $messages (include "cassandra.validateValues.seedCount" .) -}}
+{{- $messages := append $messages (include "cassandra.validateValues.snitch" .) -}}
 {{- $messages := append $messages (include "cassandra.validateValues.tls" .) -}}
 {{- $messages := without $messages "" -}}
 {{- $message := join "\n" $messages -}}
@@ -94,6 +98,16 @@ cassandra: cluster.seedCount
 
     Number of seed nodes must be greater or equal than 1 and less or
     equal to `replicaCount`.
+{{- end -}}
+{{- end -}}
+
+{{/* Validate values of Cassandra - Snitch */}}
+{{- define "cassandra.validateValues.snitch" -}}
+{{- $racks := len .Values.cluster.racks }}
+{{- if and (gt $racks 1) (eq .Values.cluster.endpointSnitch "SimpleSnitch") }}
+cassandra: cluster.endpointSnitch
+
+    You cannot use SimpleSnitch in cluster.endpointSnitch when the number of racks is greater than one.
 {{- end -}}
 {{- end -}}
 

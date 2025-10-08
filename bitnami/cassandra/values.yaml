@@ -152,7 +152,7 @@ existingConfiguration: ""
 ## @param cluster.seedCount Number of seed nodes
 ## @param cluster.numTokens Number of tokens for each node
 ## @param cluster.datacenter Datacenter name
-## @param cluster.rack Rack name
+## @param cluster.racks Rack names. It will generate a cassandra cluster per rack. The number of racks is determined by the length of this array.
 ## @param cluster.endpointSnitch Endpoint Snitch
 ## @param cluster.clientEncryption Client Encryption
 ## @param cluster.extraSeeds For an external/second cassandra ring.
@@ -185,14 +185,18 @@ dynamicSeedDiscovery:
     ##
     pullSecrets: []
 
-
-
 cluster:
   name: cassandra
   seedCount: 1
   numTokens: 256
   datacenter: dc1
-  rack: rack1
+  ## Rack configuration: specify rack names as an array
+  ## The number of racks is determined by the length of this array
+  ## Examples:
+  ##   Single rack: ["rack1"]
+  ##   Multiple racks: ["rack1", "rack2", "rack3"]
+  racks:
+    - rack1
   endpointSnitch: SimpleSnitch
   clientEncryption: false
   ## eg:
@@ -304,6 +308,11 @@ nodeAffinityPreset:
 ## NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
 ##
 affinity: {}
+## @param affinityPerRack Affinity for pod assignment per rack
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## NOTE: podAffinityPreset, podAntiAffinityPreset, and nodeAffinityPreset will be ignored when it's set
+##
+affinityPerRack: {}
 ## @param nodeSelector Node labels for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
 ##
