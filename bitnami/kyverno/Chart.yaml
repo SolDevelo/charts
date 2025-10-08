@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: kyverno
       version: 1.15.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno:1.15.2-debian-12-r0
     - name: kyverno-background-controller
       version: 1.15.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-background-controller:1.15.2-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-background-controller:1.15.2-debian-12-r1
     - name: kyverno-cleanup-controller
       version: 1.15.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-cleanup-controller:1.15.2-debian-12-r0
@@ -42,4 +43,4 @@ maintainers:
 name: kyverno
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/kyverno
-version: 0.1.2
+version: 0.1.3
