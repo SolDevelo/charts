@@ -21,7 +21,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-portal:2.14.0-debian-12-r2
     - name: harbor-registry
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registry:2.14.0-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registry:2.14.0-debian-12-r2
     - name: harbor-registryctl
       version: 2.14.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-registryctl:2.14.0-debian-12-r3
@@ -65,4 +65,4 @@ maintainers:
 name: harbor
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/harbor
-version: 28.0.7
+version: 28.0.8
