@@ -10,10 +10,10 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r6
     - name: temporal
       version: 1.29.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.29.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.29.0-debian-12-r1
     - name: temporal-ui
       version: 2.40.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.40.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.40.1-debian-12-r3
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -49,4 +49,4 @@ sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/temporal
 - https://github.com/bitnami/containers-private/tree/main/bitnami/temporal
 - https://github.com/temporalio/temporal
-version: 0.2.3
+version: 0.2.4
