@@ -92,7 +92,7 @@ diagnosticMode:
 rayImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/ray
-  tag: 2.49.2-debian-12-r0
+  tag: 2.49.2-debian-12-r14
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -128,7 +128,7 @@ operator:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/kuberay-operator
-    tag: 1.4.2-debian-12-r4
+    tag: 1.4.2-debian-12-r6
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -782,7 +782,7 @@ apiserver:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/kuberay-apiserver
-    tag: 1.4.2-debian-12-r4
+    tag: 1.4.2-debian-12-r6
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
