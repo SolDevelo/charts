@@ -74,7 +74,7 @@ extraDeploy: []
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka-operator
-  tag: 0.48.0-debian-12-r0
+  tag: 0.48.0-debian-12-r1
   digest: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
@@ -98,7 +98,7 @@ kafkaImages:
   "4.0.0":
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 4.0.0-debian-12-r3
+    tag: 4.0.0-debian-12-r4
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
@@ -118,7 +118,7 @@ kafkaImages:
   "4.1.0":
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka
-    tag: 4.1.0-debian-12-r6
+    tag: 4.1.0-debian-12-r7
     digest: ""
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
@@ -140,7 +140,7 @@ kafkaImages:
 kafkaBridgeImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/strimzi-kafka-bridge
-  tag: 0.33.1-debian-12-r0
+  tag: 0.33.1-debian-12-r1
   digest: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
@@ -162,7 +162,7 @@ kafkaBridgeImage:
 kanikoImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/kaniko
-  tag: 1.25.2-debian-12-r1
+  tag: 1.25.2-debian-12-r3
   digest: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets (secrets must be manually created in the namespace)
