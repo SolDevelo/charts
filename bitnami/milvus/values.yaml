@@ -98,7 +98,7 @@ milvus:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/milvus
-    tag: 2.6.3-debian-12-r0
+    tag: 2.6.3-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -258,7 +258,7 @@ initJob:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/pymilvus
-    tag: 2.6.2-debian-12-r12
+    tag: 2.6.2-debian-12-r14
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3066,7 +3066,7 @@ attu:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/attu
-    tag: 2.5.12-debian-12-r27
+    tag: 2.5.12-debian-12-r28
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3624,7 +3624,7 @@ waitContainer:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/os-shell
-    tag: 12-debian-12-r52
+    tag: 12-debian-12-r53
     digest: ""
     ## @param waitContainer.image.pullPolicy Init container wait-container image pull policy
     ##
