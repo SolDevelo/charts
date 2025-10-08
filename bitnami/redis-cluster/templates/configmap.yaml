@@ -72,6 +72,10 @@ data:
     # loadmodule /path/to/my_module.so
     # loadmodule /path/to/other_module.so
 
+    # Enable ReJSON y Redisearch
+    loadmodule /opt/bitnami/redis/lib/redis/modules/redisearch.so
+    loadmodule /opt/bitnami/redis/lib/redis/modules/rejson.so
+
     ################################## NETWORK #####################################
 
     # By default, if no "bind" configuration directive is specified, Redis listens
