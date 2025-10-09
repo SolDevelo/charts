@@ -61,10 +61,16 @@ Return the list of Cassandra seed nodes
 {{- $releaseNamespace := include "common.names.namespace" . }}
 {{- $clusterDomain := .Values.clusterDomain }}
 {{- $seedCount := .Values.cluster.seedCount | int }}
-{{- range .Values.cluster.racks -}}
+{{- if gt (len .Values.cluster.racks) 1 -}}
+{{- range .Values.cluster.racks }}
 {{- $rack := . }}
 {{- range $e, $i := until $seedCount }}
 {{- $seeds = append $seeds (printf "%s-%s-%d.%s-headless.%s.svc.%s" $fullname $rack $i $fullname $releaseNamespace $clusterDomain) }}
+{{- end }}
+{{- end }}
+{{- else -}}
+{{- range $e, $i := until $seedCount }}
+{{- $seeds = append $seeds (printf "%s-%d.%s-headless.%s.svc.%s" $fullname $i $fullname $releaseNamespace $clusterDomain) }}
 {{- end }}
 {{- end }}
 {{- range .Values.cluster.extraSeeds }}

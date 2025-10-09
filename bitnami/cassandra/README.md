@@ -70,6 +70,50 @@ Bitnami charts configure credentials at first boot. Any further change in the se
 kubectl create secret generic SECRET_NAME --from-literal=cassandra-password=PASSWORD --dry-run -o yaml | kubectl apply -f -
 ```
 
+### Using external secret providers
+
+The Bitnami Cassandra chart supports using external secret providers like CSI plugins. With the value `dbUser.useExternalSecretProvider`, the chart will not render any reference to the authentication secret, avoiding any collision between the helm templates and the secret provider. This requires using `extraEnvVars`, `extraVolumes`, `extraVolumeMounts`, `annotations` or `labels` to add all the missing secret references, according to the plugin requirements.
+
+In the following example, we will use the [GKE Secret Manager](https://cloud.google.com/secret-manager/docs/secret-manager-managed-csi-component) to mount the authentication secrets:
+
+```yaml
+dbUser:
+  # We do not render the secret references
+  useExternalSecretProvider: true
+
+# We add the SecretProviderClass with the password stored in our Google Cloud Project
+extraDeploy: 
+  - apiVersion: secrets-store.csi.x-k8s.io/v1
+    kind: SecretProviderClass
+    metadata:
+      name: cassandra-secret-provider
+    spec:
+      provider: gke
+      parameters:
+        secrets: |
+          - resourceName: "projects/my-project/secrets/my-secret/versions/v1"
+            path: "cassandra-password"
+
+# Define the SecretProviderClass as an extra volume
+extraVolumes:
+  - name: external-cassandra-secret
+    csi:
+      driver: secrets-store-gke.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: cassandra-secret-provider
+
+# Mount the volume in the cassandra container
+extraVolumeMounts:
+  - mountPath: "/var/secrets"
+    name: external-cassandra-secret
+
+# We specify the location of the password file
+extraEnvVars:
+  - name: CASSANDRA_PASSWORD_FILE
+    value: "/var/secrets/cassandra-password"
+```
+
 ### [Rolling vs Immutable tags](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-understand-rolling-tags-containers-index.html)
 
 It is strongly recommended to use immutable tags in a production environment. This ensures your deployment does not change automatically if the same tag is updated with a different image.
@@ -204,45 +248,46 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 
 ### Cassandra parameters
 
-| Name                                     | Description                                                                                                                           | Value                       |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| `image.registry`                         | Cassandra image registry                                                                                                              | `REGISTRY_NAME`             |
-| `image.repository`                       | Cassandra image repository                                                                                                            | `REPOSITORY_NAME/cassandra` |
-| `image.digest`                           | Cassandra image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                             | `""`                        |
-| `image.pullPolicy`                       | image pull policy                                                                                                                     | `IfNotPresent`              |
-| `image.pullSecrets`                      | Cassandra image pull secrets                                                                                                          | `[]`                        |
-| `image.debug`                            | Enable image debug mode                                                                                                               | `false`                     |
-| `dbUser.user`                            | Cassandra admin user                                                                                                                  | `cassandra`                 |
-| `dbUser.forcePassword`                   | Force the user to provide a non                                                                                                       | `false`                     |
-| `dbUser.password`                        | Password for `dbUser.user`. Randomly generated if empty                                                                               | `""`                        |
-| `dbUser.existingSecret`                  | Use an existing secret object for `dbUser.user` password (will ignore `dbUser.password`)                                              | `""`                        |
-| `initDB`                                 | Object with cql scripts. Useful for creating a keyspace and pre-populating data                                                       | `{}`                        |
-| `initDBConfigMap`                        | ConfigMap with cql scripts. Useful for creating a keyspace and pre-populating data                                                    | `""`                        |
-| `initDBSecret`                           | Secret with cql script (with sensitive data). Useful for creating a keyspace and pre-populating data                                  | `""`                        |
-| `existingConfiguration`                  | ConfigMap with custom cassandra configuration files. This overrides any other Cassandra configuration set in the chart                | `""`                        |
-| `cluster.name`                           | Cassandra cluster name                                                                                                                | `cassandra`                 |
-| `cluster.seedCount`                      | Number of seed nodes                                                                                                                  | `1`                         |
-| `cluster.numTokens`                      | Number of tokens for each node                                                                                                        | `256`                       |
-| `cluster.datacenter`                     | Datacenter name                                                                                                                       | `dc1`                       |
-| `cluster.racks`                          | Rack names. It will generate a cassandra cluster per rack. The number of racks is determined by the length of this array.             | `["rack1"]`                 |
-| `cluster.endpointSnitch`                 | Endpoint Snitch                                                                                                                       | `SimpleSnitch`              |
-| `cluster.clientEncryption`               | Client Encryption                                                                                                                     | `false`                     |
-| `cluster.extraSeeds`                     | For an external/second cassandra ring.                                                                                                | `[]`                        |
-| `cluster.enableUDF`                      | Enable User defined functions                                                                                                         | `false`                     |
-| `dynamicSeedDiscovery.enabled`           | Enable dynamic-seed-discovery init container                                                                                          | `false`                     |
-| `dynamicSeedDiscovery.image.registry`    | Init container dynamic-seed-discovery image registry                                                                                  | `REGISTRY_NAME`             |
-| `dynamicSeedDiscovery.image.repository`  | Init container dynamic-seed-discovery image repository                                                                                | `REPOSITORY_NAME/alpine`    |
-| `dynamicSeedDiscovery.image.digest`      | Init container dynamic-seed-discovery image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag | `""`                        |
-| `dynamicSeedDiscovery.image.pullPolicy`  | Init container dynamic-seed-discovery pull policy                                                                                     | `IfNotPresent`              |
-| `dynamicSeedDiscovery.image.pullSecrets` | Specify docker-registry secret names as an array                                                                                      | `[]`                        |
-| `jvm.extraOpts`                          | Set the value for Java Virtual Machine extra options                                                                                  | `""`                        |
-| `jvm.maxHeapSize`                        | Set Java Virtual Machine maximum heap size (MAX_HEAP_SIZE). Calculated automatically if `nil`                                         | `""`                        |
-| `jvm.newHeapSize`                        | Set Java Virtual Machine new heap size (HEAP_NEWSIZE). Calculated automatically if `nil`                                              | `""`                        |
-| `command`                                | Command for running the container (set to default if not set). Use array form                                                         | `[]`                        |
-| `args`                                   | Args for running the container (set to default if not set). Use array form                                                            | `[]`                        |
-| `extraEnvVars`                           | Extra environment variables to be set on cassandra container                                                                          | `[]`                        |
-| `extraEnvVarsCM`                         | Name of existing ConfigMap containing extra env vars                                                                                  | `""`                        |
-| `extraEnvVarsSecret`                     | Name of existing Secret containing extra env vars                                                                                     | `""`                        |
+| Name                                     | Description                                                                                                                                                                                                       | Value                       |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `image.registry`                         | Cassandra image registry                                                                                                                                                                                          | `REGISTRY_NAME`             |
+| `image.repository`                       | Cassandra image repository                                                                                                                                                                                        | `REPOSITORY_NAME/cassandra` |
+| `image.digest`                           | Cassandra image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                                         | `""`                        |
+| `image.pullPolicy`                       | image pull policy                                                                                                                                                                                                 | `IfNotPresent`              |
+| `image.pullSecrets`                      | Cassandra image pull secrets                                                                                                                                                                                      | `[]`                        |
+| `image.debug`                            | Enable image debug mode                                                                                                                                                                                           | `false`                     |
+| `dbUser.user`                            | Cassandra admin user                                                                                                                                                                                              | `cassandra`                 |
+| `dbUser.forcePassword`                   | Force the user to provide a non                                                                                                                                                                                   | `false`                     |
+| `dbUser.password`                        | Password for `dbUser.user`. Randomly generated if empty                                                                                                                                                           | `""`                        |
+| `dbUser.existingSecret`                  | Use an existing secret object for `dbUser.user` password (will ignore `dbUser.password`)                                                                                                                          | `""`                        |
+| `dbUser.useExternalSecretProvider`       | If true, the rendered YAML will not create the secret references, instead, the user will use extraEnvVars, extraVolumes, extraVolumeMounts or other method. Use this for Secret Providers like GKE Secret Manager | `false`                     |
+| `initDB`                                 | Object with cql scripts. Useful for creating a keyspace and pre-populating data                                                                                                                                   | `{}`                        |
+| `initDBConfigMap`                        | ConfigMap with cql scripts. Useful for creating a keyspace and pre-populating data                                                                                                                                | `""`                        |
+| `initDBSecret`                           | Secret with cql script (with sensitive data). Useful for creating a keyspace and pre-populating data                                                                                                              | `""`                        |
+| `existingConfiguration`                  | ConfigMap with custom cassandra configuration files. This overrides any other Cassandra configuration set in the chart                                                                                            | `""`                        |
+| `cluster.name`                           | Cassandra cluster name                                                                                                                                                                                            | `cassandra`                 |
+| `cluster.seedCount`                      | Number of seed nodes                                                                                                                                                                                              | `1`                         |
+| `cluster.numTokens`                      | Number of tokens for each node                                                                                                                                                                                    | `256`                       |
+| `cluster.datacenter`                     | Datacenter name                                                                                                                                                                                                   | `dc1`                       |
+| `cluster.racks`                          | Rack names. It will generate a cassandra cluster per rack. The number of racks is determined by the length of this array.                                                                                         | `["rack1"]`                 |
+| `cluster.endpointSnitch`                 | Endpoint Snitch                                                                                                                                                                                                   | `SimpleSnitch`              |
+| `cluster.clientEncryption`               | Client Encryption                                                                                                                                                                                                 | `false`                     |
+| `cluster.extraSeeds`                     | For an external/second cassandra ring.                                                                                                                                                                            | `[]`                        |
+| `cluster.enableUDF`                      | Enable User defined functions                                                                                                                                                                                     | `false`                     |
+| `dynamicSeedDiscovery.enabled`           | Enable dynamic-seed-discovery init container                                                                                                                                                                      | `false`                     |
+| `dynamicSeedDiscovery.image.registry`    | Init container dynamic-seed-discovery image registry                                                                                                                                                              | `REGISTRY_NAME`             |
+| `dynamicSeedDiscovery.image.repository`  | Init container dynamic-seed-discovery image repository                                                                                                                                                            | `REPOSITORY_NAME/alpine`    |
+| `dynamicSeedDiscovery.image.digest`      | Init container dynamic-seed-discovery image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                             | `""`                        |
+| `dynamicSeedDiscovery.image.pullPolicy`  | Init container dynamic-seed-discovery pull policy                                                                                                                                                                 | `IfNotPresent`              |
+| `dynamicSeedDiscovery.image.pullSecrets` | Specify docker-registry secret names as an array                                                                                                                                                                  | `[]`                        |
+| `jvm.extraOpts`                          | Set the value for Java Virtual Machine extra options                                                                                                                                                              | `""`                        |
+| `jvm.maxHeapSize`                        | Set Java Virtual Machine maximum heap size (MAX_HEAP_SIZE). Calculated automatically if `nil`                                                                                                                     | `""`                        |
+| `jvm.newHeapSize`                        | Set Java Virtual Machine new heap size (HEAP_NEWSIZE). Calculated automatically if `nil`                                                                                                                          | `""`                        |
+| `command`                                | Command for running the container (set to default if not set). Use array form                                                                                                                                     | `[]`                        |
+| `args`                                   | Args for running the container (set to default if not set). Use array form                                                                                                                                        | `[]`                        |
+| `extraEnvVars`                           | Extra environment variables to be set on cassandra container                                                                                                                                                      | `[]`                        |
+| `extraEnvVarsCM`                         | Name of existing ConfigMap containing extra env vars                                                                                                                                                              | `""`                        |
+| `extraEnvVarsSecret`                     | Name of existing Secret containing extra env vars                                                                                                                                                                 | `""`                        |
 
 ### Statefulset parameters
 
@@ -426,19 +471,20 @@ As the image run as non-root by default, it is necessary to adjust the ownership
 
 ### TLS/SSL parameters
 
-| Name                          | Description                                                                                                                                                                                                               | Value   |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `tls.internodeEncryption`     | Set internode encryption                                                                                                                                                                                                  | `none`  |
-| `tls.clientEncryption`        | Set client-server encryption                                                                                                                                                                                              | `false` |
-| `tls.autoGenerated`           | Generate automatically self-signed TLS certificates. Currently only supports PEM certificates                                                                                                                             | `false` |
-| `tls.existingSecret`          | Existing secret that contains Cassandra Keystore and truststore                                                                                                                                                           | `""`    |
-| `tls.passwordsSecret`         | Secret containing the Keystore and Truststore passwords if needed                                                                                                                                                         | `""`    |
-| `tls.keystorePassword`        | Password for the keystore, if needed.                                                                                                                                                                                     | `""`    |
-| `tls.truststorePassword`      | Password for the truststore, if needed.                                                                                                                                                                                   | `""`    |
-| `tls.resourcesPreset`         | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if tls.resources is set (tls.resources is recommended for production). | `nano`  |
-| `tls.resources`               | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                         | `{}`    |
-| `tls.certificatesSecret`      | Secret with the TLS certificates.                                                                                                                                                                                         | `""`    |
-| `tls.tlsEncryptionSecretName` | Secret with the encryption of the TLS certificates                                                                                                                                                                        | `""`    |
+| Name                            | Description                                                                                                                                                                                                                            | Value   |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `tls.internodeEncryption`       | Set internode encryption                                                                                                                                                                                                               | `none`  |
+| `tls.clientEncryption`          | Set client-server encryption                                                                                                                                                                                                           | `false` |
+| `tls.autoGenerated`             | Generate automatically self-signed TLS certificates. Currently only supports PEM certificates                                                                                                                                          | `false` |
+| `tls.existingSecret`            | Existing secret that contains Cassandra Keystore and truststore                                                                                                                                                                        | `""`    |
+| `tls.passwordsSecret`           | Secret containing the Keystore and Truststore passwords if needed                                                                                                                                                                      | `""`    |
+| `tls.keystorePassword`          | Password for the keystore, if needed.                                                                                                                                                                                                  | `""`    |
+| `tls.truststorePassword`        | Password for the truststore, if needed.                                                                                                                                                                                                | `""`    |
+| `tls.resourcesPreset`           | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if tls.resources is set (tls.resources is recommended for production).              | `nano`  |
+| `tls.resources`                 | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                                      | `{}`    |
+| `tls.certificatesSecret`        | Secret with the TLS certificates.                                                                                                                                                                                                      | `""`    |
+| `tls.tlsEncryptionSecretName`   | Secret with the encryption of the TLS certificates                                                                                                                                                                                     | `""`    |
+| `tls.useExternalSecretProvider` | If true, the rendered YAML will not create the secret references for the TLS password, instead, the user will use extraEnvVars, extraVolumes, extraVolumeMounts or other method. Use this for Secret Providers like GKE Secret Manager | `false` |
 
 The above parameters map to the env variables defined in [bitnami/cassandra](https://github.com/bitnami/containers/tree/main/bitnami/cassandra). For more information please refer to the [bitnami/cassandra](https://github.com/bitnami/containers/tree/main/bitnami/cassandra) image documentation.
 
