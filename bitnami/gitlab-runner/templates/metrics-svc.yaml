@@ -13,12 +13,9 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: gitlab-runner
     app.kubernetes.io/component: gitlab-runner
-  {{- if or .Values.metrics.service.annotations .Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.metrics.service.annotations .Values.commonAnnotations ) "context" . ) }}
-  {{- $defaultMetricsAnnotations := dict "prometheus.io/scrape" "true" "prometheus.io/port" .Values.metrics.service.ports.metrics "prometheus.io/path" "/metrics" }}
-  {{- $annotations = include "common.tplvalues.merge" (dict "values" (list $annotations $defaultMetricsAnnotations) "context" .) }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 4 }}
-  {{- end }}
+  {{- $defaultMetricsAnnotations := dict "prometheus.io/scrape" "true" "prometheus.io/port" (.Values.metrics.service.ports.metrics | toString) "prometheus.io/path" "/metrics" }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list $defaultMetricsAnnotations .Values.metrics.service.annotations .Values.commonAnnotations) "context" .) }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
 spec:
   type: {{ .Values.metrics.service.type }}
   {{- if and .Values.metrics.service.clusterIP (eq .Values.metrics.service.type "ClusterIP") }}

@@ -12,12 +12,9 @@ metadata:
   labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
     app.kubernetes.io/part-of: strimzi-kafka-operator
     app.kubernetes.io/component: operator
-  {{- if or .Values.metrics.service.annotations .Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.metrics.service.annotations .Values.commonAnnotations ) "context" . ) }}
-  {{- $defaultMetricsAnnotations := dict "prometheus.io/scrape" "true" "prometheus.io/port" .Values.metrics.service.port "prometheus.io/path" "/metrics" }}
-  {{- $annotations = include "common.tplvalues.merge" (dict "values" (list $annotations $defaultMetricsAnnotations) "context" .) }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $ ) | nindent 4 }}
-  {{- end }}
+  {{- $defaultMetricsAnnotations := dict "prometheus.io/scrape" "true" "prometheus.io/port" (.Values.metrics.service.port | toString) "prometheus.io/path" "/metrics" }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list $defaultMetricsAnnotations .Values.metrics.service.annotations .Values.commonAnnotations) "context" .) }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
 spec:
   type: ClusterIP
   ports:

@@ -47,4 +47,4 @@ maintainers:
 name: strimzi-kafka-operator
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/strimzi-kafka-operator
-version: 0.3.1
+version: 0.3.2
