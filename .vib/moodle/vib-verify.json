@@ -1,21 +1,28 @@
 {
-  "phases": {
-    "package": {
-      "context": {
-        "credentials": [
-          {
-            "url": "{VIB_ENV_CHARTS_REGISTRY}",
-            "authn": {
-              "username": "{VIB_ENV_CHARTS_REGISTRY_USERNAME}",
-              "password": "{VIB_ENV_CHARTS_REGISTRY_PASSWORD}"
-            }
-          }
-        ],
-        "resources": {
-          "url": "{SHA_ARCHIVE}",
-          "path": "/bitnami/moodle"
+  "context": {
+    "credentials": [
+      {
+        "url": "{VIB_ENV_DISTRIBUTION_REGISTRY}",
+        "authn": {
+          "username": "{VIB_ENV_DISTRIBUTION_REGISTRY_USERNAME}",
+          "password": "{VIB_ENV_DISTRIBUTION_REGISTRY_PASSWORD}"
         }
       },
+      {
+        "url": "{SHA_ARCHIVE}",
+        "authn": {
+          "header": "Authorization",
+          "token": "{VIB_ENV_GIT_TOKEN}"
+        }
+      }
+    ],
+    "resources": {
+      "url": "{SHA_ARCHIVE}",
+      "path": "/bitnami/moodle"
+    }
+  },
+  "phases": {
+    "package": {
       "actions": [
         {
           "action_id": "helm-package"
