@@ -9,7 +9,7 @@
         }
       },
       {
-        "url": "{SHA_ARCHIVE}",
+        "url": "{VIB_ENV_GIT_URL}",
         "authn": {
           "header": "Authorization",
           "token": "{VIB_ENV_GIT_TOKEN}"
