@@ -1,4 +1,6 @@
 module.exports = {
+  viewportWidth: 1920,
+  viewportHeight: 1080,
   env: {
     user: 'test_user',
     password: 'ComplicatedPassword123!4',

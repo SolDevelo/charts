@@ -29,17 +29,15 @@ it('allows adding a project and a quality gate', () => {
     cy.get('[href="/projects/create?mode=manual"]').click({force: true});
     cy.get('#project-name').type(`${projects.newProject.name} ${random}`);
     cy.get('[type="submit"]').contains('Next').click();
-    cy.get('span').contains('Use the global setting').click();
+    cy.get('button').contains('default').click();
     cy.get('[type="submit"]').contains('Create').click();
 
     // Step 2: Create a Quality gate
     cy.visit('/quality_gates');
     cy.fixture('quality-gates').then((qualityGates) => {
-      cy.contains('Skip').click({force: true});
       cy.contains('Create').click();
       cy.get('#quality-gate-form-name').type(`${qualityGates.newQualityGate.name}${random}`);
       cy.get('[type="submit"]').contains('Create').click();
-      cy.contains('Unlock editing').click();
       cy.contains('Add Condition').click({force: true});
       cy.contains('Lines to Cover').click({force: true});
       cy.get('#condition-threshold').type(qualityGates.newQualityGate.threshold);
