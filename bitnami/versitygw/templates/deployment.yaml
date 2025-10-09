@@ -216,7 +216,7 @@ spec:
         {{- if .Values.tls.enabled }}
         - name: cert
           secret:
-            secretName: {{ include "versitygw.tlsSecretName" . }}
+            secretName: {{ include "versitygw.tls.secretName" . }}
             defaultMode: 256
         {{- end }}
       {{- if .Values.extraVolumes }}

@@ -146,7 +146,7 @@ kc.sh export --dir /export/ --users realm_file
 
 This will export the all the realms with users to the `/export` folder.
 
-### Configure Ingress
+### Ingress
 
 This chart provides support for Ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress-controller](https://github.com/bitnami/charts/tree/main/bitnami/nginx-ingress-controller) or [contour](https://github.com/bitnami/charts/tree/main/bitnami/contour) you can utilize the ingress controller to serve your application. To enable Ingress integration, set `ingress.enabled` to `true`.
 
