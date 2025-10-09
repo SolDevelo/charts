@@ -186,3 +186,11 @@ func TestIntegration(t *testing.T) {
 	CheckRequirements()
 	RunSpecs(t, fmt.Sprintf("%s Integration Tests", APP_NAME))
 }
+
+func StripANSI(text string) string {
+	// Regular expression to match common ANSI escape codes
+	// This regex matches sequences starting with ESC ([ or ]) followed by numbers and 'm'
+	// It covers most color and style codes.
+	re := regexp.MustCompile(`\x1b\[[0-9;]*m`)
+	return re.ReplaceAllString(text, "")
+}

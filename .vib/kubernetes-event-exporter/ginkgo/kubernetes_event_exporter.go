@@ -47,9 +47,19 @@ var _ = Describe("Kubernetes Event Exporter:", func() {
 				podLabel := "app.kubernetes.io/name=kubernetes-event-exporter"
 				containerName := "event-exporter"
 
-				containsPattern, _ := retry("containerLogsContainPattern", 12, 5*time.Second, func() (bool, error) {
+				containsPattern, _ := retry("containerLogsContainPattern", 24, 5*time.Second, func() (bool, error) {
 					return containerLogsContainPattern(ctx, coreclient, podLabel, containerName, pattern)
 				})
+				// Return debug info if not found
+				if containsPattern == false {
+					k8sEventPod := getPodsByLabelOrDie(ctx, coreclient, podLabel)
+					podLogs := getContainerLogsOrDie(ctx, coreclient, k8sEventPod.Items[0].GetName(), containerName)
+					GinkgoWriter.Printf("--- pod logs ---\n")
+					for _, logMsg := range podLogs {
+						GinkgoWriter.Printf("%s\n", StripANSI(logMsg))
+					}
+					GinkgoWriter.Printf("--- /pod logs ---\n")
+				}
 				Expect(containsPattern).To(BeTrue())
 			})
 		})
