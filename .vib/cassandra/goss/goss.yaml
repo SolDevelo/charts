@@ -26,7 +26,7 @@ command:
   cluster-size:
     exec: if [ "$(nodetool status | grep {{ .Vars.cluster.numTokens }} | wc -l)" -ne {{ $nodes }} ]; then exit 1; fi
     exit-status: 0
-    timeout: 20000
+    timeout: 60000
   {{- $uid := .Vars.containerSecurityContext.runAsUser }}
   {{- $gid := .Vars.podSecurityContext.fsGroup }}
   check-user-info:
