@@ -8,15 +8,15 @@ annotations:
       version: 1.0.10
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r59
     - name: moodle
-      version: 5.0.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/moodle:5.0.2-debian-12-r5
+      version: 5.1.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/moodle:5.1.0-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 5.0.2
+appVersion: 5.1.0
 dependencies:
 - condition: mariadb.enabled
   name: mariadb
@@ -42,4 +42,4 @@ maintainers:
 name: moodle
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/moodle
-version: 28.0.5
+version: 29.0.0
