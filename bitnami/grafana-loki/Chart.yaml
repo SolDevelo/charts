@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: grafana-loki
-      version: 3.5.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-loki:3.5.5-debian-12-r2
+      version: 3.5.6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-loki:3.5.6-debian-12-r0
     - name: nginx
       version: 1.29.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:1.29.2-debian-12-r0
@@ -16,7 +16,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 3.5.5
+appVersion: 3.5.6
 dependencies:
 - alias: grafanaalloy
   condition: grafanaalloy.enabled
@@ -64,4 +64,4 @@ maintainers:
 name: grafana-loki
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana-loki
-version: 7.0.2
+version: 7.0.3
