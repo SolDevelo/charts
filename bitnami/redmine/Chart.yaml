@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: redmine
       version: 6.1.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redmine:6.1.0-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redmine:6.1.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -47,4 +48,4 @@ maintainers:
 name: redmine
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/redmine
-version: 35.0.0
+version: 35.0.1
