@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: pgpool
       version: 4.6.3
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pgpool:4.6.3-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pgpool:4.6.3-debian-12-r5
     - name: postgres-exporter
       version: 0.18.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgres-exporter:0.18.1-debian-12-r3
@@ -47,4 +47,4 @@ maintainers:
 name: postgresql-ha
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/postgresql-ha
-version: 17.0.16
+version: 17.0.17
