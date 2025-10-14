@@ -40,6 +40,7 @@ var _ = Describe("MariaDB", Ordered, func() {
 
 			By("checking all the replicas are available")
 			ss, err := c.AppsV1().StatefulSets(namespace).Get(ctx, stsName, getOpts)
+			runAsUser := ss.Spec.Template.Spec.Containers[0].SecurityContext.RunAsUser
 			Expect(err).NotTo(HaveOccurred())
 			Expect(ss.Status.Replicas).NotTo(BeZero())
 			origReplicas := *ss.Spec.Replicas
@@ -54,7 +55,7 @@ var _ = Describe("MariaDB", Ordered, func() {
 			port, err := utils.SvcGetPortByName(svc, "mysql")
 			Expect(err).NotTo(HaveOccurred())
 
-			image, err := utils.StsGetContainerImageByName(ss, "setup")
+			image, err := utils.StsGetInitContainerImageByName(ss, "setup")
 			Expect(err).NotTo(HaveOccurred())
 
 			jobSuffix := time.Now().Format("20060102150405")
@@ -64,7 +65,7 @@ var _ = Describe("MariaDB", Ordered, func() {
 				stsName, jobSuffix)
 			dbName := fmt.Sprintf("test%s", jobSuffix)
 
-			err = createJob(ctx, c, createDBJobName, port, image, fmt.Sprintf("CREATE DATABASE %s;", dbName))
+			err = createJob(ctx, c, createDBJobName, port, image, fmt.Sprintf("CREATE DATABASE %s;", dbName), runAsUser)
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(func() (*batchv1.Job, error) {
@@ -88,7 +89,7 @@ var _ = Describe("MariaDB", Ordered, func() {
 			By("creating a job to drop the test database")
 			deleteDBJobName := fmt.Sprintf("%s-deletedb-%s",
 				stsName, jobSuffix)
-			err = createJob(ctx, c, deleteDBJobName, port, image, fmt.Sprintf("DROP DATABASE %s;", dbName))
+			err = createJob(ctx, c, deleteDBJobName, port, image, fmt.Sprintf("DROP DATABASE %s;", dbName), runAsUser)
 			Expect(err).NotTo(HaveOccurred())
 
 			Eventually(func() (*batchv1.Job, error) {

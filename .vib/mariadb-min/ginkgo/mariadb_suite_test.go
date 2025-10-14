@@ -39,8 +39,17 @@ func TestMariaDB(t *testing.T) {
 	RunSpecs(t, "MariaDB Persistence Test Suite")
 }
 
-func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, stmt string) error {
+func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, stmt string, user *int64) error {
+	// Provided pull secrets
+	pullSecrets := []v1.LocalObjectReference{
+		{Name: "cp-pullsecret-0"},
+		{Name: "cp-pullsecret-1"},
+		{Name: "cp-pullsecret-2"},
+		{Name: "cp-pullsecret-3"},
+	}
+
 	securityContext := &v1.SecurityContext{
+		RunAsUser:                user,
 		Privileged:               &[]bool{false}[0],
 		AllowPrivilegeEscalation: &[]bool{false}[0],
 		RunAsNonRoot:             &[]bool{true}[0],
@@ -62,7 +71,8 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 		Spec: batchv1.JobSpec{
 			Template: v1.PodTemplateSpec{
 				Spec: v1.PodSpec{
-					RestartPolicy: "Never",
+					ImagePullSecrets: pullSecrets,
+					RestartPolicy:    "Never",
 					Containers: []v1.Container{
 						{
 							Name:    "mariadb",

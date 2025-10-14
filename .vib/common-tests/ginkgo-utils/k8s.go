@@ -136,6 +136,19 @@ func StsGetContainerImageByName(ss *appsv1.StatefulSet, name string) (string, er
 	return "", fmt.Errorf("container %q not found in statefulset %q", name, ss.Name)
 }
 
+// StsGetInitContainerImageByName returns the init container image given the container name of a StatefulSet instance
+func StsGetInitContainerImageByName(ss *appsv1.StatefulSet, name string) (string, error) {
+	initContainers := ss.Spec.Template.Spec.InitContainers
+
+	for _, c := range initContainers {
+		if c.Name == name {
+			return c.Image, nil
+		}
+	}
+
+	return "", fmt.Errorf("init container %q not found in statefulset %q", name, ss.Name)
+}
+
 // Deployment functions
 
 // DplScale scales a Deployment instance to the number of replicas
