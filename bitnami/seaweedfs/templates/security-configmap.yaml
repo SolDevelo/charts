@@ -63,27 +63,27 @@ data:
     # the values for the following ca, cert, and key are paths to the PERM files.
     # the host name is not checked, so the PERM files can be shared.
     [grpc]
-    ca = "/certs/ca/tls.crt"
+    ca = "/certs/ca.crt"
 
     [grpc.volume]
-    cert = "/certs/volume/tls.crt"
-    key  = "/certs/volume/tls.key"
+    cert = "/certs/volume.crt"
+    key  = "/certs/volume.key"
 
     [grpc.master]
-    cert = "/certs/master/tls.crt"
-    key  = "/certs/master/tls.key"
+    cert = "/certs/master.crt"
+    key  = "/certs/master.key"
 
     {{- if .Values.filer.enabled }}
     [grpc.filer]
-    cert = "/certs/filer/tls.crt"
-    key  = "/certs/filer/tls.key"
+    cert = "/certs/filer.crt"
+    key  = "/certs/filer.key"
     {{- end }}
 
     # use this for any place needs a grpc client
     # i.e., "weed backup|benchmark|filer.copy|filer.replicate|mount|s3|upload"
     [grpc.client]
-    cert = "/certs/client/tls.crt"
-    key  = "/certs/client/tls.key"
+    cert = "/certs/client.crt"
+    key  = "/certs/client.key"
     {{- end }}
   {{- else }}
     # comma separated origins allowed to make requests to the filer and s3 gateway. 
