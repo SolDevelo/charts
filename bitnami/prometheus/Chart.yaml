@@ -12,7 +12,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: prometheus
       version: 3.6.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.6.0-debian-12-r3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.6.0-debian-12-r0
     - name: thanos
       version: 0.39.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.39.2-debian-12-r6
@@ -43,4 +43,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/prometheus
 - https://github.com/prometheus/prometheus
 - https://github.com/prometheus-community/helm-charts
-version: 2.1.36
+version: 2.1.37
