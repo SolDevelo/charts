@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno:1.15.2-debian-12-r2
     - name: kyverno-background-controller
       version: 1.15.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-background-controller:1.15.2-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-background-controller:1.15.2-debian-12-r2
     - name: kyverno-cleanup-controller
       version: 1.15.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kyverno-cleanup-controller:1.15.2-debian-12-r2
@@ -43,4 +43,4 @@ maintainers:
 name: kyverno
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/kyverno
-version: 0.1.8
+version: 0.1.9
