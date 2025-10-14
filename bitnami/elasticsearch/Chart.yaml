@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch:9.1.5-debian-12-r0
     - name: elasticsearch-exporter
       version: 1.9.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch-exporter:1.9.0-debian-12-r20
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch-exporter:1.9.0-debian-12-r21
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -39,4 +39,4 @@ maintainers:
 name: elasticsearch
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
-version: 22.1.14
+version: 22.1.15
