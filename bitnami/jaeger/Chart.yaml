@@ -6,10 +6,10 @@ annotations:
   images: |
     - name: cassandra
       version: 5.0.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r22
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r23
     - name: jaeger
       version: 2.11.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jaeger:2.11.0-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jaeger:2.11.0-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -38,4 +38,4 @@ maintainers:
 name: jaeger
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/jaeger
-version: 6.0.10
+version: 6.0.11
