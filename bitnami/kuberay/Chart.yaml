@@ -6,10 +6,10 @@ annotations:
   images: |
     - name: kuberay-apiserver
       version: 1.4.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kuberay-apiserver:1.4.2-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kuberay-apiserver:1.4.2-debian-12-r7
     - name: kuberay-operator
       version: 1.4.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kuberay-operator:1.4.2-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/kuberay-operator:1.4.2-debian-12-r7
     - name: ray
       version: 2.50.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ray:2.50.0-debian-12-r0
@@ -37,4 +37,4 @@ maintainers:
 name: kuberay
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kuberay
-version: 1.4.37
+version: 1.4.38
