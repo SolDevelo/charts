@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: git
       version: 2.51.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r7
     - name: mlflow
       version: 3.4.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/mlflow:3.4.0-debian-12-r16
@@ -50,4 +50,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/mlflow
 - https://github.com/bitnami/containers/tree/main/bitnami/mlflow
 - https://github.com/mlflow/mlflow
-version: 6.0.5
+version: 6.0.6
