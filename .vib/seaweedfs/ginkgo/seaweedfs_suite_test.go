@@ -141,24 +141,8 @@ cat /data/fid | xargs weed download -server ${MASTER_HOST}:${MASTER_PORT}
 									SubPath:   "security.toml",
 								},
 								{
-									Name:      "ca-cert",
-									MountPath: "/certs/ca",
-								},
-								{
-									Name:      "master-cert",
-									MountPath: "/certs/master",
-								},
-								{
-									Name:      "filer-cert",
-									MountPath: "/certs/filer",
-								},
-								{
-									Name:      "volume-cert",
-									MountPath: "/certs/volume",
-								},
-								{
-									Name:      "client-cert",
-									MountPath: "/certs/client",
+									Name:      "tls-certs",
+									MountPath: "/certs",
 								},
 							},
 						},
@@ -183,42 +167,51 @@ cat /data/fid | xargs weed download -server ${MASTER_HOST}:${MASTER_PORT}
 							},
 						},
 						{
-							Name: "ca-cert",
+							Name: "tls-certs",
 							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-ca-crt", releaseName),
-								},
-							},
-						},
-						{
-							Name: "master-cert",
-							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-master-crt", releaseName),
-								},
-							},
-						},
-						{
-							Name: "filer-cert",
-							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-filer-crt", releaseName),
-								},
-							},
-						},
-						{
-							Name: "volume-cert",
-							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-volume-crt", releaseName),
-								},
-							},
-						},
-						{
-							Name: "client-cert",
-							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-client-crt", releaseName),
+								Projected: &v1.ProjectedVolumeSource{
+									Sources: []v1.VolumeProjection{{
+										Secret: &v1.SecretProjection{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-master-crt", releaseName),
+											},
+											Items: []v1.KeyToPath{
+												{Key: "tls.crt", Path: "master.crt"},
+												{Key: "tls.key", Path: "master.key"},
+												{Key: "ca.crt", Path: "ca.crt"},
+											},
+										},
+									}, {
+										Secret: &v1.SecretProjection{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-filer-crt", releaseName),
+											},
+											Items: []v1.KeyToPath{
+												{Key: "tls.crt", Path: "filer.crt"},
+												{Key: "tls.key", Path: "filer.key"},
+											},
+										},
+									}, {
+										Secret: &v1.SecretProjection{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-volume-crt", releaseName),
+											},
+											Items: []v1.KeyToPath{
+												{Key: "tls.crt", Path: "volume.crt"},
+												{Key: "tls.key", Path: "volume.key"},
+											},
+										},
+									}, {
+										Secret: &v1.SecretProjection{
+											LocalObjectReference: v1.LocalObjectReference{
+												Name: fmt.Sprintf("%s-client-crt", releaseName),
+											},
+											Items: []v1.KeyToPath{
+												{Key: "tls.crt", Path: "client.crt"},
+												{Key: "tls.key", Path: "client.key"},
+											},
+										},
+									}},
 								},
 							},
 						},

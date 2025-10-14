@@ -95,41 +95,29 @@ func createJob(ctx context.Context, c kubernetes.Interface, name string, port st
 								},
 								{
 									Name:  "NATS_CERT",
-									Value: "/certs/client/tls.crt",
+									Value: "/certs/tls.crt",
 								},
 								{
 									Name:  "NATS_KEY",
-									Value: "/certs/client/tls.key",
+									Value: "/certs/tls.key",
 								},
 								{
 									Name:  "NATS_CA",
-									Value: "/certs/ca/tls.crt",
+									Value: "/certs/ca.crt",
 								},
 							},
 							SecurityContext: securityContext,
 							VolumeMounts: []v1.VolumeMount{
 								{
-									Name:      "ca-cert",
-									MountPath: "/certs/ca",
-								},
-								{
-									Name:      "client-cert",
-									MountPath: "/certs/client",
+									Name:      "tls-certs",
+									MountPath: "/certs",
 								},
 							},
 						},
 					},
 					Volumes: []v1.Volume{
 						{
-							Name: "ca-cert",
-							VolumeSource: v1.VolumeSource{
-								Secret: &v1.SecretVolumeSource{
-									SecretName: fmt.Sprintf("%s-ca-crt", releaseName),
-								},
-							},
-						},
-						{
-							Name: "client-cert",
+							Name: "tls-certs",
 							VolumeSource: v1.VolumeSource{
 								Secret: &v1.SecretVolumeSource{
 									SecretName: fmt.Sprintf("%s-client-crt", releaseName),
