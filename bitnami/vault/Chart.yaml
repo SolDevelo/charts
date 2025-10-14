@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: vault
       version: 1.20.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/vault:1.20.4-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/vault:1.20.4-debian-12-r3
     - name: vault-csi-provider
       version: 1.6.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/vault-csi-provider:1.6.0-debian-12-r4
@@ -41,4 +41,4 @@ maintainers:
 name: vault
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/vault
-version: 1.10.2
+version: 1.10.3
