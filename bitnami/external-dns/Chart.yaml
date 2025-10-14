@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: external-dns
       version: 0.19.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/external-dns:0.19.0-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/external-dns:0.19.0-debian-12-r5
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -31,4 +31,4 @@ maintainers:
 name: external-dns
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/external-dns
-version: 9.0.9
+version: 9.0.10
