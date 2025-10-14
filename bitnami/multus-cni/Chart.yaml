@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: multus-cni
       version: 4.2.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/multus-cni:4.2.2-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/multus-cni:4.2.2-debian-12-r7
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -32,4 +32,4 @@ maintainers:
 name: multus-cni
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/multus-cni
-version: 2.2.26
+version: 2.2.27
