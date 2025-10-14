@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: gitea
       version: 1.24.6
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitea:1.24.6-debian-12-r4
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitea:1.24.6-debian-12-r5
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -41,4 +41,4 @@ maintainers:
 name: gitea
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/gitea
-version: 4.0.3
+version: 4.0.4
