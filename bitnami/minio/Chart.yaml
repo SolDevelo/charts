@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: minio
       version: 2025.9.7
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.9.7-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio:2025.9.7-debian-12-r3
     - name: minio-client
       version: 2025.8.13
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/minio-client:2025.8.13-debian-12-r3
@@ -43,4 +43,4 @@ maintainers:
 name: minio
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/minio
-version: 17.0.33
+version: 17.0.34
