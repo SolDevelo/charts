@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: argo-workflow-cli
       version: 3.7.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/argo-workflow-cli:3.7.2-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/argo-workflow-cli:3.7.2-debian-12-r2
     - name: argo-workflow-controller
       version: 3.7.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/argo-workflow-controller:3.7.2-debian-12-r2
@@ -47,4 +47,4 @@ maintainers:
 name: argo-workflows
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/argo-workflows
-version: 14.0.3
+version: 14.0.4
