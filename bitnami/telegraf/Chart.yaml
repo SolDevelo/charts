@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: telegraf
       version: 1.36.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/telegraf:1.36.2-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/telegraf:1.36.2-debian-12-r3
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -36,4 +36,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/telegraf
 - https://github.com/influxdata/telegraf
 - https://github.com/influxdata/helm-charts/tree/master/charts/telegraf
-version: 0.1.5
+version: 0.1.6
