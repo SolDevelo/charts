@@ -1133,7 +1133,7 @@ pgpool:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/pgpool
-    tag: 4.6.3-debian-12-r3
+    tag: 4.6.3-debian-12-r4
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
