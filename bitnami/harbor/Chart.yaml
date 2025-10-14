@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-adapter-trivy:2.14.0-debian-12-r2
     - name: harbor-core
       version: 2.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-core:2.14.0-debian-12-r5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-core:2.14.0-debian-12-r6
     - name: harbor-exporter
       version: 2.14.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/harbor-exporter:2.14.0-debian-12-r5
@@ -65,4 +65,4 @@ maintainers:
 name: harbor
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/harbor
-version: 28.0.12
+version: 28.0.13
