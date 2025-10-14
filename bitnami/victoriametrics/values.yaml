@@ -714,7 +714,7 @@ vminsert:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vminsert
-    tag: 1.127.0-debian-12-r1
+    tag: 1.127.0-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1889,7 +1889,7 @@ vmauth:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmauth
-    tag: 1.127.0-debian-12-r1
+    tag: 1.127.0-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3088,7 +3088,7 @@ vmalert:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmalert
-    tag: 1.127.0-debian-12-r1
+    tag: 1.127.0-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
