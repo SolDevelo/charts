@@ -2515,7 +2515,7 @@ vmagent:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmagent
-    tag: 1.127.0-debian-12-r1
+    tag: 1.127.0-debian-12-r2
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
