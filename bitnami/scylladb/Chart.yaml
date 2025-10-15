@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: scylladb
       version: 2025.3.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/scylladb:2025.3.1-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/scylladb:2025.3.1-debian-12-r15
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -34,4 +35,4 @@ maintainers:
 name: scylladb
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/scylladb
-version: 6.1.0
+version: 6.1.1
