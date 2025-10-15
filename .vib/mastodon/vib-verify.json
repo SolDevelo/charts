@@ -63,8 +63,8 @@
             "resources": {
               "path": "/.vib/mastodon/cypress"
             },
-            "endpoint": "lb-mastodon-apache-http",
-            "app_protocol": "HTTP",
+            "endpoint": "lb-mastodon-apache-https",
+            "app_protocol": "HTTPS",
             "env": {
               "user": "vib-user@changeme.com",
               "password": "bitnami!1234"

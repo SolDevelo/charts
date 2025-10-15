@@ -2,6 +2,7 @@ adminEmail: vib-user@changeme.com
 adminPassword: bitnami!1234
 
 webDomain: mastodon.com
+useSecureWebSocket: true
 
 serviceAccount:
   create: true
@@ -35,6 +36,7 @@ apache:
     type: LoadBalancer
     ports:
       http: 80
+      https: 443
 
 postgresql:
   enabled: true
