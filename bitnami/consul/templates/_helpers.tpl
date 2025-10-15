@@ -73,6 +73,36 @@ Return true if a configmap object should be created for Consul
 {{- define "consul.createConfigmap" -}}
 {{- if and .Values.configuration (not .Values.existingConfigmap) }}
     {{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the configmap with the Consul TLS configuration
+*/}}
+{{- define "consul.tlsConfigmapName" -}}
+{{- if .Values.tls.existingConfigmap -}}
+    {{- printf "%s" (tpl .Values.tls.existingConfigmap $) -}}
 {{- else -}}
+    {{- printf "%s" (printf "%s-tls-configuration" (include "common.names.fullname" .)) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return true if a TLS configmap object should be created for Consul
+*/}}
+{{- define "consul.createTlsConfigmap" -}}
+{{- if and .Values.tls.enabled (not .Values.tls.existingConfigmap) }}
+    {{- true -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the secret with the Consul TLS certificates
+*/}}
+{{- define "consul.tlsSecretName" -}}
+{{- if .Values.tls.existingSecret -}}
+    {{- include "common.tplvalues.render" (dict "value" .Values.tls.existingSecret "context" $) -}}
+{{- else -}}
+    {{- printf "%s-tls" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}

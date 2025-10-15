@@ -48,8 +48,8 @@
             "resources": {
               "path": "/.vib/consul/cypress"
             },
-            "endpoint": "lb-consul-ui-http",
-            "app_protocol": "HTTP",
+            "endpoint": "lb-consul-ui-https",
+            "app_protocol": "HTTPS",
             "env": {
               "username": "user",
               "password": "ComplicatedPassword123!4"

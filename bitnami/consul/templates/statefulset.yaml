@@ -123,6 +123,8 @@ spec:
           ports:
             - name: http
               containerPort: {{ .Values.containerPorts.http }}
+            - name: https
+              containerPort: {{ .Values.containerPorts.https }}
             - name: rpc
               containerPort: {{ .Values.containerPorts.rpc }}
             - name: serflan-tcp
@@ -158,6 +160,8 @@ spec:
                   fieldPath: metadata.name
             - name: CONSUL_RETRY_JOIN
               value: {{ include "consul.retryjoin.endpoint" . | quote }}
+            - name: CONSUL_RETRY_JOIN_WAN_ADDRESS
+              value: {{ include "consul.retryjoin.endpoint" . | quote }}
             - name: CONSUL_DISABLE_KEYRING_FILE
               value: "true"
             - name: CONSUL_BOOTSTRAP_EXPECT
@@ -186,6 +190,10 @@ spec:
               value: {{ .Values.service.enabled | quote }}
             - name: CONSUL_HTTP_PORT_NUMBER
               value: {{ .Values.containerPorts.http | quote }}
+            {{- if .Values.tls.enabled }}
+            - name: CONSUL_HTTPS_PORT_NUMBER
+              value: {{ .Values.containerPorts.https | quote }}
+            {{- end }}
             - name: CONSUL_DNS_PORT_NUMBER
               value: {{ .Values.containerPorts.dns | quote }}
             - name: CONSUL_RPC_PORT_NUMBER
@@ -275,11 +283,6 @@ spec:
             - name: empty-dir
               mountPath: /opt/bitnami/consul/logs
               subPath: app-logs-dir
-            {{- if .Values.tlsEncryptionSecretName }}
-            - name: consul-tls-certs
-              mountPath: "/opt/bitnami/consul/certificates/"
-              readOnly: true
-            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: /bitnami/consul
@@ -295,6 +298,14 @@ spec:
             - name: consul-config
               mountPath: /opt/bitnami/consul/conf/connection.json
               subPath: connection.json
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: consul-tls-config
+              mountPath: /opt/bitnami/consul/conf/tls.json
+              subPath: tls.json
+            - name: consul-tls-certs
+              mountPath: /opt/bitnami/consul/certificates/
+              readOnly: true
             {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
@@ -348,17 +359,13 @@ spec:
           configMap:
             name: {{ include "consul.configmapName" . }}
         {{- end }}
-        {{- if .Values.tlsEncryptionSecretName }}
+        {{- if .Values.tls.enabled }}
+        - name: consul-tls-config
+          configMap:
+            name: {{ include "consul.tlsConfigmapName" . }}
         - name: consul-tls-certs
           secret:
-            secretName: {{ .Values.tlsEncryptionSecretName }}
-            items:
-              - key: ca.pem
-                path: ca.pem
-              - key: consul.pem
-                path: consul.pem
-              - key: consul-key.pem
-                path: consul.key.pem
+            secretName: {{ include "consul.tlsSecretName" . }}
         {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}

@@ -20,6 +20,11 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.containerPorts.http }}
+    {{- if .Values.tls.enabled }}
+    - name: https
+      protocol: TCP
+      port: {{ .Values.containerPorts.https }}
+    {{- end }}
     - name: rpc
       port: {{ .Values.containerPorts.rpc }}
     - name: serflan-tcp

@@ -1,8 +1,12 @@
 containerPorts:
   http: 8500
+  https: 8501
 service:
   ports:
     http: 80
+    https: 443
   type: LoadBalancer
 datacenterName: datacenter1
 replicaCount: 3
+tls:
+  enabled: true

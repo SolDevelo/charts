@@ -141,24 +141,29 @@ If you are going to manage TLS secrets outside of Helm, please know that you can
 
 Please see [this example](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tls) for more information.
 
-#### Enable TLS encryption between servers
+#### Enable TLS encryption
 
-You must manually create a secret containing your PEM-encoded certificate authority, your PEM-encoded certificate, and your PEM-encoded private key.
+TLS encription can be configured by setting `tls.enabled` to `true`. This will generate self-signed certificates and configure Consul `tls.defaults` with their location.
+For production environments, we recommend using your own certificates by setting the value `tls.existingSecret`.
 
-> Take into account that you will need to create a config map with the proper configuration.
+If you would like to configure additional TLS settings, the configuration can be overwritten using the value `tls.configuration` and `tls.existingConfigmap`. For example:
 
-If the secret is specified, the chart will locate those files at `/opt/bitnami/consul/certs/`, so you will want to use the below snippet to configure HashiCorp Consul TLS encryption in your config map:
-
-```json
-  "ca_file": "/opt/bitnami/consul/certs/ca.pem",
-  "cert_file": "/opt/bitnami/consul/certs/consul.pem",
-  "key_file": "/opt/bitnami/consul/certs/consul-key.pem",
-  "verify_incoming": true,
-  "verify_outgoing": true,
-  "verify_server_hostname": true,
 ```
-
-After creating the secret, you can install the helm chart specyfing the secret name using `tlsEncryptionSecretName=consul-tls-encryption`.
+tls:
+  configuration: |-
+  {
+    "defaults": {
+        "ca_file": "/opt/bitnami/consul/certs/ca.crt",
+        "cert_file": "/opt/bitnami/consul/certs/tls.crt",
+        "key_file": "/opt/bitnami/consul/certs/tls.key",
+        "verify_incoming": true,
+        "verify_outgoing": true,
+        "verify_server_hostname": true,
+     },
+    "https": {
+      ...
+     }
+  }
 
 ### Metrics
 
@@ -270,12 +275,15 @@ You can enable this initContainer by setting `volumePermissions.enabled` to `tru
 | `domain`                        | Consul domain name                                                                                               | `consul`                 |
 | `raftMultiplier`                | Multiplier used to scale key Raft timing parameters                                                              | `1`                      |
 | `gossipKey`                     | Gossip key for all members. The key must be base64-encoded, can be generated with $(consul keygen)               | `""`                     |
-| `tlsEncryptionSecretName`       | Name of existing secret with TLS encryption data                                                                 | `""`                     |
 | `automountServiceAccountToken`  | Mount Service Account token in pod                                                                               | `false`                  |
 | `hostAliases`                   | Deployment pod host aliases                                                                                      | `[]`                     |
 | `configuration`                 | HashiCorp Consul configuration to be injected as ConfigMap                                                       | `""`                     |
 | `existingConfigmap`             | ConfigMap with HashiCorp Consul configuration                                                                    | `""`                     |
 | `localConfig`                   | Extra configuration that will be added to the default one                                                        | `""`                     |
+| `tls.enabled`                   | Enable Consul TLS configuration                                                                                  | `false`                  |
+| `tls.existingSecret`            | Name of a Secret containing the Consul TLS certificates                                                          | `""`                     |
+| `tls.configuration`             | Override the TLS default configuration                                                                           | `{}`                     |
+| `tls.existingConfigmap`         | Existing configmap containing an additional Consul configuration file called 'tls.json'                          | `""`                     |
 | `podLabels`                     | Pod labels                                                                                                       | `{}`                     |
 | `priorityClassName`             | Priority class assigned to the Pods                                                                              | `""`                     |
 | `runtimeClassName`              | Name of the runtime class to be used by pod(s)                                                                   | `""`                     |
@@ -288,6 +296,7 @@ You can enable this initContainer by setting `volumePermissions.enabled` to `tru
 | `extraEnvVarsCM`                | Name of existing ConfigMap containing extra env vars                                                             | `""`                     |
 | `extraEnvVarsSecret`            | Name of existing Secret containing extra env vars                                                                | `""`                     |
 | `containerPorts.http`           | Port to open for HTTP in Consul                                                                                  | `8500`                   |
+| `containerPorts.https`          | Port to open for HTTPS in Consul                                                                                 | `8501`                   |
 | `containerPorts.dns`            | Port to open for DNS server in Consul                                                                            | `8600`                   |
 | `containerPorts.rpc`            | Port to open for RPC in Consul                                                                                   | `8400`                   |
 | `containerPorts.rpcServer`      | Port to open for RPC Server in Consul                                                                            | `8300`                   |
@@ -366,9 +375,11 @@ You can enable this initContainer by setting `volumePermissions.enabled` to `tru
 | Name                                    | Description                                                                                                                      | Value                    |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
 | `service.enabled`                       | Use a service to access HashiCorp Consul Ui                                                                                      | `true`                   |
-| `service.ports.http`                    | HashiCorp Consul UI svc port                                                                                                     | `80`                     |
+| `service.ports.http`                    | HashiCorp Consul UI HTTP port (omitted if containerPort is -1)                                                                   | `80`                     |
+| `service.ports.https`                   | HashiCorp Consul UI HTTPS port (omitted if containerPort is -1)                                                                  | `443`                    |
 | `service.type`                          | HashiCorp Consul UI Service Type                                                                                                 | `ClusterIP`              |
-| `service.nodePorts.http`                | Node port for HashiCorp Consul UI                                                                                                | `""`                     |
+| `service.nodePorts.http`                | Node port for HashiCorp Consul UI HTTP                                                                                           | `""`                     |
+| `service.nodePorts.https`               | Node port for HashiCorp Consul UI HTTPS                                                                                          | `""`                     |
 | `service.clusterIP`                     | Consul service Cluster IP                                                                                                        | `""`                     |
 | `service.loadBalancerIP`                | HashiCorp Consul UI service Load Balancer IP                                                                                     | `""`                     |
 | `service.loadBalancerSourceRanges`      | Consul service Load Balancer sources                                                                                             | `[]`                     |
@@ -535,6 +546,18 @@ Affected values:
 - <https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-resolve-helm2-helm3-post-migration-issues-index.html>
 - <https://helm.sh/docs/topics/v2_v3_migration/>
 - <https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/>
+
+### To 12.0.0
+
+In this major version we have refactored how TLS was configured in the chart.
+
+The value `tlsEncryptionSecretName` has been removed and instead we have added the section `tls.*` in the values.yaml. Direct equivalent to the removed value would be `tls.existingSecret` and the expected content would be a standard TLS secret with keys `ca.crt`, `tls.crt` and `tls.key`.
+
+Some other changes that have been implemented are:
+
+- Support for TLS configuration extension, via ConfigMap (`tls.existingConfigmap`) or inline (`tls.configuration`). If both are unset, default TLS configuration will be set.
+- Autogenerated certificates via Helm. When no certificates are provided using `tls.existingSecret`, the chart will generate its own self-signed certificates.
+- Added new values `containerPorts.https` and `service.https`, to configure both the container and the UI service pods respectively.
 
 ### To 8.0.0
 

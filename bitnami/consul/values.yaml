@@ -120,13 +120,6 @@ raftMultiplier: "1"
 ## gossipKey: "DVoLa/k99hfBEdIfCLkzSpWg4obElLYVIFDsutKCL/w="
 ##
 gossipKey: ""
-## @param tlsEncryptionSecretName Name of existing secret with TLS encryption data
-## Use TLS to verify the authenticity of servers and clients.
-## Check README for more information.
-## Example:
-## tlsEncryptionSecretName: your-already-created-secret
-##
-tlsEncryptionSecretName: ""
 ## @param automountServiceAccountToken Mount Service Account token in pod
 ##
 automountServiceAccountToken: false
@@ -169,6 +162,31 @@ existingConfigmap: ""
 ##   }
 ##
 localConfig: ""
+## Consul TLS configuration
+##
+tls:
+  ## @param tls.enabled Enable Consul TLS configuration
+  ##
+  enabled: false
+  ## @param tls.existingSecret Name of a Secret containing the Consul TLS certificates
+  ##
+  existingSecret: ""
+  ## @param tls.configuration Override the TLS default configuration
+  ## Example:
+  ## configuration: |-
+  ## {
+  ##   "defaults": {
+  ##     ...
+  ##    },
+  ##   "https": {
+  ##     ...
+  ##    }
+  ## }
+  ##
+  configuration: {}
+  ## @param tls.existingConfigmap Existing configmap containing an additional Consul configuration file called 'tls.json'
+  ##
+  existingConfigmap: ""
 ## @param podLabels Pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
@@ -213,6 +231,7 @@ extraEnvVarsCM: ""
 extraEnvVarsSecret: ""
 ## HashiCorp Consul container ports to open
 ## @param containerPorts.http Port to open for HTTP in Consul
+## @param containerPorts.https Port to open for HTTPS in Consul
 ## @param containerPorts.dns Port to open for DNS server in Consul
 ## @param containerPorts.rpc Port to open for RPC in Consul
 ## @param containerPorts.rpcServer Port to open for RPC Server in Consul
@@ -221,6 +240,7 @@ extraEnvVarsSecret: ""
 ##
 containerPorts:
   http: 8500
+  https: 8501
   dns: 8600
   rpc: 8400
   rpcServer: 8300
@@ -455,19 +475,23 @@ service:
   ## @param service.enabled Use a service to access HashiCorp Consul Ui
   ##
   enabled: true
-  ## @param service.ports.http HashiCorp Consul UI svc port
+  ## @param service.ports.http HashiCorp Consul UI HTTP port (omitted if containerPort is -1)
+  ## @param service.ports.https HashiCorp Consul UI HTTPS port (omitted if containerPort is -1)
   ##
   ports:
     http: 80
+    https: 443
   ## @param service.type HashiCorp Consul UI Service Type
   ##
   type: ClusterIP
   ## Specify the nodePort value for the LoadBalancer and NodePort service types.
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-  ## @param service.nodePorts.http Node port for HashiCorp Consul UI
+  ## @param service.nodePorts.http Node port for HashiCorp Consul UI HTTP
+  ## @param service.nodePorts.https Node port for HashiCorp Consul UI HTTPS
   ##
   nodePorts:
     http: ""
+    https: ""
   ## @param service.clusterIP Consul service Cluster IP
   ## e.g.:
   ## clusterIP: None
