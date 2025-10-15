@@ -1,3 +1,5 @@
+rbac:
+  create: true
 sourceController:
   enabled: true
   containerPorts:
@@ -25,9 +27,7 @@ sourceController:
   serviceAccount:
     create: true
     automountServiceAccountToken: true
-  rbac:
-    create: true
-
+  
 kustomizeController:
   enabled: true
   metrics:
@@ -35,8 +35,6 @@ kustomizeController:
     service:
       ports:
         metrics: 8882
-  rbac:
-    create: true
 
 helmController:
   enabled: true
@@ -45,8 +43,6 @@ helmController:
     service:
       ports:
         metrics: 8883
-  rbac:
-    create: true
 
 notificationController:
   enabled: true
@@ -55,8 +51,6 @@ notificationController:
     service:
       ports:
         metrics: 8884
-  rbac:
-    create: true
 
 imageAutomationController:
   enabled: true
@@ -65,8 +59,6 @@ imageAutomationController:
     service:
       ports:
         metrics: 8885
-  rbac:
-    create: true
 
 imageReflectorController:
   enabled: true
@@ -75,8 +67,6 @@ imageReflectorController:
     service:
       ports:
         metrics: 8886
-  rbac:
-    create: true
 
 extraDeploy:
   # This is for kustomize-controller and source-controller

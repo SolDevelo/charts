@@ -445,28 +445,7 @@ kustomizeController:
   ##    command: ['sh', '-c', 'echo "hello world"']
   ##
   initContainers: []
-  ## @section Kustomize Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param kustomizeController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param kustomizeController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Kustomize Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param kustomizeController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -953,28 +932,7 @@ helmController:
   ##    command: ['sh', '-c', 'echo "hello world"']
   ##
   initContainers: []
-  ## @section Helm Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param helmController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param helmController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Helm Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param helmController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -1518,7 +1476,7 @@ sourceController:
     ##     timeoutSeconds: 300
     ##
     sessionAffinityConfig: {}
-  ## @section Source Conttroller Persistence Parameters
+  ## @section Source Controller Persistence Parameters
   ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
   ##
   persistence:
@@ -1560,28 +1518,7 @@ sourceController:
     ## @param sourceController.persistence.existingClaim The name of an existing PVC to use for persistence
     ##
     existingClaim: ""
-  ## @section Source Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param sourceController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param sourceController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Source Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param sourceController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -2180,28 +2117,7 @@ notificationController:
       ##     timeoutSeconds: 300
       ##
       sessionAffinityConfig: {}
-  ## @section Notification Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param notificationController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param notificationController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Notification Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param notificationController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -2688,28 +2604,7 @@ imageAutomationController:
   ##    command: ['sh', '-c', 'echo "hello world"']
   ##
   initContainers: []
-  ## @section Image Automation Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param imageAutomationController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param imageAutomationController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Image Automation Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param imageAutomationController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -3196,7 +3091,7 @@ imageReflectorController:
   ##    command: ['sh', '-c', 'echo "hello world"']
   ##
   initContainers: []
-  ## @section Image Reflector Conttroller Persistence Parameters
+  ## @section Image Reflector Controller Persistence Parameters
   ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
   ##
   persistence:
@@ -3238,28 +3133,7 @@ imageReflectorController:
     ## @param imageReflectorController.persistence.existingClaim The name of an existing PVC to use for persistence
     ##
     existingClaim: ""
-  ## @section Image Reflector Controller RBAC Parameters
-  ##
-
-  ## RBAC configuration
-  ##
-  rbac:
-    ## @param imageReflectorController.rbac.create Specifies whether RBAC resources should be created
-    ##
-    create: true
-    ## @param imageReflectorController.rbac.rules Custom RBAC rules to set
-    ## e.g:
-    ## rules:
-    ##   - apiGroups:
-    ##       - ""
-    ##     resources:
-    ##       - pods
-    ##     verbs:
-    ##       - get
-    ##       - list
-    ##
-    rules: []
-  ## ServiceAccount configuration
+  ## @section Image Reflector Controller ServiceAccount Parameters
   ##
   serviceAccount:
     ## @param imageReflectorController.serviceAccount.create Specifies whether a ServiceAccount should be created
@@ -3384,6 +3258,31 @@ imageReflectorController:
       ##   prometheus: my-prometheus
       ##
       selector: {}
+
+## @section RBAC Parameters
+##
+rbac:
+  ## @param rbac.create Specifies whether RBAC resources should be created
+  ##
+  create: true
+  ## @param rbac.aggregated.rules Custom RBAC rules to set for the aggregated cluster roles
+  ## @param rbac.controller.rules Custom RBAC rules to set for the controller cluster role
+  ## e.g:
+  ## rules:
+  ##   xxx:
+  ##   - apiGroups:
+  ##       - ""
+  ##     resources:
+  ##       - pods
+  ##     verbs:
+  ##       - get
+  ##       - list
+  ##
+  aggregated:
+    rules: []
+  controller:
+    rules: []
+
 ## 'volumePermissions' init container parameters
 ## Changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values
 ##   based on the podSecurityContext/containerSecurityContext parameters

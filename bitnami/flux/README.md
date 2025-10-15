@@ -213,12 +213,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `kustomizeController.sidecars`                                          | Add additional sidecar containers to the Kustomize Controller pod(s)                                                                                                                                                                                      | `[]`                                          |
 | `kustomizeController.initContainers`                                    | Add additional init containers to the Kustomize Controller pod(s)                                                                                                                                                                                         | `[]`                                          |
 
-### Kustomize Controller RBAC Parameters
+### Kustomize Controller ServiceAccount Parameters
 
 | Name                                                              | Description                                                      | Value   |
 | ----------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `kustomizeController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `kustomizeController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `kustomizeController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `kustomizeController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `kustomizeController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -348,12 +346,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `helmController.sidecars`                                          | Add additional sidecar containers to the Helm Controller pod(s)                                                                                                                                                                                 | `[]`                                     |
 | `helmController.initContainers`                                    | Add additional init containers to the Helm Controller pod(s)                                                                                                                                                                                    | `[]`                                     |
 
-### Helm Controller RBAC Parameters
+### Helm Controller ServiceAccount Parameters
 
 | Name                                                         | Description                                                      | Value   |
 | ------------------------------------------------------------ | ---------------------------------------------------------------- | ------- |
-| `helmController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `helmController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `helmController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `helmController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `helmController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -500,7 +496,7 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `sourceController.service.sessionAffinity`          | Control where client requests go, to the same pod or round-robin                             | `None`      |
 | `sourceController.service.sessionAffinityConfig`    | Additional settings for the sessionAffinity                                                  | `{}`        |
 
-### Source Conttroller Persistence Parameters
+### Source Controller Persistence Parameters
 
 | Name                                          | Description                                                                                                                           | Value                                    |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
@@ -515,12 +511,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `sourceController.persistence.selector`       | Selector to match an existing Persistent Volume (this value is evaluated as a template)                                               | `{}`                                     |
 | `sourceController.persistence.existingClaim`  | The name of an existing PVC to use for persistence                                                                                    | `""`                                     |
 
-### Source Controller RBAC Parameters
+### Source Controller ServiceAccount Parameters
 
 | Name                                                           | Description                                                      | Value   |
 | -------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `sourceController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `sourceController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `sourceController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `sourceController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `sourceController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -679,12 +673,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `notificationController.service.webhook.sessionAffinity`           | Control where client requests go, to the same pod or round-robin                                   | `None`      |
 | `notificationController.service.webhook.sessionAffinityConfig`     | Additional settings for the sessionAffinity                                                        | `{}`        |
 
-### Notification Controller RBAC Parameters
+### Notification Controller ServiceAccount Parameters
 
 | Name                                                                 | Description                                                      | Value   |
 | -------------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `notificationController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `notificationController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `notificationController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `notificationController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `notificationController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -814,12 +806,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `imageAutomationController.sidecars`                                          | Add additional sidecar containers to the Image Automation Controller pod(s)                                                                                                                                                                                           | `[]`                                                 |
 | `imageAutomationController.initContainers`                                    | Add additional init containers to the Image Automation Controller pod(s)                                                                                                                                                                                              | `[]`                                                 |
 
-### Image Automation Controller RBAC Parameters
+### Image Automation Controller ServiceAccount Parameters
 
 | Name                                                                    | Description                                                      | Value   |
 | ----------------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `imageAutomationController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `imageAutomationController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `imageAutomationController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `imageAutomationController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `imageAutomationController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -949,7 +939,7 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `imageReflectorController.sidecars`                                          | Add additional sidecar containers to the Image Reflector Controller pod(s)                                                                                                                                                                                          | `[]`                                                |
 | `imageReflectorController.initContainers`                                    | Add additional init containers to the Image Reflector Controller pod(s)                                                                                                                                                                                             | `[]`                                                |
 
-### Image Reflector Conttroller Persistence Parameters
+### Image Reflector Controller Persistence Parameters
 
 | Name                                                  | Description                                                                                                                           | Value                                             |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
@@ -964,12 +954,10 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 | `imageReflectorController.persistence.selector`       | Selector to match an existing Persistent Volume (this value is evaluated as a template)                                               | `{}`                                              |
 | `imageReflectorController.persistence.existingClaim`  | The name of an existing PVC to use for persistence                                                                                    | `""`                                              |
 
-### Image Reflector Controller RBAC Parameters
+### Image Reflector Controller ServiceAccount Parameters
 
 | Name                                                                   | Description                                                      | Value   |
 | ---------------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `imageReflectorController.rbac.create`                                 | Specifies whether RBAC resources should be created               | `true`  |
-| `imageReflectorController.rbac.rules`                                  | Custom RBAC rules to set                                         | `[]`    |
 | `imageReflectorController.serviceAccount.create`                       | Specifies whether a ServiceAccount should be created             | `true`  |
 | `imageReflectorController.serviceAccount.name`                         | The name of the ServiceAccount to use.                           | `""`    |
 | `imageReflectorController.serviceAccount.annotations`                  | Additional Service Account annotations (evaluated as a template) | `{}`    |
@@ -977,42 +965,50 @@ Install the [Bitnami Kube Prometheus helm chart](https://github.com/bitnami/char
 
 ### Image Reflector Controller Metrics Parameters
 
-| Name                                                                | Description                                                                                                                                                                                                                                           | Value                      |
-| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| `imageReflectorController.metrics.enabled`                          | Enable the export of Prometheus metrics                                                                                                                                                                                                               | `true`                     |
-| `imageReflectorController.metrics.service.type`                     | Image Reflector Controller service type                                                                                                                                                                                                               | `ClusterIP`                |
-| `imageReflectorController.metrics.service.ports.metrics`            | Image Reflector Controller service metrics port                                                                                                                                                                                                       | `80`                       |
-| `imageReflectorController.metrics.service.nodePorts.metrics`        | Node port for HTTP                                                                                                                                                                                                                                    | `""`                       |
-| `imageReflectorController.metrics.service.clusterIP`                | Image Reflector Controller service Cluster IP                                                                                                                                                                                                         | `""`                       |
-| `imageReflectorController.metrics.service.loadBalancerIP`           | Image Reflector Controller service Load Balancer IP                                                                                                                                                                                                   | `""`                       |
-| `imageReflectorController.metrics.service.loadBalancerSourceRanges` | Image Reflector Controller service Load Balancer sources                                                                                                                                                                                              | `[]`                       |
-| `imageReflectorController.metrics.service.externalTrafficPolicy`    | Image Reflector Controller service external traffic policy                                                                                                                                                                                            | `Cluster`                  |
-| `imageReflectorController.metrics.service.annotations`              | Additional custom annotations for Image Reflector Controller service                                                                                                                                                                                  | `{}`                       |
-| `imageReflectorController.metrics.service.extraPorts`               | Extra ports to expose in Image Reflector Controller service (normally used with the `sidecars` value)                                                                                                                                                 | `[]`                       |
-| `imageReflectorController.metrics.service.sessionAffinity`          | Control where client requests go, to the same pod or round-robin                                                                                                                                                                                      | `None`                     |
-| `imageReflectorController.metrics.service.sessionAffinityConfig`    | Additional settings for the sessionAffinity                                                                                                                                                                                                           | `{}`                       |
-| `imageReflectorController.metrics.serviceMonitor.enabled`           | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)                                                                                                                                                | `false`                    |
-| `imageReflectorController.metrics.serviceMonitor.namespace`         | Namespace in which Prometheus is running                                                                                                                                                                                                              | `""`                       |
-| `imageReflectorController.metrics.serviceMonitor.annotations`       | Additional custom annotations for the ServiceMonitor                                                                                                                                                                                                  | `{}`                       |
-| `imageReflectorController.metrics.serviceMonitor.labels`            | Extra labels for the ServiceMonitor                                                                                                                                                                                                                   | `{}`                       |
-| `imageReflectorController.metrics.serviceMonitor.jobLabel`          | The name of the label on the target service to use as the job name in Prometheus                                                                                                                                                                      | `""`                       |
-| `imageReflectorController.metrics.serviceMonitor.honorLabels`       | honorLabels chooses the metric's labels on collisions with target labels                                                                                                                                                                              | `false`                    |
-| `imageReflectorController.metrics.serviceMonitor.interval`          | Interval at which metrics should be scraped.                                                                                                                                                                                                          | `""`                       |
-| `imageReflectorController.metrics.serviceMonitor.scrapeTimeout`     | Timeout after which the scrape is ended                                                                                                                                                                                                               | `""`                       |
-| `imageReflectorController.metrics.serviceMonitor.metricRelabelings` | Specify additional relabeling of metrics                                                                                                                                                                                                              | `[]`                       |
-| `imageReflectorController.metrics.serviceMonitor.relabelings`       | Specify general relabeling                                                                                                                                                                                                                            | `[]`                       |
-| `imageReflectorController.metrics.serviceMonitor.selector`          | Prometheus instance selector labels                                                                                                                                                                                                                   | `{}`                       |
-| `volumePermissions.enabled`                                         | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`                                                                                                                                                       | `false`                    |
-| `volumePermissions.image.registry`                                  | OS Shell + Utility image registry                                                                                                                                                                                                                     | `REGISTRY_NAME`            |
-| `volumePermissions.image.repository`                                | OS Shell + Utility image repository                                                                                                                                                                                                                   | `REPOSITORY_NAME/os-shell` |
-| `volumePermissions.image.digest`                                    | OS Shell + Utility image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                                                                    | `""`                       |
-| `volumePermissions.image.pullPolicy`                                | OS Shell + Utility image pull policy                                                                                                                                                                                                                  | `IfNotPresent`             |
-| `volumePermissions.image.pullSecrets`                               | OS Shell + Utility image pull secrets                                                                                                                                                                                                                 | `[]`                       |
-| `volumePermissions.resourcesPreset`                                 | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if volumePermissions.resources is set (volumePermissions.resources is recommended for production). | `nano`                     |
-| `volumePermissions.resources`                                       | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                                                     | `{}`                       |
-| `volumePermissions.containerSecurityContext.enabled`                | Enable init container's Security Context                                                                                                                                                                                                              | `true`                     |
-| `volumePermissions.containerSecurityContext.seLinuxOptions`         | Set SELinux options in container                                                                                                                                                                                                                      | `{}`                       |
-| `volumePermissions.containerSecurityContext.runAsUser`              | Set init container's Security Context runAsUser                                                                                                                                                                                                       | `0`                        |
+| Name                                                                | Description                                                                                            | Value       |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------- |
+| `imageReflectorController.metrics.enabled`                          | Enable the export of Prometheus metrics                                                                | `true`      |
+| `imageReflectorController.metrics.service.type`                     | Image Reflector Controller service type                                                                | `ClusterIP` |
+| `imageReflectorController.metrics.service.ports.metrics`            | Image Reflector Controller service metrics port                                                        | `80`        |
+| `imageReflectorController.metrics.service.nodePorts.metrics`        | Node port for HTTP                                                                                     | `""`        |
+| `imageReflectorController.metrics.service.clusterIP`                | Image Reflector Controller service Cluster IP                                                          | `""`        |
+| `imageReflectorController.metrics.service.loadBalancerIP`           | Image Reflector Controller service Load Balancer IP                                                    | `""`        |
+| `imageReflectorController.metrics.service.loadBalancerSourceRanges` | Image Reflector Controller service Load Balancer sources                                               | `[]`        |
+| `imageReflectorController.metrics.service.externalTrafficPolicy`    | Image Reflector Controller service external traffic policy                                             | `Cluster`   |
+| `imageReflectorController.metrics.service.annotations`              | Additional custom annotations for Image Reflector Controller service                                   | `{}`        |
+| `imageReflectorController.metrics.service.extraPorts`               | Extra ports to expose in Image Reflector Controller service (normally used with the `sidecars` value)  | `[]`        |
+| `imageReflectorController.metrics.service.sessionAffinity`          | Control where client requests go, to the same pod or round-robin                                       | `None`      |
+| `imageReflectorController.metrics.service.sessionAffinityConfig`    | Additional settings for the sessionAffinity                                                            | `{}`        |
+| `imageReflectorController.metrics.serviceMonitor.enabled`           | if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`) | `false`     |
+| `imageReflectorController.metrics.serviceMonitor.namespace`         | Namespace in which Prometheus is running                                                               | `""`        |
+| `imageReflectorController.metrics.serviceMonitor.annotations`       | Additional custom annotations for the ServiceMonitor                                                   | `{}`        |
+| `imageReflectorController.metrics.serviceMonitor.labels`            | Extra labels for the ServiceMonitor                                                                    | `{}`        |
+| `imageReflectorController.metrics.serviceMonitor.jobLabel`          | The name of the label on the target service to use as the job name in Prometheus                       | `""`        |
+| `imageReflectorController.metrics.serviceMonitor.honorLabels`       | honorLabels chooses the metric's labels on collisions with target labels                               | `false`     |
+| `imageReflectorController.metrics.serviceMonitor.interval`          | Interval at which metrics should be scraped.                                                           | `""`        |
+| `imageReflectorController.metrics.serviceMonitor.scrapeTimeout`     | Timeout after which the scrape is ended                                                                | `""`        |
+| `imageReflectorController.metrics.serviceMonitor.metricRelabelings` | Specify additional relabeling of metrics                                                               | `[]`        |
+| `imageReflectorController.metrics.serviceMonitor.relabelings`       | Specify general relabeling                                                                             | `[]`        |
+| `imageReflectorController.metrics.serviceMonitor.selector`          | Prometheus instance selector labels                                                                    | `{}`        |
+
+### RBAC Parameters
+
+| Name                                                        | Description                                                                                                                                                                                                                                           | Value                      |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| `rbac.create`                                               | Specifies whether RBAC resources should be created                                                                                                                                                                                                    | `true`                     |
+| `rbac.aggregated.rules`                                     | Custom RBAC rules to set for the aggregated cluster roles                                                                                                                                                                                             | `[]`                       |
+| `rbac.controller.rules`                                     | Custom RBAC rules to set for the controller cluster role                                                                                                                                                                                              | `[]`                       |
+| `volumePermissions.enabled`                                 | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`                                                                                                                                                       | `false`                    |
+| `volumePermissions.image.registry`                          | OS Shell + Utility image registry                                                                                                                                                                                                                     | `REGISTRY_NAME`            |
+| `volumePermissions.image.repository`                        | OS Shell + Utility image repository                                                                                                                                                                                                                   | `REPOSITORY_NAME/os-shell` |
+| `volumePermissions.image.digest`                            | OS Shell + Utility image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                                                                    | `""`                       |
+| `volumePermissions.image.pullPolicy`                        | OS Shell + Utility image pull policy                                                                                                                                                                                                                  | `IfNotPresent`             |
+| `volumePermissions.image.pullSecrets`                       | OS Shell + Utility image pull secrets                                                                                                                                                                                                                 | `[]`                       |
+| `volumePermissions.resourcesPreset`                         | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if volumePermissions.resources is set (volumePermissions.resources is recommended for production). | `nano`                     |
+| `volumePermissions.resources`                               | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                                                     | `{}`                       |
+| `volumePermissions.containerSecurityContext.enabled`        | Enable init container's Security Context                                                                                                                                                                                                              | `true`                     |
+| `volumePermissions.containerSecurityContext.seLinuxOptions` | Set SELinux options in container                                                                                                                                                                                                                      | `{}`                       |
+| `volumePermissions.containerSecurityContext.runAsUser`      | Set init container's Security Context runAsUser                                                                                                                                                                                                       | `0`                        |
 
 There are cases where you may want to deploy extra objects, such as HelmRelease, Kustomization, amongst others. For covering this case, the chart allows adding the full specification of other objects using the `extraDeploy` parameter. The following example would activate a plugin at deployment time.
 
