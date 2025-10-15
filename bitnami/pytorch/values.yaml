@@ -85,7 +85,7 @@ diagnosticMode:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/pytorch
-  tag: 2.8.0-debian-12-r14
+  tag: 2.9.0-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
