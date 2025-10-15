@@ -4,7 +4,7 @@ SPDX-License-Identifier: APACHE-2.0
 */}}
 
 {{- if and .Values.imageReflectorController.enabled .Values.imageReflectorController.rbac.create }}
-{{- $bindingKind := ternary "ClusterRoleBinding" "RoleBinding" .Values.imageReflectorController.watchAllNamespaces }}
+{{- $bindingKind := ternary "ClusterRoleBinding" "RoleBinding" .Values.watchAllNamespaces }}
 {{- $versionLabel := dict "app.kubernetes.io/version" ( include "common.images.version" ( dict "imageRoot" .Values.imageReflectorController.image "chart" .Chart ) ) }}
 {{- $labels := include "common.tplvalues.merge" ( dict "values" ( list .Values.commonLabels $versionLabel ) "context" . ) }}
 kind: {{ $bindingKind }}
@@ -14,7 +14,7 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: image-reflector-controller
-  {{- if not .Values.imageReflectorController.watchAllNamespaces }}
+  {{- if not .Values.watchAllNamespaces }}
   namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
   {{- if .Values.commonAnnotations }}
@@ -36,7 +36,7 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: image-reflector-controller
-  {{- if not .Values.imageReflectorController.watchAllNamespaces }}
+  {{- if not .Values.watchAllNamespaces }}
   namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
   {{- if .Values.commonAnnotations }}
@@ -58,7 +58,7 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: image-reflector-controller
-  {{- if not .Values.imageReflectorController.watchAllNamespaces }}
+  {{- if not .Values.watchAllNamespaces }}
   namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
   {{- if .Values.commonAnnotations }}
@@ -81,7 +81,7 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: image-reflector-controller
-  {{- if not .Values.imageReflectorController.watchAllNamespaces }}
+  {{- if not .Values.watchAllNamespaces }}
   namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
   {{- if .Values.commonAnnotations }}
@@ -103,7 +103,7 @@ metadata:
   labels: {{- include "common.labels.standard" ( dict "customLabels" $labels "context" $ ) | nindent 4 }}
     app.kubernetes.io/part-of: flux
     app.kubernetes.io/component: image-reflector-controller
-  {{- if not .Values.imageReflectorController.watchAllNamespaces }}
+  {{- if not .Values.watchAllNamespaces }}
   namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
   {{- if .Values.commonAnnotations }}

@@ -4,7 +4,7 @@ SPDX-License-Identifier: APACHE-2.0
 */}}
 
 {{- if and .Values.sourceController.enabled .Values.sourceController.rbac.create }}
-{{- $bindingKind := ternary "ClusterRoleBinding" "RoleBinding" .Values.sourceController.watchAllNamespaces }}
+{{- $bindingKind := ternary "ClusterRoleBinding" "RoleBinding" .Values.watchAllNamespaces }}
 {{- $versionLabel := dict "app.kubernetes.io/version" ( include "common.images.version" ( dict "imageRoot" .Values.sourceController.image "chart" .Chart ) ) }}
 {{- $labels := include "common.tplvalues.merge" ( dict "values" ( list .Values.commonLabels $versionLabel ) "context" . ) }}
 kind: {{ $bindingKind }}
