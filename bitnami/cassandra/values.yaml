@@ -156,6 +156,9 @@ existingConfiguration: ""
 ## @param cluster.numTokens Number of tokens for each node
 ## @param cluster.datacenter Datacenter name
 ## @param cluster.racks Rack names. It will generate a cassandra cluster per rack. The number of racks is determined by the length of this array.
+## @param cluster.rackUpdateNetworkStrategy.enabled Run init script for updating the rack network strategy (only when there is more than one rack)
+## @param cluster.rackUpdateNetworkStrategy.retries Number of retries for the init script
+## @param cluster.rackUpdateNetworkStrategy.sleepTime Sleep time between retries
 ## @param cluster.endpointSnitch Endpoint Snitch
 ## @param cluster.clientEncryption Client Encryption
 ## @param cluster.extraSeeds For an external/second cassandra ring.
@@ -200,6 +203,10 @@ cluster:
   ##   Multiple racks: ["rack1", "rack2", "rack3"]
   racks:
     - rack1
+  rackUpdateNetworkStrategy:
+    enabled: true
+    retries: 30
+    sleepTime: 20
   endpointSnitch: SimpleSnitch
   clientEncryption: false
   ## eg:

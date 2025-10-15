@@ -530,7 +530,7 @@ spec:
             - name: certs-shared
               mountPath: /opt/bitnami/cassandra/certs
             {{- end }}
-            {{- if or $.Values.initDBConfigMap $.Values.initDB }}
+            {{- if or $.Values.initDBConfigMap $.Values.initDB (and $.Values.cluster.rackUpdateNetworkStrategy.enabled (gt (len $.Values.cluster.racks) 1)) }}
             - name: init-db-cm
               mountPath: /docker-entrypoint-initdb.d/configmap
             {{- end }}
@@ -646,7 +646,7 @@ spec:
         {{- end }}
         - name: empty-dir
           emptyDir: {}
-        {{- if or $.Values.initDB $.Values.initDBConfigMap }}
+        {{- if or $.Values.initDB $.Values.initDBConfigMap (and $.Values.cluster.rackUpdateNetworkStrategy.enabled (gt (len $.Values.cluster.racks) 1)) }}
         - name: init-db-cm
           configMap:
             name: {{ ternary (printf "%s-init-scripts" (include "common.names.fullname" $)) (tpl $.Values.initDBConfigMap $) (empty $.Values.initDBConfigMap) }}

@@ -3,7 +3,7 @@ Copyright Broadcom, Inc. All Rights Reserved.
 SPDX-License-Identifier: APACHE-2.0
 */}}
 
-{{- if and .Values.initDB (not .Values.initDBConfigMap) }}
+{{- if and (or (and .Values.cluster.rackUpdateNetworkStrategy.enabled (gt (len .Values.cluster.racks) 1)) .Values.initDB) (not .Values.initDBConfigMap) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,5 +15,21 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
-{{- include "common.tplvalues.render" (dict "value" .Values.initDB "context" .) | nindent 2 }}
+  {{- if and .Values.cluster.rackUpdateNetworkStrategy.enabled (gt (len .Values.cluster.racks) 1) }}
+  00_update_system_auth_keyspace.sh: |
+    #!/bin/bash
+
+    . /opt/bitnami/scripts/cassandra-env.sh
+    . /opt/bitnami/scripts/liblog.sh
+    . /opt/bitnami/scripts/libcassandra.sh
+
+    info "Updating system_auth keyspace"
+    echo "ALTER KEYSPACE system_auth WITH replication = { 'class': 'NetworkTopologyStrategy', '{{ .Values.cluster.datacenter }}': {{ .Values.replicaCount }} };" | cassandra_execute_with_retries "{{.Values.cluster.rackUpdateNetworkStrategy.retries}}" "{{.Values.cluster.rackUpdateNetworkStrategy.sleepTime}}" "$DB_USER" "$DB_PASSWORD"
+    info "Running nodetool repair"
+    nodetool repair --full system_auth
+    info "Operation completed successfully"
+  {{- end }}
+  {{- if .Values.initDB }}
+  {{- include "common.tplvalues.render" (dict "value" .Values.initDB "context" .) | nindent 2 }}
+  {{- end }}
 {{ end }}
