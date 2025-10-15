@@ -8,12 +8,12 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: scylladb
-      version: 2025.3.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/scylladb:2025.3.1-debian-12-r15
+      version: 2025.3.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/scylladb:2025.3.2-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 2025.3.1
+appVersion: 2025.3.2
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -35,4 +35,4 @@ maintainers:
 name: scylladb
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/scylladb
-version: 6.1.1
+version: 6.1.2
