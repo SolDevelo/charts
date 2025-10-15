@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: grafana
       version: 12.2.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana:12.2.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana:12.2.0-debian-12-r1
     - name: grafana-operator
       version: 5.19.4
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-operator:5.19.4-debian-12-r7
@@ -34,4 +34,4 @@ maintainers:
 name: grafana-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana-operator
-version: 4.9.47
+version: 4.9.48
