@@ -8,8 +8,8 @@ annotations:
       version: 0.18.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/deepspeed:0.18.0-debian-12-r0
     - name: git
-      version: 2.51.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.0-debian-12-r7
+      version: 2.51.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.1-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -41,4 +41,4 @@ name: deepspeed
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/deepspeed
 - https://github.com/bitnami/charts/tree/main/bitnami/pytorch
-version: 2.3.61
+version: 2.3.62
