@@ -259,7 +259,7 @@ Sometimes it is of interest to run the tests locally, for example during develop
     helm install nginx bitnami/nginx -f .vib/nginx/runtime-parameters.yaml
     ```
 
-2. Download and install [Cypress](https://www.cypress.io/). The version currently used is `13.6.3`
+2. Download and install [Cypress](https://www.cypress.io/). The version currently used is `13.17.0`
 3. Obtain the IP and port of the Service exposing the UI of the application and adapt `cypress.config.js` to these values
 
     ```bash
@@ -317,17 +317,17 @@ Sometimes it is of interest to run the tests locally, for example during develop
     ```console
     $ cypress run .
 
-    =====================================================================================
+    ====================================================================================================
 
       (Run Starting)
 
-      ┌─────────────────────────────────────────────────────────────────────────────────┐
-      │ Cypress:        13.6.3                                                          │
-      │ Browser:        Electron 114 (headless)                                         │
-      │ Node Version:   v16.20.2 (/usr/local/bin/node)                                  │
-      │ Specs:          1 found (nginx_spec.js)                                         │
-      │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                             │
-      └─────────────────────────────────────────────────────────────────────────────────┘
+      ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+      │ Cypress:        13.17.0                                                                        │
+      │ Browser:        Electron 118                                                                   │
+      │ Node Version:   v20.19.5 (/usr/local/bin/node)                                                 │
+      │ Specs:          1 found (tomcat.cy.js)                                                         │
+      │ Searched:       cypress/e2e/**/*.cy.{js,jsx,ts,tsx}                                            │
+      └────────────────────────────────────────────────────────────────────────────────────────────────┘
     ...
     ✔  All specs passed!                        371ms        1        1
     ```
