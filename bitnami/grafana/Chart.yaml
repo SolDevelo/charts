@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: grafana
       version: 12.2.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana:12.2.0-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana:12.2.0-debian-12-r1
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -35,4 +35,4 @@ maintainers:
 name: grafana
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana
-version: 12.1.15
+version: 12.1.16
