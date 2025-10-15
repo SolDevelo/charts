@@ -1,0 +1,31 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if and .Values.sourceWatcher.enabled .Values.sourceWatcher.pdb.create }}
+apiVersion: {{ include "common.capabilities.policy.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "flux.source-watcher.fullname" . }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  {{- $versionLabel := dict "app.kubernetes.io/version" (include "common.images.version" (dict "imageRoot" .Values.sourceWatcher.image "chart" .Chart)) }}  
+  {{- $labels := include "common.tplvalues.merge" (dict "values" (list $versionLabel .Values.commonLabels) "context" .) }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" $labels "context" .) | nindent 4 }}
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/component: source-watcher
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.sourceWatcher.pdb.minAvailable }}
+  minAvailable: {{ .Values.sourceWatcher.pdb.minAvailable }}
+  {{- end }}
+  {{- if or .Values.sourceWatcher.pdb.maxUnavailable ( not .Values.sourceWatcher.pdb.minAvailable ) }}
+  maxUnavailable: {{ .Values.sourceWatcher.pdb.maxUnavailable | default 1 }}
+  {{- end }}
+  {{- $podLabels := include "common.tplvalues.merge" (dict "values" (list .Values.sourceWatcher.podLabels .Values.commonLabels) "context" .) }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" (dict "customLabels" $podLabels "context" .) | nindent 6 }}
+      app.kubernetes.io/component: source-watcher
+{{- end }}

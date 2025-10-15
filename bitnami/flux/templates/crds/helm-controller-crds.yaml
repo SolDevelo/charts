@@ -1,7 +1,7 @@
 # Source: https://github.com/fluxcd/helm-controller/releases/download/v{version}/helm-controller.crds.yaml
 # Version: 1.4.2
 # VersionOf: fluxcd-helm-controller
-# Conditional: .Values.installCRDs
+# Conditional: and .Values.helmController.enabled .Values.installCRDs
 {{- if and .Values.helmController.enabled .Values.installCRDs }}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition

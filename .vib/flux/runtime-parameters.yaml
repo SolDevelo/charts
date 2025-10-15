@@ -1,5 +1,6 @@
 rbac:
   create: true
+
 sourceController:
   enabled: true
   containerPorts:
@@ -67,6 +68,14 @@ imageReflectorController:
     service:
       ports:
         metrics: 8886
+
+sourceWatcher:
+  enabled: true
+  metrics:
+    enabled: true
+    service:
+      ports:
+        metrics: 8887
 
 extraDeploy:
   # This is for kustomize-controller and source-controller

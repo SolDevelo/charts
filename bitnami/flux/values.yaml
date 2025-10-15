@@ -1643,6 +1643,573 @@ sourceController:
       ##   prometheus: my-prometheus
       ##
       selector: {}
+## @section Source Watcher Parameters
+##
+sourceWatcher:
+  ## @param sourceWatcher.enabled Enable Source Watcher
+  ##
+  enabled: false
+  ## Bitnami Source Watcher image
+  ## ref: https://hub.docker.com/r/bitnami/fluxcd-helm-watcher/tags/
+  ## @param sourceWatcher.image.registry [default: REGISTRY_NAME] Source Watcher image registry
+  ## @param sourceWatcher.image.repository [default: REPOSITORY_NAME/fluxcd-source-watcher] Source Watcher image repository
+  ## @skip sourceWatcher.image.tag Source Watcher image tag (immutable tags are recommended)
+  ## @param sourceWatcher.image.digest Source Watcher image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag image tag (immutable tags are recommended)
+  ## @param sourceWatcher.image.pullPolicy Source Watcher image pull policy
+  ## @param sourceWatcher.image.pullSecrets Source Watcher image pull secrets
+  ## @param sourceWatcher.image.debug Enable Source Watcher image debug mode
+  ##
+  image:
+    registry: registry.app-catalog.vmware.com
+    repository: eam/prd/containers/verified/common/minideb-bookworm/fluxcd-source-watcher
+    tag: 2.0.2-debian-12-r0
+    digest: ""
+    ## Specify a imagePullPolicy
+    ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ## e.g:
+    ## pullSecrets:
+    ##   - myRegistryKeySecretName
+    ##
+    pullSecrets: []
+    ## Enable debug mode
+    ##
+    debug: false
+  ## @param sourceWatcher.containerPorts.http Source Watcher http container port
+  ## @param sourceWatcher.containerPorts.metrics Source Watcher metrics container port
+  ## @param sourceWatcher.containerPorts.health Source Watcher health container port
+  ##
+  containerPorts:
+    http: 9090
+    metrics: 8080
+    health: 9440
+  ## Network Policies
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  networkPolicy:
+    ## @param sourceWatcher.networkPolicy.enabled Specifies whether a NetworkPolicy should be created
+    ##
+    enabled: true
+    ## @param sourceWatcher.networkPolicy.allowExternal Don't require server label for connections
+    ## The Policy model to apply. When set to false, only pods with the correct
+    ## server label will have network access to the ports server is listening
+    ## on. When true, server will accept connections from any source
+    ## (with the correct destination port).
+    ##
+    allowExternal: true
+    ## @param sourceWatcher.networkPolicy.allowExternalEgress Allow the pod to access any range of port and all destinations.
+    ##
+    allowExternalEgress: true
+    ## @param sourceWatcher.networkPolicy.kubeAPIServerPorts [array] List of possible endpoints to kube-apiserver (limit to your cluster settings to increase security)
+    ##
+    kubeAPIServerPorts: [443, 6443, 8443]
+    ## @param sourceWatcher.networkPolicy.extraIngress [array] Add extra ingress rules to the NetworkPolicy
+    ## e.g:
+    ## extraIngress:
+    ##   - ports:
+    ##       - port: 1234
+    ##     from:
+    ##       - podSelector:
+    ##           - matchLabels:
+    ##               - role: frontend
+    ##       - podSelector:
+    ##           - matchExpressions:
+    ##               - key: role
+    ##                 operator: In
+    ##                 values:
+    ##                   - frontend
+    extraIngress: []
+    ## @param sourceWatcher.networkPolicy.extraEgress [array] Add extra ingress rules to the NetworkPolicy
+    ## e.g:
+    ## extraEgress:
+    ##   - ports:
+    ##       - port: 1234
+    ##     to:
+    ##       - podSelector:
+    ##           - matchLabels:
+    ##               - role: frontend
+    ##       - podSelector:
+    ##           - matchExpressions:
+    ##               - key: role
+    ##                 operator: In
+    ##                 values:
+    ##                   - frontend
+    ##
+    extraEgress: []
+    ## @param sourceWatcher.networkPolicy.ingressNSMatchLabels [object] Labels to match to allow traffic from other namespaces
+    ## @param sourceWatcher.networkPolicy.ingressNSPodMatchLabels [object] Pod labels to match to allow traffic from other namespaces
+    ##
+    ingressNSMatchLabels: {}
+    ingressNSPodMatchLabels: {}
+  ## Configure extra options for Source Watcher containers' liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+  ## @param sourceWatcher.livenessProbe.enabled Enable livenessProbe on Source Watcher containers
+  ## @param sourceWatcher.livenessProbe.initialDelaySeconds Initial delay seconds for livenessProbe
+  ## @param sourceWatcher.livenessProbe.periodSeconds Period seconds for livenessProbe
+  ## @param sourceWatcher.livenessProbe.timeoutSeconds Timeout seconds for livenessProbe
+  ## @param sourceWatcher.livenessProbe.failureThreshold Failure threshold for livenessProbe
+  ## @param sourceWatcher.livenessProbe.successThreshold Success threshold for livenessProbe
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param sourceWatcher.readinessProbe.enabled Enable readinessProbe on Source Watcher containers
+  ## @param sourceWatcher.readinessProbe.initialDelaySeconds Initial delay seconds for readinessProbe
+  ## @param sourceWatcher.readinessProbe.periodSeconds Period seconds for readinessProbe
+  ## @param sourceWatcher.readinessProbe.timeoutSeconds Timeout seconds for readinessProbe
+  ## @param sourceWatcher.readinessProbe.failureThreshold Failure threshold for readinessProbe
+  ## @param sourceWatcher.readinessProbe.successThreshold Success threshold for readinessProbe
+  ##
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param sourceWatcher.startupProbe.enabled Enable startupProbe on Source Watcher containers
+  ## @param sourceWatcher.startupProbe.initialDelaySeconds Initial delay seconds for startupProbe
+  ## @param sourceWatcher.startupProbe.periodSeconds Period seconds for startupProbe
+  ## @param sourceWatcher.startupProbe.timeoutSeconds Timeout seconds for startupProbe
+  ## @param sourceWatcher.startupProbe.failureThreshold Failure threshold for startupProbe
+  ## @param sourceWatcher.startupProbe.successThreshold Success threshold for startupProbe
+  ##
+  startupProbe:
+    enabled: false
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 5
+    successThreshold: 1
+  ## @param sourceWatcher.customLivenessProbe Custom livenessProbe that overrides the default one
+  ##
+  customLivenessProbe: {}
+  ## @param sourceWatcher.customReadinessProbe Custom readinessProbe that overrides the default one
+  ##
+  customReadinessProbe: {}
+  ## @param sourceWatcher.customStartupProbe Custom startupProbe that overrides the default one
+  ##
+  customStartupProbe: {}
+  ## Source Watcher resource requests and limits
+  ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+  ## @param sourceWatcher.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if sourceWatcher.resources is set (sourceWatcher.resources is recommended for production).
+  ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  ##
+  resourcesPreset: "nano"
+  ## @param sourceWatcher.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+  ## Example:
+  ## resources:
+  ##   requests:
+  ##     cpu: 2
+  ##     memory: 512Mi
+  ##   limits:
+  ##     cpu: 3
+  ##     memory: 1024Mi
+  ##
+  resources: {}
+  ## Configure Pods Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+  ## @param sourceWatcher.podSecurityContext.enabled Enabled Source Watcher pods' Security Context
+  ## @param sourceWatcher.podSecurityContext.fsGroupChangePolicy Set filesystem group change policy
+  ## @param sourceWatcher.podSecurityContext.sysctls Set kernel settings using the sysctl interface
+  ## @param sourceWatcher.podSecurityContext.supplementalGroups Set filesystem extra groups
+  ## @param sourceWatcher.podSecurityContext.fsGroup Set Source Watcher pod's Security Context fsGroup
+  ##
+  podSecurityContext:
+    enabled: true
+    fsGroupChangePolicy: Always
+    sysctls: []
+    supplementalGroups: []
+    fsGroup: 1001
+  ## Configure Container Security Context
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+  ## @param sourceWatcher.containerSecurityContext.enabled Enabled Source Watcher containers' Security Context
+  ## @param sourceWatcher.containerSecurityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+  ## @param sourceWatcher.containerSecurityContext.runAsUser Set containers' Security Context runAsUser
+  ## @param sourceWatcher.containerSecurityContext.runAsGroup Set containers' Security Context runAsGroup
+  ## @param sourceWatcher.containerSecurityContext.runAsNonRoot Set Source Watcher containers' Security Context runAsNonRoot
+  ## @param sourceWatcher.containerSecurityContext.privileged Set Source Watcher containers' Security Context privileged
+  ## @param sourceWatcher.containerSecurityContext.readOnlyRootFilesystem Set Source Watcher containers' Security Context runAsNonRoot
+  ## @param sourceWatcher.containerSecurityContext.allowPrivilegeEscalation Set Source Watcher container's privilege escalation
+  ## @param sourceWatcher.containerSecurityContext.capabilities.drop Set Source Watcher container's Security Context runAsNonRoot
+  ## @param sourceWatcher.containerSecurityContext.seccompProfile.type Set Source Watcher container's Security Context seccomp profile
+  ##
+  containerSecurityContext:
+    enabled: true
+    seLinuxOptions: {}
+    runAsUser: 1001
+    runAsGroup: 1001
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    privileged: false
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: RuntimeDefault
+  ## @param sourceWatcher.command Override default container command (useful when using custom images)
+  ##
+  command: []
+  ## @param sourceWatcher.args Override default container args (useful when using custom images)
+  ##
+  args: []
+  ## @param sourceWatcher.automountServiceAccountToken Mount Service Account token in pod
+  ##
+  automountServiceAccountToken: true
+  ## @param sourceWatcher.hostAliases Source Watcher pods host aliases
+  ## https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/
+  ##
+  hostAliases: []
+  ## @param sourceWatcher.podLabels Extra labels for Source Watcher pods
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  ##
+  podLabels: {}
+  ## @param sourceWatcher.podAnnotations Annotations for Source Watcher pods
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+  ##
+  podAnnotations: {}
+  ## @param sourceWatcher.podAffinityPreset Pod affinity preset. Ignored if `sourceWatcher.affinity` is set. Allowed values: `soft` or `hard`
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAffinityPreset: ""
+  ## @param sourceWatcher.podAntiAffinityPreset Pod anti-affinity preset. Ignored if `sourceWatcher.affinity` is set. Allowed values: `soft` or `hard`
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+  ##
+  podAntiAffinityPreset: soft
+  ## Pod Disruption Budget configuration
+  ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
+  ## @param sourceWatcher.pdb.create Enable/disable a Pod Disruption Budget creation
+  ## @param sourceWatcher.pdb.minAvailable Minimum number/percentage of pods that should remain scheduled
+  ## @param sourceWatcher.pdb.maxUnavailable Maximum number/percentage of pods that may be made unavailable
+  ##
+  pdb:
+    create: true
+    minAvailable: ""
+    maxUnavailable: ""
+  ## Node sourceWatcher.affinity preset
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity
+  ##
+  nodeAffinityPreset:
+    ## @param sourceWatcher.nodeAffinityPreset.type Node affinity preset type. Ignored if `sourceWatcher.affinity` is set. Allowed values: `soft` or `hard`
+    ##
+    type: ""
+    ## @param sourceWatcher.nodeAffinityPreset.key Node label key to match. Ignored if `sourceWatcher.affinity` is set
+    ##
+    key: ""
+    ## @param sourceWatcher.nodeAffinityPreset.values Node label values to match. Ignored if `sourceWatcher.affinity` is set
+    ## E.g.
+    ## values:
+    ##   - e2e-az1
+    ##   - e2e-az2
+    ##
+    values: []
+  ## @param sourceWatcher.affinity Affinity for Source Watcher pods assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ## NOTE: `sourceWatcher.podAffinityPreset`, `sourceWatcher.podAntiAffinityPreset`, and `sourceWatcher.nodeAffinityPreset` will be ignored when it's set
+  ##
+  affinity: {}
+  ## @param sourceWatcher.nodeSelector Node labels for Source Watcher pods assignment
+  ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+  ##
+  nodeSelector: {}
+  ## @param sourceWatcher.tolerations Tolerations for Source Watcher pods assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+  ## @param sourceWatcher.updateStrategy.type Source Watcher statefulset strategy type
+  ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  ##
+  updateStrategy:
+    ## StrategyType
+    ## Can be set to RollingUpdate or OnDelete
+    ##
+    type: RollingUpdate
+  ## @param sourceWatcher.priorityClassName Source Watcher pods' priorityClassName
+  ##
+  priorityClassName: ""
+  ## @param sourceWatcher.topologySpreadConstraints Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
+  ##
+  topologySpreadConstraints: []
+  ## @param sourceWatcher.schedulerName Name of the k8s scheduler (other than default) for Source Watcher pods
+  ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+  ##
+  schedulerName: ""
+  ## @param sourceWatcher.terminationGracePeriodSeconds Seconds Redmine pod needs to terminate gracefully
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod/#termination-of-pods
+  ##
+  terminationGracePeriodSeconds: ""
+  ## @param sourceWatcher.lifecycleHooks for the Source Watcher container(s) to automate configuration before or after startup
+  ##
+  lifecycleHooks: {}
+  ## @param sourceWatcher.extraEnvVars Array with extra environment variables to add to Source Watcher nodes
+  ## e.g:
+  ## extraEnvVars:
+  ##   - name: FOO
+  ##     value: "bar"
+  ##
+  extraEnvVars: []
+  ## @param sourceWatcher.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Source Watcher nodes
+  ##
+  extraEnvVarsCM: ""
+  ## @param sourceWatcher.extraEnvVarsSecret Name of existing Secret containing extra env vars for Source Watcher nodes
+  ##
+  extraEnvVarsSecret: ""
+  ## @param sourceWatcher.extraVolumes Optionally specify extra list of additional volumes for the Source Watcher pod(s)
+  ##
+  extraVolumes: []
+  ## @param sourceWatcher.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the Source Watcher container(s)
+  ##
+  extraVolumeMounts: []
+  ## @param sourceWatcher.sidecars Add additional sidecar containers to the Source Watcher pod(s)
+  ## e.g:
+  ## sidecars:
+  ##   - name: your-image-name
+  ##     image: your-image
+  ##     imagePullPolicy: Always
+  ##     ports:
+  ##       - name: portname
+  ##         containerPort: 1234
+  ##
+  sidecars: []
+  ## @param sourceWatcher.initContainers Add additional init containers to the Source Watcher pod(s)
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+  ## e.g:
+  ## initContainers:
+  ##  - name: your-image-name
+  ##    image: your-image
+  ##    imagePullPolicy: Always
+  ##    command: ['sh', '-c', 'echo "hello world"']
+  ##
+  initContainers: []
+  ## @section Source Watcher service parameters
+  ##
+  service:
+    ## @param sourceWatcher.service.type Source Watcher service type
+    ##
+    type: ClusterIP
+    ## @param sourceWatcher.service.ports.http Source Watcher service metrics port
+    ##
+    ports:
+      http: 80
+    ## Node ports to expose
+    ## @param sourceWatcher.service.nodePorts.http Node port for HTTP
+    ## NOTE: choose port between <30000-32767>
+    ##
+    nodePorts:
+      http: ""
+    ## @param sourceWatcher.service.clusterIP Source Watcher service Cluster IP
+    ## e.g.:
+    ## clusterIP: None
+    ##
+    clusterIP: ""
+    ## @param sourceWatcher.service.loadBalancerIP Source Watcher service Load Balancer IP
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+    ##
+    loadBalancerIP: ""
+    ## @param sourceWatcher.service.loadBalancerSourceRanges Source Watcher service Load Balancer sources
+    ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+    ## e.g:
+    ## loadBalancerSourceRanges:
+    ##   - 10.10.10.0/24
+    ##
+    loadBalancerSourceRanges: []
+    ## @param sourceWatcher.service.externalTrafficPolicy Source Watcher service external traffic policy
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
+    ## @param sourceWatcher.service.annotations [object] Additional custom annotations for Source Watcher service
+    ##
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "{{ .Values.sourceWatcher.service.ports }}"
+    ## @param sourceWatcher.service.extraPorts Extra ports to expose in Source Watcher service (normally used with the `sidecars` value)
+    ##
+    extraPorts: []
+    ## @param sourceWatcher.service.sessionAffinity Control where client requests go, to the same pod or round-robin
+    ## Values: ClientIP or None
+    ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
+    ##
+    sessionAffinity: None
+    ## @param sourceWatcher.service.sessionAffinityConfig Additional settings for the sessionAffinity
+    ## sessionAffinityConfig:
+    ##   clientIP:
+    ##     timeoutSeconds: 300
+    ##
+    sessionAffinityConfig: {}
+  ## @section Source Watcher Persistence Parameters
+  ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+  ##
+  persistence:
+    ## @param sourceWatcher.persistence.enabled Enable persistence using Persistent Volume Claims
+    ## (NOTE: Disabled by default in upstream flux configuration)
+    ##
+    enabled: false
+    ## @param sourceWatcher.persistence.resourcePolicy Setting it to "keep" to avoid removing PVCs during a helm delete operation. Leaving it empty will delete PVCs after the chart deleted
+    ##
+    resourcePolicy: ""
+    ## @param sourceWatcher.persistence.mountPath Persistent Volume mount root path
+    ##
+    mountPath: /bitnami/fluxcd-source-watcher/data
+    ## @param sourceWatcher.persistence.storageClass Persistent Volume storage class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is set, choosing the default provisioner
+    ##
+    storageClass: ""
+    ## @param sourceWatcher.persistence.accessModes [array] Persistent Volume access modes
+    ##
+    accessModes:
+      - ReadWriteOnce
+    ## @param sourceWatcher.persistence.size Persistent Volume size
+    ##
+    size: 10Gi
+    ## @param sourceWatcher.persistence.dataSource Custom PVC data source
+    ##
+    dataSource: {}
+    ## @param sourceWatcher.persistence.annotations Annotations for the PVC
+    ##
+    annotations: {}
+    ## @param sourceWatcher.persistence.selector Selector to match an existing Persistent Volume (this value is evaluated as a template)
+    ## selector:
+    ##   matchLabels:
+    ##     app: my-app
+    ##
+    selector: {}
+    ## @param sourceWatcher.persistence.existingClaim The name of an existing PVC to use for persistence
+    ##
+    existingClaim: ""
+  ## @section Source Watcher ServiceAccount Parameters
+  ##
+  serviceAccount:
+    ## @param sourceWatcher.serviceAccount.create Specifies whether a ServiceAccount should be created
+    ##
+    create: true
+    ## @param sourceWatcher.serviceAccount.name The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the common.names.fullname template
+    ##
+    name: ""
+    ## @param sourceWatcher.serviceAccount.annotations Additional Service Account annotations (evaluated as a template)
+    ##
+    annotations: {}
+    ## @param sourceWatcher.serviceAccount.automountServiceAccountToken Automount service account token for the server service account
+    ##
+    automountServiceAccountToken: false
+  ## @section Source Watcher Metrics Parameters
+  ##
+  metrics:
+    ## @param sourceWatcher.metrics.enabled Enable the export of Prometheus metrics
+    ##
+    enabled: true
+    ## Source Watcher service parameters
+    ##
+    service:
+      ## @param sourceWatcher.metrics.service.type Source Watcher service type
+      ##
+      type: ClusterIP
+      ## @param sourceWatcher.metrics.service.ports.metrics Source Watcher service metrics port
+      ##
+      ports:
+        metrics: 80
+      ## Node ports to expose
+      ## @param sourceWatcher.metrics.service.nodePorts.metrics Node port for HTTP
+      ## NOTE: choose port between <30000-32767>
+      ##
+      nodePorts:
+        metrics: ""
+      ## @param sourceWatcher.metrics.service.clusterIP Source Watcher service Cluster IP
+      ## e.g.:
+      ## clusterIP: None
+      ##
+      clusterIP: ""
+      ## @param sourceWatcher.metrics.service.loadBalancerIP Source Watcher service Load Balancer IP
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+      ##
+      loadBalancerIP: ""
+      ## @param sourceWatcher.metrics.service.loadBalancerSourceRanges Source Watcher service Load Balancer sources
+      ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+      ## e.g:
+      ## loadBalancerSourceRanges:
+      ##   - 10.10.10.0/24
+      ##
+      loadBalancerSourceRanges: []
+      ## @param sourceWatcher.metrics.service.externalTrafficPolicy Source Watcher service external traffic policy
+      ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+      ##
+      externalTrafficPolicy: Cluster
+      ## @param sourceWatcher.metrics.service.annotations [object] Additional custom annotations for Source Watcher service
+      ##
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.sourceWatcher.metrics.service.ports.metrics }}"
+      ## @param sourceWatcher.metrics.service.extraPorts Extra ports to expose in Source Watcher service (normally used with the `sidecars` value)
+      ##
+      extraPorts: []
+      ## @param sourceWatcher.metrics.service.sessionAffinity Control where client requests go, to the same pod or round-robin
+      ## Values: ClientIP or None
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/
+      ##
+      sessionAffinity: None
+      ## @param sourceWatcher.metrics.service.sessionAffinityConfig Additional settings for the sessionAffinity
+      ## sessionAffinityConfig:
+      ##   clientIP:
+      ##     timeoutSeconds: 300
+      ##
+      sessionAffinityConfig: {}
+    ## Prometheus Operator ServiceMonitor configuration
+    ##
+    serviceMonitor:
+      ## @param sourceWatcher.metrics.serviceMonitor.enabled if `true`, creates a Prometheus Operator ServiceMonitor (also requires `metrics.enabled` to be `true`)
+      ##
+      enabled: false
+      ## @param sourceWatcher.metrics.serviceMonitor.namespace Namespace in which Prometheus is running
+      ##
+      namespace: ""
+      ## @param sourceWatcher.metrics.serviceMonitor.annotations Additional custom annotations for the ServiceMonitor
+      ##
+      annotations: {}
+      ## @param sourceWatcher.metrics.serviceMonitor.labels Extra labels for the ServiceMonitor
+      ##
+      labels: {}
+      ## @param sourceWatcher.metrics.serviceMonitor.jobLabel The name of the label on the target service to use as the job name in Prometheus
+      ##
+      jobLabel: ""
+      ## @param sourceWatcher.metrics.serviceMonitor.honorLabels honorLabels chooses the metric's labels on collisions with target labels
+      ##
+      honorLabels: false
+      ## @param sourceWatcher.metrics.serviceMonitor.interval Interval at which metrics should be scraped.
+      ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+      ## e.g:
+      ## interval: 10s
+      ##
+      interval: ""
+      ## @param sourceWatcher.metrics.serviceMonitor.scrapeTimeout Timeout after which the scrape is ended
+      ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+      ## e.g:
+      ## scrapeTimeout: 10s
+      ##
+      scrapeTimeout: ""
+      ## @param sourceWatcher.metrics.serviceMonitor.metricRelabelings Specify additional relabeling of metrics
+      ##
+      metricRelabelings: []
+      ## @param sourceWatcher.metrics.serviceMonitor.relabelings Specify general relabeling
+      ##
+      relabelings: []
+      ## @param sourceWatcher.metrics.serviceMonitor.selector Prometheus instance selector labels
+      ## ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
+      ## selector:
+      ##   prometheus: my-prometheus
+      ##
+      selector: {}
+
 ## @section Notification Controller Parameters
 ##
 notificationController:

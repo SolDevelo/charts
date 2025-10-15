@@ -48,4 +48,9 @@ subjects:
     name: {{ template "flux.source-controller.serviceAccountName" . }}
     namespace: {{ include "common.names.namespace" . | quote }}
   {{- end }}
+  {{- if .Values.sourceWatcher.enabled }}
+  - kind: ServiceAccount
+    name: {{ template "flux.source-watcher.serviceAccountName" . }}
+    namespace: {{ include "common.names.namespace" . | quote }}
+  {{- end }}
 {{- end }}

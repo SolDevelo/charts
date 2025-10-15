@@ -7,7 +7,7 @@ SPDX-License-Identifier: APACHE-2.0
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "flux.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.helmController.image .Values.imageAutomationController.image .Values.imageReflectorController.image .Values.kustomizeController.image .Values.notificationController.image .Values.sourceController.image .Values.volumePermissions.image ) "global" .Values.global) -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.helmController.image .Values.imageAutomationController.image .Values.imageReflectorController.image .Values.kustomizeController.image .Values.notificationController.image .Values.sourceController.image .Values.sourceWatcher.image .Values.volumePermissions.image ) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*
@@ -15,13 +15,6 @@ Return the proper Kustomize Controller fullname
 */}}
 {{- define "flux.kustomize-controller.fullname" -}}
 {{- printf "%s-%s" (include "common.names.fullname" .) "kustomize-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Return the proper Kustomize Controller fullname (with namespace)
-*/}}
-{{- define "flux.kustomize-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "kustomize-controller" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -50,13 +43,6 @@ Return the proper Helm Controller fullname
 {{- end -}}
 
 {{/*
-Return the proper Helm Controller fullname (with namespace)
-*/}}
-{{- define "flux.helm-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "helm-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
 Return the proper Helm Controller image name
 */}}
 {{- define "flux.helm-controller.image" -}}
@@ -81,12 +67,6 @@ Return the proper Source Controller fullname
 {{- printf "%s-%s" (include "common.names.fullname" .) "source-controller" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{/*
-Return the proper Source Controller fullname (with namespace)
-*/}}
-{{- define "flux.source-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "source-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
 
 {{/*
 Return the proper Source Controller image name
@@ -107,17 +87,35 @@ Create the name of the service account to use (Source Controller)
 {{- end -}}
 
 {{/*
+Return the proper Source Watcher fullname
+*/}}
+{{- define "flux.source-watcher.fullname" -}}
+{{- printf "%s-%s" (include "common.names.fullname" .) "source-watcher" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Return the proper Source Watcher image name
+*/}}
+{{- define "flux.source-watcher.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.sourceWatcher.image "global" .Values.global) }}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use (Source Watcher)
+*/}}
+{{- define "flux.source-watcher.serviceAccountName" -}}
+{{- if .Values.sourceWatcher.serviceAccount.create -}}
+    {{ default (include "flux.source-watcher.fullname" .) .Values.sourceWatcher.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.sourceWatcher.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the proper Notification Controller fullname
 */}}
 {{- define "flux.notification-controller.fullname" -}}
 {{- printf "%s-%s" (include "common.names.fullname" .) "notification-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Return the proper Notification Controller fullname (with namespace)
-*/}}
-{{- define "flux.notification-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "notification-controller" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -147,14 +145,6 @@ Return the proper Image Reflector Controller fullname
 {{- end -}}
 
 {{/*
-Return the proper Image Reflector Controller fullname (with namespace)
-(removing image- prefix to avoid name length issues)
-*/}}
-{{- define "flux.image-reflector-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "reflector-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
 Return the proper Image Reflector Controller image name
 */}}
 {{- define "flux.image-reflector-controller.image" -}}
@@ -178,14 +168,6 @@ Return the proper Image Automation Controller fullname
 */}}
 {{- define "flux.image-automation-controller.fullname" -}}
 {{- printf "%s-%s" (include "common.names.fullname" .) "automation-controller" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Return the proper Image Automation Controller fullname (with namespace)
-(removing image- prefix to avoid name length issues)
-*/}}
-{{- define "flux.image-automation-controller.fullname.namespace" -}}
-{{- printf "%s-%s" (include "common.names.fullname.namespace" .) "automation-controller" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

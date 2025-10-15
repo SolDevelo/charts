@@ -1,0 +1,44 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+{{- if and .Values.sourceWatcher.enabled .Values.sourceWatcher.persistence.enabled (not .Values.sourceWatcher.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "flux.source-watcher.fullname" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  {{- $versionLabel := dict "app.kubernetes.io/version" (include "common.images.version" (dict "imageRoot" .Values.sourceWatcher.image "chart" .Chart)) }}  
+  {{- $labels := include "common.tplvalues.merge" (dict "values" (list $versionLabel .Values.commonLabels) "context" .) }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" $labels "context" .) | nindent 4 }}
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/component: source-watcher
+  annotations:
+    {{- if .Values.sourceWatcher.persistence.resourcePolicy }}
+    helm.sh/resource-policy: {{ .Values.sourceWatcher.persistence.resourcePolicy | quote }}
+    {{- end }}
+    {{- if or .Values.sourceWatcher.serviceAccount.annotations .Values.commonAnnotations }}
+    {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.sourceWatcher.serviceAccount.annotations .Values.commonAnnotations) "context" .) }}
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" .) | nindent 4 }}
+    {{- end }}
+spec:
+  accessModes:
+  {{- if not (empty .Values.sourceWatcher.persistence.accessModes) }}
+  {{- range .Values.sourceWatcher.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{- else }}
+    - {{ .Values.sourceWatcher.persistence.accessMode | quote }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.sourceWatcher.persistence.size | quote }}
+  {{- if .Values.sourceWatcher.persistence.selector }}
+  selector: {{- include "common.tplvalues.render" (dict "value" .Values.sourceWatcher.persistence.selector "context" .) | nindent 4 }}
+  {{- end -}}
+  {{- if .Values.sourceWatcher.persistence.dataSource }}
+  dataSource: {{- include "common.tplvalues.render" (dict "value" .Values.sourceWatcher.persistence.dataSource "context" .) | nindent 4 }}
+  {{- end }}
+  {{- include "common.storage.class" (dict "persistence" .Values.sourceWatcher.persistence "global" .Values.global) | nindent 2 }}
+{{- end }}
