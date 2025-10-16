@@ -80,7 +80,7 @@ As an alternative, you can use one of the preset configurations for pod affinity
 
 ### FIPS parameters
 
-The FIPS parameters only have effect if the `fips` annotation is set and you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
+The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
 ### Backup and restore
 
