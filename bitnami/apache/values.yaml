@@ -10,6 +10,7 @@
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
 ## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -35,6 +36,9 @@ global:
     ## @param global.security.allowInsecureImages By default, this chart verifies that the original container images that were designed, tested, and validated are used. This option makes the chart skip the verification step and proceed
     ##
     allowInsecureImages: false
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -169,6 +173,7 @@ extraPodSpec: {}
 ## @param cloneHtdocsFromGit.enableAutoRefresh Enables an automatic git pull with a sidecar container
 ## @param cloneHtdocsFromGit.interval Interval for sidecar container pull from the repository
 ## @param cloneHtdocsFromGit.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if cloneHtdocsFromGit.resources is set (cloneHtdocsFromGit.resources is recommended for production).
+## @param cloneHtdocsFromGit.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
 ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
 ## @param cloneHtdocsFromGit.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
 ## Example:
@@ -189,6 +194,8 @@ cloneHtdocsFromGit:
   interval: 60
   resourcesPreset: "nano"
   resources: {}
+  fips:
+    openssl: ""
   ## Useful to mount keys to connect through ssh. (normally used with extraVolumes)
   ## E.g:
   ## extraVolumeMounts:
@@ -705,6 +712,12 @@ metrics:
     ## Enable debug mode
     ##
     debug: false
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: ""
   ## @param metrics.scrapeUri Apache Prometheus Exporter scrape_uri
   ## Default scrape_uri is 'http://status.localhost:{{ .Values.containerPorts.http }}/server-status/?auto' if this variable is empty.
   scrapeUri: ""
@@ -818,3 +831,11 @@ serviceAccount:
   ## @param serviceAccount.annotations Additional custom annotations for the ServiceAccount
   ##
   annotations: {}
+
+## @section FIPS parameters
+## FIPS related settings
+##
+fips:
+  ## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  openssl: ""
