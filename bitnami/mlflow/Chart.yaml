@@ -8,15 +8,15 @@ annotations:
       version: 2.51.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/git:2.51.1-debian-12-r0
     - name: mlflow
-      version: 3.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/mlflow:3.4.0-debian-12-r16
+      version: 3.5.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/mlflow:3.5.0-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 3.4.0
+appVersion: 3.5.0
 dependencies:
 - condition: minio.enabled
   name: minio
@@ -50,4 +50,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/mlflow
 - https://github.com/bitnami/containers/tree/main/bitnami/mlflow
 - https://github.com/mlflow/mlflow
-version: 6.0.7
+version: 6.0.8
