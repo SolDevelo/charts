@@ -47,4 +47,4 @@ maintainers:
 name: postgresql-ha
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/postgresql-ha
-version: 17.0.17
+version: 17.1.0

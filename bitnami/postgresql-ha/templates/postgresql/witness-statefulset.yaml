@@ -78,64 +78,14 @@ spec:
       serviceAccountName: {{ include "postgresql-ha.serviceAccountName" . }}
       hostNetwork: {{ .Values.witness.hostNetwork }}
       hostIPC: {{ .Values.witness.hostIPC }}
+      {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.witness.extendedConf)) (not (empty .Values.witness.extendedConfCM))) .Values.persistence.enabled)) .Values.witness.initContainers .Values.witness.extraInitContainers }}
       initContainers:
-      {{- if .Values.postgresql.tls.enabled }}
-        - name: init-chmod-tls
-          image: {{ template "postgresql-ha.volumePermissions.image" . }}
-          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-          command:
-            - /bin/sh
-            - -cx
-            - |
-              cp /tmp/certs/* /opt/bitnami/postgresql/certs/
-              {{- if eq ( toString ( .Values.volumePermissions.podSecurityContext.runAsUser )) "auto" }}
-              chown -R `id -u`:`id -G | cut -d " " -f2` /opt/bitnami/postgresql/certs/
-              {{- else }}
-              chown -R {{ .Values.witness.containerSecurityContext.runAsUser }}:{{ .Values.witness.podSecurityContext.fsGroup }} /opt/bitnami/postgresql/certs/
-              {{- end }}
-              chmod 600 {{ template "postgresql-ha.postgresql.tlsCertKey" . }}
-          {{- if eq ( toString ( .Values.volumePermissions.podSecurityContext.runAsUser )) "auto" }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" (omit .Values.volumePermissions.podSecurityContext "runAsUser") "context" $) | nindent 12 }}
-          {{- else }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.volumePermissions.podSecurityContext "context" $) | nindent 12 }}
-          {{- end }}
-          volumeMounts:
-            - name: raw-certificates
-              mountPath: /tmp/certs
-            - name: postgresql-certificates
-              mountPath: /opt/bitnami/postgresql/certs
-            - name: empty-dir
-              mountPath: /tmp
-              subPath: tmp-dir
-      {{- end }}
-      {{- if and .Values.volumePermissions.enabled (or (or (not (empty .Values.witness.extendedConf)) (not (empty .Values.witness.extendedConfCM))) .Values.persistence.enabled) }}
-        - name: init-chmod-data
-          image: {{ include "postgresql-ha.volumePermissions.image" . }}
-          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
-          command:
-            - sh
-            - -c
-            - |
-              mkdir -p {{ .Values.persistence.mountPath }}/conf {{ .Values.persistence.mountPath }}/data {{ .Values.persistence.mountPath }}/lock
-              chmod 700 {{ .Values.persistence.mountPath }}/conf {{ .Values.persistence.mountPath }}/data {{ .Values.persistence.mountPath }}/lock
-              chown {{ .Values.witness.containerSecurityContext.runAsUser }}:{{ .Values.witness.podSecurityContext.fsGroup }} {{ .Values.persistence.mountPath }}
-              find {{ .Values.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-                xargs -r chown -R {{ .Values.witness.containerSecurityContext.runAsUser }}:{{ .Values.witness.podSecurityContext.fsGroup }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.volumePermissions.podSecurityContext "context" $) | nindent 12 }}
-          {{- if .Values.volumePermissions.resources }}
-          resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
-          {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
-          resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
-          {{- end }}
-          volumeMounts:
-            - name: data
-              mountPath: {{ .Values.persistence.mountPath }}
-            - name: empty-dir
-              mountPath: /tmp
-              subPath: tmp-dir
+      {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.witness.extendedConf)) (not (empty .Values.witness.extendedConfCM))) .Values.persistence.enabled)) }}
+        {{- include "postgresql-ha.defaultInitContainers.volumePermissions" (dict "component" "witness" "context" .) | nindent 8 }}
       {{- end }}
       {{- if or .Values.witness.initContainers .Values.witness.extraInitContainers }}
-      {{- include "common.tplvalues.render" ( dict "value" (coalesce .Values.witness.initContainers .Values.witness.extraInitContainers) "context" $ ) | nindent 8 }}
+        {{- include "common.tplvalues.render" ( dict "value" (coalesce .Values.witness.initContainers .Values.witness.extraInitContainers) "context" .) | nindent 8 }}
+      {{- end }}
       {{- end }}
       containers:
         - name: postgresql
@@ -456,8 +406,8 @@ spec:
         - name: metrics
           image: {{ include "postgresql-ha.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-          {{- if .Values.metrics.podSecurityContext.enabled }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.metrics.podSecurityContext "context" $) | nindent 12 }}
+          {{- if .Values.metrics.containerSecurityContext.enabled }}
+          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.metrics.containerSecurityContext "context" .) | nindent 12 }}
           {{- end }}
           env:
             - name: PG_EXPORTER_WEB_LISTEN_ADDRESS

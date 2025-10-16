@@ -457,7 +457,7 @@ spec:
         {{- if .Values.pgpool.tls.enabled }}
         - name: raw-certificates
           secret:
-            secretName: {{ include "postgresql-ha.tlsSecretName" . }}
+            secretName: {{ include "postgresql-ha.pgpool.tlsSecretName" . }}
         - name: pgpool-certificates
           emptyDir: {}
         {{- end }}

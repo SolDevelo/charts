@@ -11,9 +11,7 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
     app.kubernetes.io/component: postgresql
-    {{- if .Values.metrics.serviceMonitor.selector }}
-    {{- include "common.tplvalues.render" (dict "value" .Values.metrics.serviceMonitor.selector "context" $) | nindent 4 }}
-    {{- end }}
+    prometheus: kube-prometheus
   {{- if or .Values.metrics.annotations .Values.commonAnnotations }}
   {{- $annotations := include "common.tplvalues.merge" ( dict "values" ( list .Values.metrics.annotations .Values.commonAnnotations ) "context" . ) }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" $annotations "context" $) | nindent 4 }}
