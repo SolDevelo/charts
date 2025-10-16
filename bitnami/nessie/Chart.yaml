@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: nessie
-      version: 0.105.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nessie:0.105.4-debian-12-r0
+      version: 0.105.5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nessie:0.105.5-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -16,7 +16,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 0.105.4
+appVersion: 0.105.5
 dependencies:
 - condition: postgresql.enabled
   name: postgresql
@@ -43,4 +43,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/nessie
 - https://github.com/bitnami/containers/tree/main/bitnami/nessie
 - https://github.com/nessie/nessie
-version: 3.0.11
+version: 3.0.12

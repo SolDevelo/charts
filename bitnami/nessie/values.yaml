@@ -122,7 +122,7 @@ javaOpts: ""
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/nessie
-  tag: 0.105.4-debian-12-r0
+  tag: 0.105.5-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
