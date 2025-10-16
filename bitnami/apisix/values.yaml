@@ -93,7 +93,7 @@ diagnosticMode:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/apisix
-  tag: 3.14.0-debian-12-r0
+  tag: 3.14.1-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images

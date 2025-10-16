@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: apisix
-      version: 3.14.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apisix:3.14.0-debian-12-r0
+      version: 3.14.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apisix:3.14.1-debian-12-r0
     - name: apisix-ingress-controller
       version: 1.8.4
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apisix-ingress-controller:1.8.4-debian-12-r19
@@ -16,7 +16,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 3.14.0
+appVersion: 3.14.1
 dependencies:
 - condition: etcd.enabled
   name: etcd
@@ -49,4 +49,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/apisix
 - https://github.com/bitnami/charts/tree/main/bitnami/apisix-dashboard
 - https://github.com/bitnami/charts/tree/main/bitnami/apisix-ingress-controller
-version: 6.0.8
+version: 6.0.9
