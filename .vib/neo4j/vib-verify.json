@@ -63,7 +63,7 @@
             "resources": {
               "path": "/.vib/neo4j/cypress"
             },
-            "endpoint": "lb-neo4j-https",
+            "endpoint": "lb-neo4j-proxy-https",
             "app_protocol": "HTTPS",
             "env": {
               "username": "neo4j",

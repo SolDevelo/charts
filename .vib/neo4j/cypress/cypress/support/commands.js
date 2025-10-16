@@ -4,7 +4,7 @@
  */
 
 const COMMAND_DELAY = 2000;
-const BASE_URL = 'http://vib.com';
+const BASE_URL = 'https://vib.com';
 
 for (const command of ['click']) {
   Cypress.Commands.overwrite(command, (originalFn, ...args) => {
