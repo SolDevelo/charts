@@ -342,7 +342,7 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 
 ### FIPS parameters
 
-The FIPS parameters only have effect if the `fips` annotation is set and you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
+The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
 ## Persistence
 
