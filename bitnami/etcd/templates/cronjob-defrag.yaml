@@ -80,6 +80,12 @@ spec:
                 - name: ETCDCTL_CERT
                   value: "/opt/bitnami/etcd/certs/client/{{ .Values.auth.client.certFilename }}"
                 {{- end }}
+                {{- if include "common.fips.enabled" . }}
+                - name: OPENSSL_FIPS
+                  value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defrag.cronjob.fips "global" .Values.global) | quote }}
+                - name: GODEBUG
+                  value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.defrag.cronjob.fips "global" .Values.global) | quote }}
+                {{- end }}
                 {{- if .Values.defrag.cronjob.extraEnvVars }}
                 {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
                 {{- end }}
@@ -97,7 +103,7 @@ spec:
               {{- if .Values.defrag.cronjob.command }}
               command: {{ .Values.defrag.cronjob.command | toYaml | nindent 16 }}
               {{- else }}
-              command: 
+              command:
                 - /bin/bash
                 - -c
                 - |-

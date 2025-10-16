@@ -57,6 +57,11 @@ spec:
               {{- if .Values.volumePermissions.resources }}
               resources: {{- include "common.tplvalues.render" (dict "value" .Values.volumePermissions.resources "context" $) | nindent 16 }}
               {{- end }}
+              {{- if include "common.fips.enabled" . }}
+              env:
+                - name: OPENSSL_FIPS
+                  value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+              {{- end }}
               volumeMounts:
                 - name: snapshot-volume
                   mountPath: /snapshots
@@ -125,6 +130,12 @@ spec:
                       name: {{ include "etcd.secretName" . }}
                       key: {{ include "etcd.secretPasswordKey" . }}
                 {{- end }}
+                {{- end }}
+                {{- if include "common.fips.enabled" . }}
+                - name: OPENSSL_FIPS
+                  value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.disasterRecovery.cronjob.fips "global" .Values.global) | quote }}
+                - name: GODEBUG
+                  value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.disasterRecovery.cronjob.fips "global" .Values.global) | quote }}
                 {{- end }}
               {{- if .Values.disasterRecovery.cronjob.resources }}
               resources: {{- toYaml .Values.disasterRecovery.cronjob.resources | nindent 16 }}
