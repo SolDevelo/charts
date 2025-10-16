@@ -37,4 +37,9 @@ Returns an init-container that changes the owner and group of the persistent vol
       {{- if .Values.persistence.subPath }}
       subPath: {{ .Values.persistence.subPath }}
       {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
 {{- end -}}
