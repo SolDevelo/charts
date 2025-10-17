@@ -215,6 +215,10 @@ spec:
                   name: {{ template "valkey-cluster.secretName" . }}
                   key: {{ template "valkey-cluster.secretPasswordKey" . }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.updateJob.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.updateJob.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

@@ -155,6 +155,10 @@ spec:
             - name: VALKEY_NODES
               value: "{{ $count := .Values.cluster.nodes | int }}{{ range $i, $v := until $count }}{{ include "common.names.fullname" $ }}-{{ $i }}.{{ template "common.names.fullname" $ }}-headless {{ end }}"
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.usePassword }}
             - name: REDISCLI_AUTH
               valueFrom:
@@ -331,6 +335,12 @@ spec:
               value: {{ template "common.names.fullname" . }}
             - name: REDIS_ADDR
               value: {{ printf "%s://127.0.0.1:%g" (ternary "rediss" "redis" .Values.tls.enabled) .Values.valkey.containerPorts.valkey | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.usePassword }}
             {{- if .Values.usePasswordFiles }}
             - name: REDIS_PASSWORD_FILE
@@ -398,6 +408,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -414,6 +429,11 @@ spec:
           resources: {{- toYaml .Values.sysctlImage.resources | nindent 12 }}
           {{- else if ne .Values.sysctlImage.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.sysctlImage.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.sysctlImage.fips "global" .Values.global) | quote }}
           {{- end }}
           {{- if .Values.sysctlImage.mountHostSys }}
           volumeMounts:
