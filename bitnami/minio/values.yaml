@@ -177,7 +177,7 @@ tls:
     enabled: true
     engine: helm
     extraSANs: []
-    loopback: false
+    loopback: true
     certManager:
       existingIssuer: ""
       existingIssuerKind: ""
