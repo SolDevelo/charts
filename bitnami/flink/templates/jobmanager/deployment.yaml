@@ -115,6 +115,12 @@ spec:
               value: {{ .Values.jobmanager.containerPorts.blob | quote }}
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.jobmanager.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.jobmanager.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.jobmanager.extraEnvVars }}
               {{- include "common.tplvalues.render" (dict "value" .Values.jobmanager.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

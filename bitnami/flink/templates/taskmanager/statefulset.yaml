@@ -123,6 +123,12 @@ spec:
               value: 0.0.0.0
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.taskmanager.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.taskmanager.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.taskmanager.extraEnvVars }}
               {{- include "common.tplvalues.render" (dict "value" .Values.taskmanager.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
