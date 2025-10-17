@@ -1,6 +1,6 @@
 # Source: https://raw.githubusercontent.com/cert-manager/cert-manager/v{version}/deploy/crds/acme.cert-manager.io_challenges.yaml
-# Version: 1.19.0
-# Conditional: .Values.contour.installCRDs
+# Version: 1.19.1
+# Conditional: .Values.installCRDs
 {{- if .Values.installCRDs }}
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -84,12 +84,14 @@ spec:
                   Challenge will be marked as failed.
                 properties:
                   group:
-                    default: cert-manager.io
-                    description: Group of the issuer being referred to.
+                    description: |-
+                      Group of the issuer being referred to.
+                      Defaults to 'cert-manager.io'.
                     type: string
                   kind:
-                    default: Issuer
-                    description: Kind of the issuer being referred to.
+                    description: |-
+                      Kind of the issuer being referred to.
+                      Defaults to 'Issuer'.
                     type: string
                   name:
                     description: Name of the issuer being referred to.
@@ -416,7 +418,7 @@ spec:
                             description: |-
                               The IP address or hostname of an authoritative DNS server supporting
                               RFC2136 in the form host:port. If the host is an IPv6 address it must be
-                              enclosed in square brackets (e.g [2001:db8::1]) ; port is optional.
+                              enclosed in square brackets (e.g [2001:db8::1]) ; port is optional.
                               This field is required.
                             type: string
                           protocol:
@@ -3476,4 +3478,4 @@ spec:
     storage: true
     subresources:
       status: {}
-{{- end -}}
+{{- end }}

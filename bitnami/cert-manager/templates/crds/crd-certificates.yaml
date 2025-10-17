@@ -1,5 +1,5 @@
 # Source: https://raw.githubusercontent.com/cert-manager/cert-manager/v{version}/deploy/crds/cert-manager.io_certificates.yaml
-# Version: 1.19.0
+# Version: 1.19.1
 # Conditional: .Values.installCRDs
 {{- if .Values.installCRDs }}
 ---
@@ -164,12 +164,14 @@ spec:
                   The `name` field of the reference must always be specified.
                 properties:
                   group:
-                    default: cert-manager.io
-                    description: Group of the issuer being referred to.
+                    description: |-
+                      Group of the issuer being referred to.
+                      Defaults to 'cert-manager.io'.
                     type: string
                   kind:
-                    default: Issuer
-                    description: Kind of the issuer being referred to.
+                    description: |-
+                      Kind of the issuer being referred to.
+                      Defaults to 'Issuer'.
                     type: string
                   name:
                     description: Name of the issuer being referred to.
@@ -827,4 +829,4 @@ spec:
     storage: true
     subresources:
       status: {}
-{{- end -}}
+{{- end }}
