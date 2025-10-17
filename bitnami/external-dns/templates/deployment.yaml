@@ -605,6 +605,12 @@ spec:
                   name: {{ template "external-dns.txtEncryptKeySecretName" . }}
                   key: txt_aes_encryption_key
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
           envFrom:
             {{- if .Values.extraEnvVarsCM }}
             - configMapRef:
