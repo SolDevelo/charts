@@ -11,8 +11,8 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: redis-exporter
-      version: 1.78.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.78.0-debian-12-r2
+      version: 1.79.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.79.0-debian-12-r0
     - name: valkey
       version: 8.1.4
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/valkey:8.1.4-debian-12-r0
@@ -44,4 +44,4 @@ maintainers:
 name: valkey
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/valkey
-version: 4.1.0
+version: 4.1.1
