@@ -11,8 +11,8 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: redis-exporter
-      version: 1.78.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.78.0-debian-12-r2
+      version: 1.79.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.79.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -39,4 +39,4 @@ name: keydb
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/keydb
 - https://github.com/bitnami/containers/tree/main/bitnami/keydb
-version: 0.6.0
+version: 0.6.1
