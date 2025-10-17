@@ -11,8 +11,8 @@ annotations:
       version: 8.2.2
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-cluster:8.2.2-debian-12-r0
     - name: redis-exporter
-      version: 1.78.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.78.0-debian-12-r2
+      version: 1.79.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.79.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -38,4 +38,4 @@ maintainers:
 name: redis-cluster
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/redis-cluster
-version: 13.1.1
+version: 13.1.2
