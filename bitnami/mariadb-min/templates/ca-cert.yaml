@@ -30,7 +30,7 @@ metadata:
   annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
   {{- end }}
 spec:
-  secretName: {{ template "mariadb.tls.ca.secretName" . }}
+  secretName: {{ printf "%s-ca-crt" (include "common.names.fullname" .) }}
   commonName: {{ printf "%s-root-ca" (include "common.names.fullname" .) }}
   isCA: true
   issuerRef:
@@ -49,5 +49,5 @@ metadata:
   {{- end }}
 spec:
   ca:
-    secretName: {{ template "mariadb.tls.ca.secretName" . }}
+    secretName: {{ printf "%s-ca-crt" (include "common.names.fullname" .) }}
 {{- end }}

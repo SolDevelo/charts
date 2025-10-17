@@ -4,6 +4,8 @@ auth:
   username: user
   password: ComplicatedPassword123!4
   rootPassword: R0ot)Password
+tls:
+  enabled: true
 primary:
   service:
     type: LoadBalancer
