@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: argo-cd
-      version: 3.1.8
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/argo-cd:3.1.8-debian-12-r3
+      version: 3.1.9
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/argo-cd:3.1.9-debian-12-r0
     - name: dex
       version: 2.44.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/dex:2.44.0-debian-12-r5
@@ -19,7 +19,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 3.1.8
+appVersion: 3.1.9
 dependencies:
 - condition: redis.enabled
   name: redis
@@ -44,4 +44,4 @@ maintainers:
 name: argo-cd
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/argo-cd
-version: 11.0.20
+version: 11.0.21
