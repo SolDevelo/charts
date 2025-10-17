@@ -12,6 +12,7 @@
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
 ## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
 ## @param global.namespaceOverride Override the namespace for resource deployed by the chart, but can itself be overridden by the local namespaceOverride
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -37,6 +38,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -306,6 +310,10 @@ tls:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param tls.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Init Container securityContext
   ## ref: https://kubernetes.io/docs/concepts/security/pod-security-policy/
   ## @param tls.securityContext Init container generate-tls-cert Security context
@@ -622,6 +630,10 @@ resourcesPreset: "small"
 ##     memory: 1024Mi
 ##
 resources: {}
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
 ## @param containerPorts.mongodb MongoDB(&reg;) container port
 ##
 containerPorts:
@@ -891,6 +903,10 @@ externalAccess:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param externalAccess.autoDiscovery.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   ## Init container what mission is ensure public names can be resolved.
   ##
   dnsCheck:
@@ -940,6 +956,10 @@ externalAccess:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param externalAccess.dnsCheck.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   ## Parameters to configure a set of Pods that connect to an existing MongoDB(&reg;) deployment that lies outside of Kubernetes.
   ## @param externalAccess.externalMaster.enabled Use external master for bootstrapping
   ## @param externalAccess.externalMaster.host External master host to bootstrap from
@@ -1205,6 +1225,10 @@ passwordUpdateJob:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param passwordUpdateJob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param passwordUpdateJob.customLivenessProbe Custom livenessProbe that overrides the default one
   ##
   customLivenessProbe: {}
@@ -1467,6 +1491,10 @@ backup:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param backup.cronjob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## @param backup.cronjob.command Set backup container's command to run
     ##
     command: []
@@ -1669,6 +1697,10 @@ volumePermissions:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Init container Security Context
   ## Note: the chown of the data folder is done to containerSecurityContext.runAsUser
   ## and not the below volumePermissions.securityContext.runAsUser
@@ -1887,6 +1919,10 @@ arbiter:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param arbiter.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param arbiter.containerPorts.mongodb MongoDB(&reg;) arbiter container port
   ##
   containerPorts:
@@ -2230,6 +2266,10 @@ hidden:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param hidden.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param hidden.containerPorts.mongodb MongoDB(&reg;) hidden container port
   ##
   containerPorts:
@@ -2509,6 +2549,12 @@ metrics:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param metrics.containerPort Port of the Prometheus metrics container
   ##
   containerPort: 9216

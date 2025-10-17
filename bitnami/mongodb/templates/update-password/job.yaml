@@ -141,6 +141,10 @@ spec:
                   name: {{ template "mongodb.update-job.newSecretName" . }}
                   key: mongodb-root-password
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.passwordUpdateJob.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if and (not (empty $customUsers)) (not (empty $customDatabases)) }}
             - name: MONGODB_EXTRA_USERNAMES
               value: {{ $customUsers | quote }}

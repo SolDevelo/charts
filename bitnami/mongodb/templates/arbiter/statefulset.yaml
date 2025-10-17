@@ -107,6 +107,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tls.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -167,6 +171,10 @@ spec:
               value: {{ include "mongodb.initialPrimaryHost" . | quote }}
             - name: MONGODB_REPLICA_SET_NAME
               value: {{ .Values.replicaSetName | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.arbiter.fips "global" .Values.global) | quote }}
+            {{- end }}
             - name: MONGODB_ADVERTISED_HOSTNAME
               value: "$(MY_POD_NAME).{{ include "mongodb.arbiter.service.nameOverride" . }}.$(MY_POD_NAMESPACE).svc.{{ .Values.clusterDomain }}"
             - name: MONGODB_PORT_NUMBER

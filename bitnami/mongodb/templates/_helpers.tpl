@@ -309,6 +309,11 @@ Init container definition to change/establish volume permissions.
   {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /tmp
@@ -338,6 +343,11 @@ Init container definition to recover log dir.
   {{- else if ne .Values.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.resourcesPreset) | nindent 12 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /opt/bitnami/mongodb/logs
@@ -365,6 +375,11 @@ Init container definition to get external IP addresses.
   resources: {{- include "common.tplvalues.render" (dict "value" .Values.externalAccess.autoDiscovery.resources "context" $) | nindent 12 }}
   {{- else if ne .Values.externalAccess.autoDiscovery.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.externalAccess.autoDiscovery.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.externalAccess.autoDiscovery.fips "global" .Values.global) | quote }}
   {{- end }}
   volumeMounts:
     - name: shared
@@ -400,6 +415,11 @@ Init container definition to wait external DNS names.
   resources: {{- toYaml .Values.externalAccess.dnsCheck.resources | nindent 12 }}
   {{- else if ne .Values.externalAccess.dnsCheck.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.externalAccess.dnsCheck.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.externalAccess.dnsCheck.fips "global" .Values.global) | quote }}
   {{- end }}
 {{- end -}}
 

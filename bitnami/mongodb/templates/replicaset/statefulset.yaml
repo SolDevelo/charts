@@ -118,6 +118,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tls.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             {{- if (include "mongodb.autoGenerateCerts" .) }}
             - name: certs-volume
@@ -200,6 +204,10 @@ spec:
               value: {{ include "mongodb.initialPrimaryHost" . | quote }}
             - name: MONGODB_REPLICA_SET_NAME
               value: {{ .Values.replicaSetName | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if and .Values.replicaSetHostnames (not .Values.externalAccess.enabled) }}
             - name: MONGODB_ADVERTISED_HOSTNAME
               value: "$(MY_POD_NAME).{{ include "mongodb.service.nameOverride" . }}.$(MY_POD_NAMESPACE).svc.{{ .Values.clusterDomain }}"
@@ -456,6 +464,12 @@ spec:
                   key: mongodb-metrics-password
             {{- end }}
             {{- end }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
             {{- end }}
           volumeMounts:
             - name: empty-dir
