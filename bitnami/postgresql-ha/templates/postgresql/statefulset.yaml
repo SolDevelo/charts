@@ -31,6 +31,7 @@ spec:
         app.kubernetes.io/component: postgresql
         role: data
       annotations:
+        checksum/common-env: {{ include (print $.Template.BasePath "/postgresql/common-env-configmap.yaml") . | sha256sum }}
         {{- if and (or .Values.postgresql.repmgrConfiguration .Values.postgresql.configuration .Values.postgresql.pgHbaConfiguration) (not .Values.postgresql.configurationCM) }}
         checksum/configuration: {{ include (print $.Template.BasePath "/postgresql/configmap.yaml") . | sha256sum }}
         {{- end }}
@@ -78,14 +79,13 @@ spec:
       serviceAccountName: {{ include "postgresql-ha.serviceAccountName" . }}
       hostNetwork: {{ .Values.postgresql.hostNetwork }}
       hostIPC: {{ .Values.postgresql.hostIPC }}
-      {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.postgresql.extendedConf)) (not (empty .Values.postgresql.extendedConfCM))) .Values.persistence.enabled)) .Values.postgresql.initContainers .Values.postgresql.extraInitContainers }}
       initContainers:
       {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.postgresql.extendedConf)) (not (empty .Values.postgresql.extendedConfCM))) .Values.persistence.enabled)) }}
         {{- include "postgresql-ha.defaultInitContainers.volumePermissions" (dict "component" "postgresql" "context" .) | nindent 8 }}
       {{- end }}
+        {{- include "postgresql-ha.defaultInitContainers.setup" (dict "component" "postgresql" "context" . ) | nindent 8}}
       {{- if or .Values.postgresql.initContainers .Values.postgresql.extraInitContainers }}
         {{- include "common.tplvalues.render" ( dict "value" (coalesce .Values.postgresql.initContainers .Values.postgresql.extraInitContainers) "context" .) | nindent 8 }}
-      {{- end }}
       {{- end }}
       containers:
         - name: postgresql
@@ -118,230 +118,19 @@ spec:
           {{- else if .Values.postgresql.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.postgresql.args "context" $) | nindent 12 }}
           {{- end }}
-          # Auxiliary vars to populate environment variables
-          {{- $postgresqlReplicaCount := int .Values.postgresql.replicaCount }}
-          {{- $postgresqlFullname := include "postgresql-ha.postgresql" . }}
-          {{- $postgresqlHeadlessServiceName := printf "%s-headless" (include "postgresql-ha.postgresql" .) }}
-          {{- $clusterDomain:= .Values.clusterDomain }}
           env:
-            - name: BITNAMI_DEBUG
-              value: {{ ternary "true" "false" (or .Values.postgresql.image.debug .Values.diagnosticMode.enabled) | quote }}
-            # PostgreSQL configuration
-            - name: POSTGRESQL_VOLUME_DIR
-              value: {{ .Values.persistence.mountPath | quote }}
-            - name: PGDATA
-              value: {{ printf "%s/%s" .Values.persistence.mountPath "data" | quote }}
-            {{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: POSTGRES_POSTGRES_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/postgres-password"
-            {{- else }}
-            - name: POSTGRES_POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "postgresql-ha.postgresqlSecretName" . }}
-                  key: postgres-password
-            {{- end }}
-            {{- end }}
-            - name: POSTGRES_USER
-              value: {{ (include "postgresql-ha.postgresqlUsername" .) | quote }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: POSTGRES_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/password"
-            {{- else }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql-ha.postgresqlSecretName" . }}
-                  {{- if (include "postgresql-ha.postgresqlCreateSecret" .) }}
-                  key: password
-                  {{- else }}
-                  {{- if ( index ( lookup "v1" "Secret" (include "common.names.namespace" .) (include "postgresql-ha.postgresqlSecretName" .) ) ".data.postgres-password" ) }}
-                  key: postgres-password
-                  {{- else }}
-                  key: password
-                  {{- end }}
-                  {{- end }}
-            {{- end }}
-            {{- if not (empty (include "postgresql-ha.postgresqlDatabase" .)) }}
-            - name: POSTGRES_DB
-              value: {{ (include "postgresql-ha.postgresqlDatabase" .) | quote }}
-            {{- end }}
-            - name: POSTGRESQL_LOG_HOSTNAME
-              value: {{ .Values.postgresql.audit.logHostname | quote }}
-            - name: POSTGRESQL_LOG_CONNECTIONS
-              value: {{ .Values.postgresql.audit.logConnections | quote }}
-            - name: POSTGRESQL_LOG_DISCONNECTIONS
-              value: {{ .Values.postgresql.audit.logDisconnections | quote }}
-            {{- if .Values.postgresql.audit.logLinePrefix }}
-            - name: POSTGRESQL_LOG_LINE_PREFIX
-              value: {{ .Values.postgresql.audit.logLinePrefix | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.audit.logTimezone }}
-            - name: POSTGRESQL_LOG_TIMEZONE
-              value: {{ .Values.postgresql.audit.logTimezone | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.audit.pgAuditLog }}
-            - name: POSTGRESQL_PGAUDIT_LOG
-              value: {{ .Values.postgresql.audit.pgAuditLog | quote }}
-            {{- end }}
-            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
-              value: {{ .Values.postgresql.audit.pgAuditLogCatalog | quote }}
-            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
-              value: {{ .Values.postgresql.audit.clientMinMessages | quote }}
-            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
-              value: {{ .Values.postgresql.sharedPreloadLibraries | quote }}
-            {{- if .Values.postgresql.maxConnections }}
-            - name: POSTGRESQL_MAX_CONNECTIONS
-              value: {{ .Values.postgresql.maxConnections | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.usePgRewind }}
-            - name: REPMGR_USE_PGREWIND
-              value: {{ .Values.postgresql.usePgRewind | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.postgresConnectionLimit }}
-            - name: POSTGRESQL_POSTGRES_CONNECTION_LIMIT
-              value: {{ .Values.postgresql.postgresConnectionLimit | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.dbUserConnectionLimit }}
-            - name: POSTGRESQL_USERNAME_CONNECTION_LIMIT
-              value: {{ .Values.postgresql.dbUserConnectionLimit | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.tcpKeepalivesInterval }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_INTERVAL
-              value: {{ .Values.postgresql.tcpKeepalivesInterval | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.tcpKeepalivesIdle }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_IDLE
-              value: {{ .Values.postgresql.tcpKeepalivesIdle | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.tcpKeepalivesCount }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_COUNT
-              value: {{ .Values.postgresql.tcpKeepalivesCount | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.statementTimeout }}
-            - name: POSTGRESQL_STATEMENT_TIMEOUT
-              value: {{ .Values.postgresql.statementTimeout | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.pghbaRemoveFilters }}
-            - name: POSTGRESQL_PGHBA_REMOVE_FILTERS
-              value: {{ .Values.postgresql.pghbaRemoveFilters | quote }}
-            {{- end }}
-            - name: POSTGRESQL_ENABLE_TLS
-              value: {{ ternary "yes" "no" .Values.postgresql.tls.enabled | quote }}
-            {{- if .Values.postgresql.tls.enabled }}
-            - name: POSTGRESQL_TLS_PREFER_SERVER_CIPHERS
-              value: {{ ternary "yes" "no" .Values.postgresql.tls.preferServerCiphers | quote }}
-            - name: POSTGRESQL_TLS_CERT_FILE
-              value: {{ template "postgresql-ha.postgresql.tlsCert" . }}
-            - name: POSTGRESQL_TLS_KEY_FILE
-              value: {{ template "postgresql-ha.postgresql.tlsCertKey" . }}
-            {{- end }}
-            - name: POSTGRESQL_PORT_NUMBER
-              value: {{ .Values.postgresql.containerPorts.postgresql | quote }}
-            # Repmgr configuration
-            - name: REPMGR_PORT_NUMBER
-              value: {{ .Values.postgresql.containerPorts.postgresql | quote }}
-            - name: REPMGR_PRIMARY_PORT
-              value: {{ .Values.postgresql.containerPorts.postgresql | quote }}
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: REPMGR_UPGRADE_EXTENSION
-              value: {{ ternary "yes" "no" .Values.postgresql.upgradeRepmgrExtension | quote }}
-            - name: REPMGR_PGHBA_TRUST_ALL
-              value: {{ ternary "yes" "no" .Values.postgresql.pgHbaTrustAll | quote }}
-            - name: REPMGR_MOUNTED_CONF_DIR
-              value: "/bitnami/repmgr/conf"
-            - name: REPMGR_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: REPMGR_PARTNER_NODES
-              value: {{ range $e, $i := until $postgresqlReplicaCount }}{{ $postgresqlFullname }}-{{ $i }}.{{ $postgresqlHeadlessServiceName }}.$(REPMGR_NAMESPACE).svc.{{ $clusterDomain }},{{ end }}
-            - name: REPMGR_PRIMARY_HOST
-              value: {{ printf "%s-0.%s.$(REPMGR_NAMESPACE).svc.%s" $postgresqlFullname $postgresqlHeadlessServiceName $clusterDomain | quote }}
-            - name: REPMGR_NODE_NAME
-              value: "$(MY_POD_NAME)"
-            - name: REPMGR_NODE_NETWORK_NAME
-              value: "$(MY_POD_NAME).{{ $postgresqlHeadlessServiceName }}.$(REPMGR_NAMESPACE).svc.{{ $clusterDomain }}"
-            - name: REPMGR_NODE_TYPE
-              value: "data"
-            - name: REPMGR_LOG_LEVEL
-              value: {{ .Values.postgresql.repmgrLogLevel | quote }}
-            - name: REPMGR_CONNECT_TIMEOUT
-              value: {{ .Values.postgresql.repmgrConnectTimeout | quote }}
-            - name: REPMGR_RECONNECT_ATTEMPTS
-              value: {{ .Values.postgresql.repmgrReconnectAttempts | quote }}
-            - name: REPMGR_RECONNECT_INTERVAL
-              value: {{ .Values.postgresql.repmgrReconnectInterval | quote }}
-            - name: REPMGR_USERNAME
-              value: {{ (include "postgresql-ha.postgresqlRepmgrUsername" .) | quote }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: REPMGR_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/repmgr-password"
-            {{- else }}
-            - name: REPMGR_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql-ha.postgresqlSecretName" . }}
-                  key: repmgr-password
-            {{- end }}
-            {{- if .Values.postgresql.repmgrUsePassfile }}
-            - name: REPMGR_USE_PASSFILE
-              value: {{ ternary "true" "false" .Values.postgresql.repmgrUsePassfile | quote }}
-            - name: REPMGR_PASSFILE_PATH
-              value: {{ default "/opt/bitnami/repmgr/conf/.pgpass" .Values.postgresql.repmgrPassfilePath }}
-            {{- end }}
-            {{- if (include "postgresql-ha.repmgrDatabase" .) }}
-            - name: REPMGR_DATABASE
-              value: {{ (include "postgresql-ha.repmgrDatabase" .) | quote }}
-            {{- end }}
-            - name: REPMGR_FENCE_OLD_PRIMARY
-              value: {{ ternary "yes" "no" .Values.postgresql.repmgrFenceOldPrimary | quote }}
-            {{- if .Values.postgresql.repmgrChildNodesCheckInterval }}
-            - name: REPMGR_CHILD_NODES_CHECK_INTERVAL
-              value: {{ .Values.postgresql.repmgrChildNodesCheckInterval | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.repmgrChildNodesConnectedMinCount }}
-            - name: REPMGR_CHILD_NODES_CONNECTED_MIN_COUNT
-              value: {{ .Values.postgresql.repmgrChildNodesConnectedMinCount | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.repmgrChildNodesDisconnectTimeout }}
-            - name: REPMGR_CHILD_NODES_DISCONNECT_TIMEOUT
-              value: {{ .Values.postgresql.repmgrChildNodesDisconnectTimeout | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.syncReplication }}
-            - name: POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS
-              value: {{ sub (int .Values.postgresql.replicaCount) 1 | quote }}
-            {{- end }}
-            {{- if .Values.postgresql.syncReplicationMode }}
-            - name: POSTGRESQL_SYNCHRONOUS_REPLICAS_MODE
-              value: {{ .Values.postgresql.syncReplicationMode | quote }}
-            {{- end }}
-            - name: REPMGR_DEGRADED_MONITORING_TIMEOUT
-              value: {{ .Values.postgresql.preStopDelayAfterPgStopSeconds | quote }}
-            - name: POSTGRESQL_SR_CHECK
+            - name: REPMGR_SKIP_SETUP
               value: "yes"
-            - name: POSTGRESQL_SR_CHECK_USERNAME
-              value: {{ (include "postgresql-ha.pgoolSrCheckUsername" .) | quote }}
-            - name: POSTGRESQL_SR_CHECK_DATABASE
-              value: {{ .Values.pgpool.srCheckDatabase | quote  }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: POSTGRESQL_SR_CHECK_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/sr-check-password"
-            {{- else }}
-            - name: POSTGRESQL_SR_CHECK_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql-ha.pgpoolSecretName" . }}
-                  key: sr-check-password
+            {{- include "postgresql-ha.postgresql.commonEnvVars" (dict "component" "postgresql" "context" .) | nindent 12 }}
+            {{- if not .Values.postgresql.usePasswordFiles }}
+            {{- include "postgresql-ha.postgresql.passwordEnvVars" . | nindent 12 }}
             {{- end }}
             {{- if .Values.postgresql.extraEnvVars }}
-            {{- include "common.tplvalues.render" (dict "value" .Values.postgresql.extraEnvVars "context" $) | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.postgresql.extraEnvVars "context" .) | nindent 12 }}
             {{- end }}
           envFrom:
+            - configMapRef:
+                name: {{ printf "%s-common-env" (include "postgresql-ha.postgresql" .) }}
             {{- if .Values.postgresql.extraEnvVarsCM }}
             - configMapRef:
                 name: {{ .Values.postgresql.extraEnvVarsCM }}
@@ -406,22 +195,6 @@ spec:
             - name: empty-dir
               mountPath: /opt/bitnami/repmgr/logs
               subPath: repmgr-logs-dir
-            {{- if or .Values.postgresql.repmgrConfiguration .Values.postgresql.configuration .Values.postgresql.pgHbaConfiguration .Values.postgresql.configurationCM }}
-            - name: postgresql-config
-              mountPath: /bitnami/repmgr/conf
-            {{- end }}
-            {{- if or .Values.postgresql.extendedConf .Values.postgresql.extendedConfCM }}
-            - name: postgresql-extended-config
-              mountPath: /bitnami/postgresql/conf/conf.d/
-            {{- end }}
-            {{- if or .Values.postgresql.initdbScriptsCM .Values.postgresql.initdbScripts }}
-            - name: custom-init-scripts
-              mountPath: /docker-entrypoint-initdb.d/
-            {{- end }}
-            {{- if .Values.postgresql.initdbScriptsSecret }}
-            - name: custom-init-scripts-secret
-              mountPath: /docker-entrypoint-initdb.d/secret
-            {{- end }}
             {{- if .Values.postgresql.usePasswordFiles }}
             {{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
             - name: postgresql-creds
@@ -564,7 +337,7 @@ spec:
         {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
         - name: custom-metrics
           configMap:
-            name: {{ include "postgresql.metricsCM" . }}
+            name: {{ printf "%s-metrics" (include "common.names.fullname" .) }}
         {{- end }}
         - name: scripts
           configMap:

@@ -7,6 +7,7 @@ SPDX-License-Identifier: APACHE-2.0
 
 {{/*
 Fully qualified app name for PostgreSQL
+TODO: rename this helper to "postgresql-ha.postgresql.fullname"
 */}}
 {{- define "postgresql-ha.postgresql" -}}
 {{- printf "%s-postgresql" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
@@ -14,16 +15,10 @@ Fully qualified app name for PostgreSQL
 
 {{/*
 Fully qualified app name for Pgpool-II
+TODO: rename this helper to "postgresql-ha.pgpool.fullname"
 */}}
 {{- define "postgresql-ha.pgpool" -}}
 {{- printf "%s-pgpool" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Fully qualified app name for LDAP
-*/}}
-{{- define "postgresql-ha.ldap" -}}
-{{- printf "%s-ldap" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -54,22 +49,22 @@ Return the proper Pgpool-II image name
 {{/*
 Return the proper PostgreSQL Prometheus exporter image name
 */}}
-{{- define "postgresql-ha.volumePermissions.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.defaultInitContainers.volumePermissions.image "global" .Values.global ) -}}
+{{- define "postgresql-ha.metrics.image" -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.metrics.image "global" .Values.global ) -}}
 {{- end -}}
 
 {{/*
-Return the proper PostgreSQL Prometheus exporter image name
+Return the proper image name (for the init container volume-permissions image)
 */}}
-{{- define "postgresql-ha.metrics.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.metrics.image "global" .Values.global ) -}}
+{{- define "postgresql-ha.volumePermissions.image" -}}
+{{- include "common.images.image" ( dict "imageRoot" .Values.defaultInitContainers.volumePermissions.image "global" .Values.global ) -}}
 {{- end -}}
 
 {{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "postgresql-ha.image.pullSecrets" -}}
-{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.postgresql.image .Values.pgpool.image .Values.defaultInitContainers.volumePermissions.image .Values.metrics.image) "context" $) -}}
+{{- include "common.images.renderPullSecrets" (dict "images" (list .Values.postgresql.image .Values.pgpool.image .Values.metrics.image .Values.defaultInitContainers.volumePermissions.image ) "context" .) -}}
 {{- end -}}
 
 {{/*
@@ -93,19 +88,11 @@ Return the Pgpool Admin username
 {{- coalesce ((.Values.global).pgpool).adminUsername .Values.pgpool.adminUsername | default "" -}}
 {{- end -}}
 
-
 {{/*
 Return the Pgpool-II SR Check username
 */}}
-{{- define "postgresql-ha.pgoolSrCheckUsername" -}}
+{{- define "postgresql-ha.pgpoolSrCheckUsername" -}}
 {{- coalesce ((.Values.global).pgpool).srCheckUsername .Values.pgpool.srCheckUsername | default "" -}}
-{{- end -}}
-
-{{/*
-Get the metrics ConfigMap name.
-*/}}
-{{- define "postgresql.metricsCM" -}}
-{{- printf "%s-metrics" (include "common.names.fullname" .) -}}
 {{- end -}}
 
 {{/*
@@ -126,7 +113,7 @@ Return the database to use for Repmgr
 Return true if the PostgreSQL credential secret has a separate entry for the postgres user
 */}}
 {{- define "postgresql-ha.postgresqlSeparatePostgresPassword" -}}
-{{- if (include "postgresql-ha.postgresqlCreateSecret" .) -}}
+{{- if include "postgresql-ha.postgresqlCreateSecret" . -}}
     {{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
         {{- true -}}
     {{- end -}}
@@ -272,13 +259,154 @@ Return the LDAP credentials secret.
 */}}
 {{- define "postgresql-ha.ldapSecretName" -}}
 {{- if include "postgresql-ha.ldapCreateSecret" . -}}
-    {{- print (include "postgresql-ha.ldap" .) -}}
+    {{- printf "%s-ldap" (include "common.names.fullname" .) -}}
 {{- else }}
     {{- print (tpl (coalesce ((.Values.global).ldap).existingSecret .Values.ldap.existingSecret) .) -}}
 {{- end -}}
 {{- end -}}
 
-{{/* Check if there are rolling tags in the images */}}
+{{/*
+Return the environment variables to set the credentials when not using password files
+*/}}
+{{- define "postgresql-ha.postgresql.passwordEnvVars" -}}
+- name: POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "postgresql-ha.postgresqlSecretName" . }}
+      {{- if include "postgresql-ha.postgresqlCreateSecret" . }}
+      key: password
+      {{- else if index (lookup "v1" "Secret" (include "common.names.namespace" .) (include "postgresql-ha.postgresqlSecretName" .)) ".data.postgres-password" }}
+      key: postgres-password
+      {{- else }}
+      key: password
+      {{- end }}
+{{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
+- name: POSTGRES_POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "postgresql-ha.postgresqlSecretName" . }}
+      key: postgres-password
+{{- end }}
+- name: REPMGR_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "postgresql-ha.postgresqlSecretName" . }}
+      key: repmgr-password
+- name: POSTGRESQL_SR_CHECK_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "postgresql-ha.pgpoolSecretName" . }}
+      key: sr-check-password
+{{- end }}
+
+{{/*
+Return the environment variables to be set both on PostgreSQL and "setup" init-container
+on both PostgreSQL and Witness StatefulSets
+*/}}
+{{- define "postgresql-ha.postgresql.commonEnvVars" -}}
+{{- $componentValues := index .context.Values .component -}}
+- name: MY_POD_NAME
+  valueFrom:
+    fieldRef:
+      fieldPath: metadata.name
+- name: POSTGRESQL_PORT_NUMBER
+  value: {{ $componentValues.containerPorts.postgresql | quote }}
+- name: REPMGR_PORT_NUMBER
+  value: {{ $componentValues.containerPorts.postgresql | quote }}
+- name: REPMGR_NODE_NETWORK_NAME
+  value: {{ printf "$(MY_POD_NAME).%s.%s.svc.%s" (printf "%s-%s" (include "postgresql-ha.postgresql" .context) (ternary "headless" "witness" (eq .component "postgresql"))) (include "common.names.namespace" .context) .context.Values.clusterDomain | quote }}
+{{- end -}}
+
+{{/* Set PostgreSQL PGPASSWORD as environment variable depends on configuration */}}
+{{- define "postgresql-ha.pgpassword" -}}
+{{- if .Values.postgresql.usePasswordFiles -}}
+PGPASSWORD=$(< $POSTGRES_PASSWORD_FILE)
+{{- else -}}
+PGPASSWORD=$POSTGRES_PASSWORD
+{{- end -}}
+{{- end -}}
+
+{{/* Set Pgpool-II PGPASSWORD as environment variable depends on configuration */}}
+{{- define "postgresql-ha.pgpoolPostgresPassword" -}}
+{{- if .Values.pgpool.usePasswordFiles -}}
+PGPASSWORD=$(< $PGPOOL_POSTGRES_PASSWORD_FILE)
+{{- else -}}
+PGPASSWORD=$PGPOOL_POSTGRES_PASSWORD
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Pgpool-II secret containing custom users to be added to pool_passwd file.
+*/}}
+{{- define "postgresql-ha.pgpoolCustomUsersSecretName" -}}
+{{- if .Values.pgpool.customUsersSecret -}}
+    {{- print (tpl .Values.pgpool.customUsersSecret .) -}}
+{{- else -}}
+    {{- printf "%s-custom-users" (include "postgresql-ha.pgpool" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the path to the cert file for Pgpool-II
+*/}}
+{{- define "postgresql-ha.pgpool.tlsCert" -}}
+{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
+    {{- printf "/opt/bitnami/pgpool/certs/tls.crt" -}}
+{{- else -}}
+    {{- required "Certificate filename is required when TLS in enabled" .Values.pgpool.tls.certFilename | printf "/opt/bitnami/pgpool/certs/%s" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the path to the cert key file for Pgpool-II
+*/}}
+{{- define "postgresql-ha.pgpool.tlsCertKey" -}}
+{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
+    {{- printf "/opt/bitnami/pgpool/certs/tls.key" -}}
+{{- else -}}
+    {{- required "Certificate Key filename is required when TLS in enabled" .Values.pgpool.tls.certKeyFilename | printf "/opt/bitnami/pgpool/certs/%s" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the path to the CA cert file for Pgpool-II
+*/}}
+{{- define "postgresql-ha.pgpool.tlsCACert" -}}
+{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
+    {{- printf "/opt/bitnami/pgpool/certs/ca.crt" -}}
+{{- else -}}
+    {{- printf "/opt/bitnami/pgpool/certs/%s" .Values.pgpool.tls.certCAFilename -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the name of the secret containing TLS certificates for Pgpool-II
+*/}}
+{{- define "postgresql-ha.pgpool.tlsSecretName" -}}
+{{- if .Values.pgpool.tls.autoGenerated }}
+    {{- printf "%s-crt" (include "postgresql-ha.pgpool" .) -}}
+{{- else -}}
+    {{- required "A secret containing TLS certificates is required when TLS is enabled" (tpl .Values.pgpool.tls.certificatesSecret $) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the path to the cert file for PostgreSQL
+*/}}
+{{- define "postgresql-ha.postgresql.tlsCert" -}}
+{{- required "Certificate filename is required when TLS in enabled" .Values.postgresql.tls.certFilename | printf "/opt/bitnami/postgresql/certs/%s" -}}
+{{- end -}}
+
+{{/*
+Return the path to the cert key file for PostgreSQL
+*/}}
+{{- define "postgresql-ha.postgresql.tlsCertKey" -}}
+{{- required "Certificate Key filename is required when TLS in enabled" .Values.postgresql.tls.certKeyFilename | printf "/opt/bitnami/postgresql/certs/%s" -}}
+{{- end -}}
+
+{{/*
+Check if there are rolling tags in the images
+*/}}
 {{- define "postgresql-ha.checkRollingTags" -}}
 {{- include "common.warnings.rollingTag" .Values.postgresql.image -}}
 {{- include "common.warnings.rollingTag" .Values.pgpool.image -}}
@@ -351,91 +479,4 @@ postgresql-ha: Upgrade repmgr extension
       --set postgresql.replicaCount=1 \
       --set postgresql.upgradeRepmgrExtension=true
 {{- end -}}
-{{- end -}}
-
-{{/* Set PostgreSQL PGPASSWORD as environment variable depends on configuration */}}
-{{- define "postgresql-ha.pgpassword" -}}
-{{- if .Values.postgresql.usePasswordFiles -}}
-PGPASSWORD=$(< $POSTGRES_PASSWORD_FILE)
-{{- else -}}
-PGPASSWORD=$POSTGRES_PASSWORD
-{{- end -}}
-{{- end -}}
-
-{{/* Set Pgpool-II PGPASSWORD as environment variable depends on configuration */}}
-{{- define "postgresql-ha.pgpoolPostgresPassword" -}}
-{{- if .Values.postgresql.usePasswordFiles -}}
-PGPASSWORD=$(< $PGPOOL_POSTGRES_PASSWORD_FILE)
-{{- else -}}
-PGPASSWORD=$PGPOOL_POSTGRES_PASSWORD
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the Pgpool-II secret containing custom users to be added to pool_passwd file.
-*/}}
-{{- define "postgresql-ha.pgpoolCustomUsersSecretName" -}}
-{{- if .Values.pgpool.customUsersSecret -}}
-    {{- print (tpl .Values.pgpool.customUsersSecret .) -}}
-{{- else -}}
-    {{- printf "%s-custom-users" (include "postgresql-ha.pgpool" .) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the path to the cert file.
-*/}}
-{{- define "postgresql-ha.pgpool.tlsCert" -}}
-{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
-    {{- printf "/opt/bitnami/pgpool/certs/tls.crt" -}}
-{{- else -}}
-    {{- required "Certificate filename is required when TLS in enabled" .Values.pgpool.tls.certFilename | printf "/opt/bitnami/pgpool/certs/%s" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the path to the cert key file.
-*/}}
-{{- define "postgresql-ha.pgpool.tlsCertKey" -}}
-{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
-    {{- printf "/opt/bitnami/pgpool/certs/tls.key" -}}
-{{- else -}}
-    {{- required "Certificate Key filename is required when TLS in enabled" .Values.pgpool.tls.certKeyFilename | printf "/opt/bitnami/pgpool/certs/%s" -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the path to the CA cert file.
-*/}}
-{{- define "postgresql-ha.pgpool.tlsCACert" -}}
-{{- if and .Values.pgpool.tls.enabled .Values.pgpool.tls.autoGenerated }}
-    {{- printf "/opt/bitnami/pgpool/certs/ca.crt" -}}
-{{- else -}}
-    {{- printf "/opt/bitnami/pgpool/certs/%s" .Values.pgpool.tls.certCAFilename -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the name of the secret containing TLS certificates for Pgpool-II
-*/}}
-{{- define "postgresql-ha.pgpool.tlsSecretName" -}}
-{{- if .Values.pgpool.tls.autoGenerated }}
-    {{- printf "%s-crt" (include "postgresql-ha.pgpool" .) -}}
-{{- else -}}
-    {{- required "A secret containing TLS certificates is required when TLS is enabled" (tpl .Values.pgpool.tls.certificatesSecret $) -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the path to the cert file.
-*/}}
-{{- define "postgresql-ha.postgresql.tlsCert" -}}
-{{- required "Certificate filename is required when TLS in enabled" .Values.postgresql.tls.certFilename | printf "/opt/bitnami/postgresql/certs/%s" -}}
-{{- end -}}
-
-{{/*
-Return the path to the cert key file.
-*/}}
-{{- define "postgresql-ha.postgresql.tlsCertKey" -}}
-{{- required "Certificate Key filename is required when TLS in enabled" .Values.postgresql.tls.certKeyFilename | printf "/opt/bitnami/postgresql/certs/%s" -}}
 {{- end -}}

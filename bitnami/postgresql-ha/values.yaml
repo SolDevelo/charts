@@ -2096,6 +2096,62 @@ service:
 ## @section Default init containers Parameters
 
 defaultInitContainers:
+  ## PostgreSQL "setup" init container
+  ## Used to prepare the PostgreSQL configuration files for main containers to use them
+  ##
+  setup:
+    ## Configure PostgreSQL "setup" init-container Security Context
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+    ## @param defaultInitContainers.setup.containerSecurityContext.enabled Enabled "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.seLinuxOptions [object,nullable] Set SELinux options in "setup" init-containers
+    ## @param defaultInitContainers.setup.containerSecurityContext.runAsUser Set runAsUser in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.runAsGroup Set runAsUser in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.runAsNonRoot Set runAsNonRoot in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.readOnlyRootFilesystem Set readOnlyRootFilesystem in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.privileged Set privileged in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.allowPrivilegeEscalation Set allowPrivilegeEscalation in "setup" init-containers' Security Context
+    ## @param defaultInitContainers.setup.containerSecurityContext.capabilities.add List of capabilities to be added in "setup" init-containers
+    ## @param defaultInitContainers.setup.containerSecurityContext.capabilities.drop List of capabilities to be dropped in "setup" init-containers
+    ## @param defaultInitContainers.setup.containerSecurityContext.seccompProfile.type Set seccomp profile in "setup" init-containers
+    ##
+    containerSecurityContext:
+      enabled: true
+      seLinuxOptions: {}
+      runAsUser: 1001
+      runAsGroup: 1001
+      runAsNonRoot: true
+      readOnlyRootFilesystem: true
+      privileged: false
+      allowPrivilegeEscalation: false
+      capabilities:
+        add: []
+        drop: ["ALL"]
+      seccompProfile:
+        type: "RuntimeDefault"
+    ## PostgreSQL "setup" init container resource requests and limits
+    ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+    ## @param defaultInitContainers.setup.resourcesPreset Set PostgreSQL "setup" init container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if defaultInitContainers.setup.resources is set (defaultInitContainers.setup.resources is recommended for production).
+    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ##
+    resourcesPreset: "micro"
+    ## @param defaultInitContainers.setup.resources Set PostgreSQL "setup" init container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## E.g:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
+    ## @param defaultInitContainers.setup.startupWaitOptions Override default builtin startup wait check options for PostgreSQL "setup" init container
+    ## E.g. (with default options):
+    ## startupWaitOptions:
+    ##   retries: 300
+    ##   waitTime: 2
+    ##
+    startupWaitOptions: {}
   ## 'volume-permissions' init container
   ## Changes the owner and group of the persistent volume mount(s) point(s) to runAsUser:fsGroup values
   ##   based on the *podSecurityContext/*containerSecurityContext parameters

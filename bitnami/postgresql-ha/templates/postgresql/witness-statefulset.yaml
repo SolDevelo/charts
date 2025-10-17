@@ -31,15 +31,14 @@ spec:
       labels: {{- include "common.labels.standard" ( dict "customLabels" $podLabels "context" $ ) | nindent 8 }}
         app.kubernetes.io/component: postgresql
         role: witness
-      {{- if or .Values.witness.podAnnotations (and .Values.metrics.enabled .Values.metrics.annotations) }}
       annotations:
-      {{- if .Values.witness.podAnnotations }}
-      {{- include "common.tplvalues.render" (dict "value" .Values.witness.podAnnotations "context" $) | nindent 8 }}
-      {{- end }}
-      {{- if and .Values.metrics.enabled .Values.metrics.annotations }}
-      {{- include "common.tplvalues.render" (dict "value" .Values.metrics.annotations "context" $) | nindent 8 }}
-      {{- end }}
-      {{- end }}
+        checksum/common-env: {{ include (print $.Template.BasePath "/postgresql/common-env-configmap.yaml") . | sha256sum }}
+        {{- if .Values.witness.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.witness.podAnnotations "context" $) | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.metrics.enabled .Values.metrics.annotations }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.metrics.annotations "context" $) | nindent 8 }}
+        {{- end }}
     spec:
       {{- include "postgresql-ha.image.pullSecrets" . | nindent 6 }}
       automountServiceAccountToken: {{ .Values.witness.automountServiceAccountToken }}
@@ -78,14 +77,13 @@ spec:
       serviceAccountName: {{ include "postgresql-ha.serviceAccountName" . }}
       hostNetwork: {{ .Values.witness.hostNetwork }}
       hostIPC: {{ .Values.witness.hostIPC }}
-      {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.witness.extendedConf)) (not (empty .Values.witness.extendedConfCM))) .Values.persistence.enabled)) .Values.witness.initContainers .Values.witness.extraInitContainers }}
       initContainers:
       {{- if or .Values.postgresql.tls.enabled (and .Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty .Values.witness.extendedConf)) (not (empty .Values.witness.extendedConfCM))) .Values.persistence.enabled)) }}
         {{- include "postgresql-ha.defaultInitContainers.volumePermissions" (dict "component" "witness" "context" .) | nindent 8 }}
       {{- end }}
+        {{- include "postgresql-ha.defaultInitContainers.setup" (dict "component" "witness" "context" . ) | nindent 8}}
       {{- if or .Values.witness.initContainers .Values.witness.extraInitContainers }}
         {{- include "common.tplvalues.render" ( dict "value" (coalesce .Values.witness.initContainers .Values.witness.extraInitContainers) "context" .) | nindent 8 }}
-      {{- end }}
       {{- end }}
       containers:
         - name: postgresql
@@ -115,189 +113,19 @@ spec:
           {{- else if .Values.witness.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.witness.args "context" $) | nindent 12 }}
           {{- end }}
-          # Auxiliary vars to populate environment variables
-          {{- $postgresqlReplicaCount := int .Values.witness.replicaCount }}
-          {{- $postgresqlFullname := include "postgresql-ha.postgresql" . }}
-          {{- $postgresqlHeadlessServiceName := printf "%s-headless" (include "postgresql-ha.postgresql" .) }}
-          {{- $postgresqlWitnessServiceName := printf "%s-witness" (include "postgresql-ha.postgresql" .) }}
-          {{- $clusterDomain:= .Values.clusterDomain }}
           env:
-            - name: BITNAMI_DEBUG
-              value: {{ ternary "true" "false" (or .Values.postgresql.image.debug .Values.diagnosticMode.enabled) | quote }}
-            # PostgreSQL configuration
-            - name: POSTGRESQL_VOLUME_DIR
-              value: {{ .Values.persistence.mountPath | quote }}
-            - name: PGDATA
-              value: {{ printf "%s/%s" .Values.persistence.mountPath "data" | quote }}
-            {{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: POSTGRES_POSTGRES_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/postgres-password"
-            {{- else }}
-            - name: POSTGRES_POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "postgresql-ha.postgresqlSecretName" . }}
-                  key: postgres-password
-            {{- end }}
-            {{- end }}
-            - name: POSTGRES_USER
-              value: {{ (include "postgresql-ha.postgresqlUsername" .) | quote }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: POSTGRES_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/password"
-            {{- else }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql-ha.postgresqlSecretName" . }}
-                  {{- if (include "postgresql-ha.postgresqlCreateSecret" .) }}
-                  key: password
-                  {{- else }}
-                  {{- if ( index ( lookup "v1" "Secret" (include "common.names.namespace" .) (include "postgresql-ha.postgresqlSecretName" .) ) ".data.postgres-password" ) }}
-                  key: postgres-password
-                  {{- else }}
-                  key: password
-                  {{- end }}
-                  {{- end }}
-            {{- end }}
-            {{- if not (empty (include "postgresql-ha.postgresqlDatabase" .)) }}
-            - name: POSTGRES_DB
-              value: {{ (include "postgresql-ha.postgresqlDatabase" .) | quote }}
-            {{- end }}
-            - name: POSTGRESQL_LOG_HOSTNAME
-              value: {{ .Values.witness.audit.logHostname | quote }}
-            - name: POSTGRESQL_LOG_CONNECTIONS
-              value: {{ .Values.witness.audit.logConnections | quote }}
-            - name: POSTGRESQL_LOG_DISCONNECTIONS
-              value: {{ .Values.witness.audit.logDisconnections | quote }}
-            {{- if .Values.witness.audit.logLinePrefix }}
-            - name: POSTGRESQL_LOG_LINE_PREFIX
-              value: {{ .Values.witness.audit.logLinePrefix | quote }}
-            {{- end }}
-            {{- if .Values.witness.audit.logTimezone }}
-            - name: POSTGRESQL_LOG_TIMEZONE
-              value: {{ .Values.witness.audit.logTimezone | quote }}
-            {{- end }}
-            {{- if .Values.witness.audit.pgAuditLog }}
-            - name: POSTGRESQL_PGAUDIT_LOG
-              value: {{ .Values.witness.audit.pgAuditLog | quote }}
-            {{- end }}
-            - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
-              value: {{ .Values.witness.audit.pgAuditLogCatalog | quote }}
-            - name: POSTGRESQL_CLIENT_MIN_MESSAGES
-              value: {{ .Values.witness.audit.clientMinMessages | quote }}
-            - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
-              value: {{ .Values.postgresql.sharedPreloadLibraries | quote }}
-            {{- if .Values.witness.maxConnections }}
-            - name: POSTGRESQL_MAX_CONNECTIONS
-              value: {{ .Values.witness.maxConnections | quote }}
-            {{- end }}
-            {{- if .Values.witness.postgresConnectionLimit }}
-            - name: POSTGRESQL_POSTGRES_CONNECTION_LIMIT
-              value: {{ .Values.witness.postgresConnectionLimit | quote }}
-            {{- end }}
-            {{- if .Values.witness.dbUserConnectionLimit }}
-            - name: POSTGRESQL_USERNAME_CONNECTION_LIMIT
-              value: {{ .Values.witness.dbUserConnectionLimit | quote }}
-            {{- end }}
-            {{- if .Values.witness.tcpKeepalivesInterval }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_INTERVAL
-              value: {{ .Values.witness.tcpKeepalivesInterval | quote }}
-            {{- end }}
-            {{- if .Values.witness.tcpKeepalivesIdle }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_IDLE
-              value: {{ .Values.witness.tcpKeepalivesIdle | quote }}
-            {{- end }}
-            {{- if .Values.witness.tcpKeepalivesCount }}
-            - name: POSTGRESQL_TCP_KEEPALIVES_COUNT
-              value: {{ .Values.witness.tcpKeepalivesCount | quote }}
-            {{- end }}
-            {{- if .Values.witness.statementTimeout }}
-            - name: POSTGRESQL_STATEMENT_TIMEOUT
-              value: {{ .Values.witness.statementTimeout | quote }}
-            {{- end }}
-            {{- if .Values.witness.pghbaRemoveFilters }}
-            - name: POSTGRESQL_PGHBA_REMOVE_FILTERS
-              value: {{ .Values.witness.pghbaRemoveFilters | quote }}
-            {{- end }}
-            - name: POSTGRESQL_ENABLE_TLS
-              value: {{ ternary "yes" "no" .Values.postgresql.tls.enabled | quote }}
-            {{- if .Values.postgresql.tls.enabled }}
-            - name: POSTGRESQL_TLS_PREFER_SERVER_CIPHERS
-              value: {{ ternary "yes" "no" .Values.postgresql.tls.preferServerCiphers | quote }}
-            - name: POSTGRESQL_TLS_CERT_FILE
-              value: {{ template "postgresql-ha.postgresql.tlsCert" . }}
-            - name: POSTGRESQL_TLS_KEY_FILE
-              value: {{ template "postgresql-ha.postgresql.tlsCertKey" . }}
-            {{- end }}
-            - name: POSTGRESQL_PORT_NUMBER
-              value: {{ .Values.witness.containerPorts.postgresql | quote }}
-            # Repmgr configuration
-            - name: REPMGR_PORT_NUMBER
-              value: {{ .Values.witness.containerPorts.postgresql | quote }}
-            - name: REPMGR_PRIMARY_PORT
-              value: {{ .Values.witness.containerPorts.postgresql | quote }}
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: REPMGR_UPGRADE_EXTENSION
-              value: {{ ternary "yes" "no" .Values.witness.upgradeRepmgrExtension | quote }}
-            - name: REPMGR_PGHBA_TRUST_ALL
-              value: {{ ternary "yes" "no" .Values.witness.pgHbaTrustAll | quote }}
-            - name: REPMGR_MOUNTED_CONF_DIR
-              value: "/bitnami/repmgr/conf"
-            - name: REPMGR_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: REPMGR_PARTNER_NODES
-              value: {{ range $e, $i := until $postgresqlReplicaCount }}{{ $postgresqlFullname }}-{{ $i }}.{{ $postgresqlHeadlessServiceName }}.$(REPMGR_NAMESPACE).svc.{{ $clusterDomain }},{{ end }}
-            - name: REPMGR_PRIMARY_HOST
-              value: {{ printf "%s-0.%s.$(REPMGR_NAMESPACE).svc.%s" $postgresqlFullname $postgresqlHeadlessServiceName $clusterDomain | quote }}
-            - name: REPMGR_NODE_NAME
-              value: "$(MY_POD_NAME)"
-            - name: REPMGR_NODE_NETWORK_NAME
-              value: "$(MY_POD_NAME).{{ $postgresqlWitnessServiceName }}.$(REPMGR_NAMESPACE).svc.{{ $clusterDomain }}"
-            - name: REPMGR_NODE_TYPE
-              value: "witness"
-            - name: REPMGR_NODE_ID_START_SEED
-              value: "2000"
-            - name: REPMGR_LOG_LEVEL
-              value: {{ .Values.witness.repmgrLogLevel | quote }}
-            - name: REPMGR_CONNECT_TIMEOUT
-              value: {{ .Values.witness.repmgrConnectTimeout | quote }}
-            - name: REPMGR_RECONNECT_ATTEMPTS
-              value: {{ .Values.witness.repmgrReconnectAttempts | quote }}
-            - name: REPMGR_RECONNECT_INTERVAL
-              value: {{ .Values.witness.repmgrReconnectInterval | quote }}
-            - name: REPMGR_USERNAME
-              value: {{ (include "postgresql-ha.postgresqlRepmgrUsername" .) | quote }}
-            {{- if .Values.postgresql.usePasswordFiles }}
-            - name: REPMGR_PASSWORD_FILE
-              value: "/opt/bitnami/postgresql/secrets/repmgr-password"
-            {{- else }}
-            - name: REPMGR_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "postgresql-ha.postgresqlSecretName" . }}
-                  key: repmgr-password
-            {{- end }}
-            {{- if .Values.postgresql.repmgrUsePassfile }}
-            - name: REPMGR_USE_PASSFILE
-              value: {{ ternary "true" "false" .Values.postgresql.repmgrUsePassfile | quote }}
-            - name: REPMGR_PASSFILE_PATH
-              value: {{ default "/opt/bitnami/repmgr/conf/.pgpass" .Values.postgresql.repmgrPassfilePath }}
-            {{- end }}
-            {{- if (include "postgresql-ha.repmgrDatabase" .) }}
-            - name: REPMGR_DATABASE
-              value: {{ (include "postgresql-ha.repmgrDatabase" .) | quote }}
+            - name: REPMGR_SKIP_SETUP
+              value: "yes"
+            {{- include "postgresql-ha.postgresql.commonEnvVars" (dict "component" "witness" "context" .) | nindent 12 }}
+            {{- if not .Values.postgresql.usePasswordFiles }}
+            {{- include "postgresql-ha.postgresql.passwordEnvVars" . | nindent 12 }}
             {{- end }}
             {{- if .Values.witness.extraEnvVars }}
-            {{- include "common.tplvalues.render" (dict "value" .Values.witness.extraEnvVars "context" $) | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.witness.extraEnvVars "context" .) | nindent 12 }}
             {{- end }}
           envFrom:
+            - configMapRef:
+                name: {{ printf "%s-common-env" (include "postgresql-ha.postgresql" .) }}
             {{- if .Values.witness.extraEnvVarsCM }}
             - configMapRef:
                 name: {{ .Values.witness.extraEnvVarsCM }}
@@ -370,22 +198,6 @@ spec:
             - name: empty-dir
               mountPath: /opt/bitnami/repmgr/logs
               subPath: repmgr-logs-dir
-            {{- if or .Values.witness.repmgrConfiguration .Values.witness.configuration .Values.witness.pgHbaConfiguration .Values.witness.configurationCM }}
-            - name: postgresql-config
-              mountPath: /bitnami/repmgr/conf
-            {{- end }}
-            {{- if or .Values.witness.extendedConf .Values.witness.extendedConfCM }}
-            - name: postgresql-extended-config
-              mountPath: /bitnami/postgresql/conf/conf.d/
-            {{- end }}
-            {{- if or .Values.witness.initdbScriptsCM .Values.witness.initdbScripts }}
-            - name: custom-init-scripts
-              mountPath: /docker-entrypoint-initdb.d/
-            {{- end }}
-            {{- if .Values.witness.initdbScriptsSecret }}
-            - name: custom-init-scripts-secret
-              mountPath: /docker-entrypoint-initdb.d/secret
-            {{- end }}
             {{- if .Values.postgresql.usePasswordFiles }}
             - name: password
               mountPath: /opt/bitnami/postgresql/secrets/
@@ -506,7 +318,7 @@ spec:
         {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
         - name: custom-metrics
           configMap:
-            name: {{ include "postgresql.metricsCM" . }}
+            name: {{ printf "%s-metrics" (include "common.names.fullname" .) }}
         {{- end }}
         - name: scripts
           configMap:

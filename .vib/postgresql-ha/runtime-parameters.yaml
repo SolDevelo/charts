@@ -34,3 +34,8 @@ service:
   ports:
     postgresql: 80
   type: LoadBalancer
+defaultInitContainers:
+  setup:
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1002

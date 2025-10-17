@@ -1,0 +1,60 @@
+{{- /*
+Copyright Broadcom, Inc. All Rights Reserved.
+SPDX-License-Identifier: APACHE-2.0
+*/}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-common-env" (include "postgresql-ha.postgresql" .) }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: postgresql
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
+  {{- end }}
+data:
+  BITNAMI_DEBUG: {{ ternary "true" "false" (or .Values.postgresql.image.debug .Values.diagnosticMode.enabled) | quote }}
+  POSTGRESQL_VOLUME_DIR: {{ .Values.persistence.mountPath | quote }}
+  PGDATA: {{ printf "%s/data" .Values.persistence.mountPath | quote }}
+  REPMGR_PRIMARY_PORT: {{ .Values.postgresql.containerPorts.postgresql | quote }}
+  {{- $namespace := include "common.names.namespace" . }}
+  {{- $postgresqlFullname := include "postgresql-ha.postgresql" . }}
+  {{- $postgresqlHeadlessServiceName := printf "%s-headless" (include "postgresql-ha.postgresql" .) }}
+  {{- $clusterDomain:= .Values.clusterDomain }}
+  REPMGR_PRIMARY_HOST: {{ printf "%s-0.%s.%s.svc.%s" $postgresqlFullname $postgresqlHeadlessServiceName $namespace $clusterDomain | quote }}
+  {{- $nodes := list }}
+  {{- range $index := until (.Values.postgresql.replicaCount | int) }}
+      {{- $nodes = append $nodes (printf "%s-%d.%s.%s.svc.%s" $postgresqlFullname $index $postgresqlHeadlessServiceName $namespace $clusterDomain) }}
+  {{- end }}
+  REPMGR_PARTNER_NODES: {{ join "," $nodes | quote }}
+  {{/*
+  The following env. vars defined are used for the initial bootstrap process
+  but they're ignored (its value can't be changed) once there's persisted
+  data on container restarts or pod reschedules.
+  */}}
+  POSTGRES_USER: {{ include "postgresql-ha.postgresqlUsername" . | quote }}
+  {{- if not (empty (include "postgresql-ha.postgresqlDatabase" .)) }}
+  POSTGRES_DB: {{ (include "postgresql-ha.postgresqlDatabase" .) | quote }}
+  {{- end }}
+  REPMGR_USERNAME: {{ include "postgresql-ha.postgresqlRepmgrUsername" . | quote }}
+  {{- if not (empty (include "postgresql-ha.repmgrDatabase" .)) }}
+  REPMGR_DATABASE: {{ include "postgresql-ha.repmgrDatabase" . | quote }}
+  {{- end }}
+  POSTGRESQL_SR_CHECK: "yes"
+  POSTGRESQL_SR_CHECK_USERNAME: {{ include "postgresql-ha.pgpoolSrCheckUsername" . | quote }}
+  POSTGRESQL_SR_CHECK_DATABASE: {{ .Values.pgpool.srCheckDatabase | quote  }}
+  {{- if .Values.postgresql.usePasswordFiles }}
+  POSTGRES_PASSWORD_FILE: "/opt/bitnami/postgresql/secrets/password"
+  REPMGR_PASSWORD_FILE: "/opt/bitnami/postgresql/secrets/repmgr-password"
+  POSTGRESQL_SR_CHECK_PASSWORD_FILE: "/opt/bitnami/postgresql/secrets/sr-check-password"
+  {{- if not (eq (include "postgresql-ha.postgresqlUsername" .) "postgres") }}
+  POSTGRES_POSTGRES_PASSWORD_FILE: "/opt/bitnami/postgresql/secrets/postgres-password"
+  {{- end }}
+  {{- end }}
+  {{- if .Values.postgresql.syncReplication }}
+  POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS: {{ sub (int .Values.postgresql.replicaCount) 1 | quote }}
+  {{- end }}
+  {{- if .Values.postgresql.syncReplicationMode }}
+  POSTGRESQL_SYNCHRONOUS_REPLICAS_MODE: {{ .Values.postgresql.syncReplicationMode | quote }}
+  {{- end }}
