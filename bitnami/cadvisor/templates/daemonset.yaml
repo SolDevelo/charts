@@ -95,6 +95,12 @@ spec:
           env:
             - name: CADVISOR_HEALTHCHECK_URL
               value: http://0.0.0.0:{{ .Values.containerPorts.http }}/healthz
+          {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- if .Values.extraEnvVars }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
           {{- end }}
