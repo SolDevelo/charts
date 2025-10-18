@@ -12,7 +12,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: postgresql
       version: 18.0.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r11
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r12
     - name: seaweedfs
       version: 3.97.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/seaweedfs:3.97.0-debian-12-r5
@@ -55,4 +55,4 @@ name: seaweedfs
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/seawwedfs
 - https://github.com/bitnami/containers/tree/main/bitnami/seaweedfs
-version: 7.1.1
+version: 7.1.2
