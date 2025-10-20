@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,10 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
+
 ## @section Common parameters
 ##
 
@@ -407,6 +412,10 @@ resourcesPreset: "micro"
 ##     memory: 1024Mi
 ##
 resources: {}
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
 ## Container ports
 ## @param containerPorts.http WordPress HTTP container port
 ## @param containerPorts.https WordPress HTTPS container port
@@ -924,6 +933,9 @@ volumePermissions:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  fips:
+    openssl: ""
   ## Init container' Security Context
   ## Note: the chown of the data folder is done to containerSecurityContext.runAsUser
   ## and not the below volumePermissions.containerSecurityContext.runAsUser
@@ -1084,6 +1096,9 @@ metrics:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  fips:
+    openssl: ""
   ## Configure Container Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param metrics.containerSecurityContext.enabled Enabled containers' Security Context
@@ -1282,6 +1297,10 @@ mariadb:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param mariadb.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## External Database Configuration
 ## All of these values are only used if `mariadb.enabled=false`
 ##
@@ -1352,6 +1371,10 @@ memcached:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param memcached.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 
 ## External Memcached Configuration
 ## All of these values are only used if `memcached.enabled=false`

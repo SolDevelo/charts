@@ -101,6 +101,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - mountPath: /bitnami/wordpress
               name: wordpress-data
@@ -154,6 +159,11 @@ spec:
               fi
 
               info "Copy operation completed"
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /emptydir
@@ -300,6 +310,10 @@ spec:
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
           envFrom:
             {{- if .Values.extraEnvVarsCM }}
             - configMapRef:
@@ -445,6 +459,11 @@ spec:
           {{- end }}
           {{- if .Values.metrics.containerSecurityContext.enabled }}
           securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.metrics.containerSecurityContext "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
           {{- end }}
         {{- end }}
         {{- if .Values.sidecars }}
