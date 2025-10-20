@@ -3,6 +3,8 @@ package mysql_test
 import (
 	"context"
 	"flag"
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -66,7 +68,7 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 						{
 							Name:    "mysql",
 							Image:   image,
-							Command: []string{"mysql", "-h$(MYSQL_HOST)", "-p$(MYSQL_PASSWORD)", "-u$(MYSQL_USERNAME)", "-P$(MYSQL_PORT)", "-e", stmt},
+							Command: []string{"mysql", "-h$(MYSQL_HOST)", "-p$(MYSQL_PASSWORD)", "-u$(MYSQL_USERNAME)", "-P$(MYSQL_PORT)", "--ssl-mode=VERIFY_CA", "--ssl-ca=/certs/ca.crt", "-e", stmt},
 							Env: []v1.EnvVar{
 								{
 									Name:  "MYSQL_PASSWORD",
@@ -86,6 +88,22 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 								},
 							},
 							SecurityContext: securityContext,
+							VolumeMounts: []v1.VolumeMount{
+								{
+									Name:      "tls-certs",
+									MountPath: "/certs",
+								},
+							},
+						},
+					},
+					Volumes: []v1.Volume{
+						{
+							Name: "tls-certs",
+							VolumeSource: v1.VolumeSource{
+								Secret: &v1.SecretVolumeSource{
+									SecretName: fmt.Sprintf("%s-crt", strings.TrimSuffix(stsName, "-primary")),
+								},
+							},
 						},
 					},
 				},

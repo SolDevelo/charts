@@ -3,6 +3,8 @@ package mariadb_test
 import (
 	"context"
 	"flag"
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -67,7 +69,7 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 						{
 							Name:    "mariadb",
 							Image:   image,
-							Command: []string{"mysql", "-h$(MARIADB_HOST)", "-p$(MARIADB_PASSWORD)", "-u$(MARIADB_USERNAME)", "-P$(MARIADB_PORT)", "-e", stmt},
+							Command: []string{"mysql", "-h$(MARIADB_HOST)", "-p$(MARIADB_PASSWORD)", "-u$(MARIADB_USERNAME)", "-P$(MARIADB_PORT)", "--ssl", "--ssl-ca=/certs/ca.crt", "--ssl-verify-server-cert=off", "-e", stmt},
 							Env: []v1.EnvVar{
 								{
 									Name:  "MARIADB_PASSWORD",
@@ -87,6 +89,22 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 								},
 							},
 							SecurityContext: securityContext,
+							VolumeMounts: []v1.VolumeMount{
+								{
+									Name:      "tls-certs",
+									MountPath: "/certs",
+								},
+							},
+						},
+					},
+					Volumes: []v1.Volume{
+						{
+							Name: "tls-certs",
+							VolumeSource: v1.VolumeSource{
+								Secret: &v1.SecretVolumeSource{
+									SecretName: fmt.Sprintf("%s-crt", strings.TrimSuffix(stsName, "-primary")),
+								},
+							},
 						},
 					},
 				},
