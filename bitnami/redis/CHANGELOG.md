@@ -1,6 +1,9 @@
 # Changelog
 
-## 23.0.7 (2025-08-27)
+## 23.1.6 (2025-10-14)
+* [bitnami/redis] Avoid eager evaluation of ternary when resolving user secrets ([#36265](https://github.com/bitnami/charts/pull/36265))
+
+## <small> 23.0.7 (2025-08-27)</small>
 * [bitnami/redis] Fix service binding password mismatch (#15626) ([#36231](https://github.com/bitnami/charts/pull/36231))
 
 ## <small> 22.0.7 (2025-08-27)</small>
