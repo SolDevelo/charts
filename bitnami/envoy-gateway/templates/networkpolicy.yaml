@@ -75,7 +75,7 @@ spec:
         - port: {{ .Values.containerPorts.admin }} # admin
         {{- end }}
         {{- range .Values.extraContainerPorts }}
-        - port: {{ . }}
+        - port: {{ .containerPort }}
         {{- end }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
