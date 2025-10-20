@@ -40,4 +40,4 @@ maintainers:
 name: nginx
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/nginx
-version: 22.0.14
+version: 22.1.0
