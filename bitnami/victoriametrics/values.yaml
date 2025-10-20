@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -182,6 +186,12 @@ vmselect:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vmselect.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vmselect.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vmselect.kind Define how to deploy VictoriaMetrics Select (allowed values: deployment or statefulset)
   ##
   kind: "deployment"
@@ -805,6 +815,12 @@ vminsert:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vminsert.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vminsert.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vminsert.deploymentAnnotations Annotations for VictoriaMetrics Insert Deployment
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
   ##
@@ -1417,6 +1433,12 @@ vmstorage:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vmstorage.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vmstorage.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vmstorage.retentionPeriod Data retention period
   ##
   retentionPeriod: 1
@@ -1980,6 +2002,12 @@ vmauth:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vmauth.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vmauth.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vmauth.kind Define how to deploy VictoriaMetrics Auth (allowed values: deployment or daemonset)
   ##
   kind: "deployment"
@@ -2612,6 +2640,12 @@ vmagent:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vmagent.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vmagent.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vmagent.kind Define how to deploy VictoriaMetrics Agent (allowed values: deployment or daemonset)
   ##
   kind: "deployment"
@@ -3179,6 +3213,12 @@ vmalert:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param vmalert.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param vmalert.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param vmalert.datasourceUrl URL to an external datasource (uses VictoriaMetrics Insert if not set)
   ##
   datasourceUrl: ""
@@ -3650,6 +3690,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Init container' Security Context
     ## Note: the chown of the data folder is done to containerSecurityContext.runAsUser
     ## and not the below volumePermissions.containerSecurityContext.runAsUser

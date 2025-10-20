@@ -222,6 +222,11 @@ Return the proper image name (for the init container volume-permissions image)
   {{- else if ne .Values.defaultInitContainers.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.defaultInitContainers.volumePermissions.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ .componentValues.persistence.mountPath }}
