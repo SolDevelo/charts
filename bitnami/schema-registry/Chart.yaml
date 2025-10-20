@@ -5,12 +5,12 @@ annotations:
   fips: "false"
   images: |
     - name: schema-registry
-      version: 8.0.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/schema-registry:8.0.2-debian-12-r0
+      version: 8.1.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/schema-registry:8.1.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
-appVersion: 8.0.2
+appVersion: 8.1.0
 dependencies:
 - condition: kafka.enabled
   name: kafka
@@ -38,4 +38,4 @@ maintainers:
 name: schema-registry
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/schema-registry
-version: 26.0.9
+version: 27.0.0
