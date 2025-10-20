@@ -54,6 +54,11 @@ initContainers:
     {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
     resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 6 }}
     {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    env:
+      - name: OPENSSL_FIPS
+        value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+    {{- end }}
     volumeMounts:
       - name: data
         mountPath: /bitnami/tomcat
@@ -93,6 +98,12 @@ containers:
           secretKeyRef:
             name: {{ include "tomcat.secretName" . }}
             key: {{ include "tomcat.adminPasswordKey" . }}
+      {{- end }}
+      {{- if include "common.fips.enabled" . }}
+      - name: OPENSSL_FIPS
+        value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+      - name: JAVA_TOOL_OPTIONS
+        value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
       {{- end }}
       - name: TOMCAT_ALLOW_REMOTE_MANAGEMENT
         value: {{ .Values.tomcatAllowRemoteManagement | quote }}
@@ -206,6 +217,13 @@ containers:
     resources: {{- toYaml .Values.metrics.jmx.resources | nindent 6 }}
     {{- else if ne .Values.metrics.jmx.resourcesPreset "none" }}
     resources: {{- include "common.resources.preset" (dict "type" .Values.metrics.jmx.resourcesPreset) | nindent 6 }}
+    {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    env:
+      - name: OPENSSL_FIPS
+        value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.jmx.fips "global" .Values.global) | quote }}
+      - name: JAVA_TOOL_OPTIONS
+        value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.jmx.fips "global" .Values.global) | quote }}
     {{- end }}
     volumeMounts:
       - name: jmx-config
