@@ -79,7 +79,11 @@ spec:
               info "Copying standalone.conf"
               cp /opt/bitnami/wildfly/bin/standalone.conf /wildfly-standalone-conf-dir
               info "Writable files successfully copied"
-
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /wildfly-standalone-conf-dir
@@ -169,6 +173,12 @@ spec:
             {{- if .Values.ejbcaCA.baseDN }}
             - name: EJBCA_BASE_DN
               value: {{ .Values.ejbcaCA.baseDN | quote }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.extraEnvVars }}
               {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
