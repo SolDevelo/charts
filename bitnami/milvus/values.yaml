@@ -98,7 +98,7 @@ milvus:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/milvus
-    tag: 2.6.3-debian-12-r3
+    tag: 2.6.4-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -3066,7 +3066,7 @@ attu:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/attu
-    tag: 2.5.12-debian-12-r29
+    tag: 2.5.12-debian-12-r40
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
