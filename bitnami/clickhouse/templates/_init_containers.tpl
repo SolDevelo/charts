@@ -35,6 +35,11 @@ Returns an init-container that changes the owner and group of the persistent vol
       {{- else }}
       find {{ $roleValues.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" |  xargs -r chown -R {{ $roleValues.containerSecurityContext.runAsUser }}:{{ $roleValues.podSecurityContext.fsGroup }}
       {{- end }}
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.volumePermissions.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: {{ $roleValues.persistence.volumeName }}
       mountPath: {{ $roleValues.persistence.mountPath }}

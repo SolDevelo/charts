@@ -118,6 +118,10 @@ spec:
             {{- end }}
             - name: CLICKHOUSE_KEEPER_RAFT_PORT
               value: {{ .Values.keeper.containerPorts.raft | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.keeper.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.keeper.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.keeper.extraEnvVars "context" .) | nindent 12 }}
             {{- end }}
