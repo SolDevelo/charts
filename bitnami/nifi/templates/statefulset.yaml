@@ -32,7 +32,7 @@ spec:
   template:
     metadata:
       {{- if or .Values.podAnnotations (and .Values.auth.enabled (not .Values.auth.existingSecret)) (not .Values.sensitiveProps.existingSecret) (not .Values.configuration.existingSecret) }}
-      annotations: 
+      annotations:
         {{- if and .Values.auth.enabled (not .Values.auth.existingSecret) }}
         checksum/auth-secret: {{ include (print $.Template.BasePath "/auth-secret.yaml") . | sha256sum }}
         {{- end }}
@@ -124,6 +124,12 @@ spec:
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -168,9 +174,9 @@ spec:
               path: /health
               port: {{ $protocol }}-web
               # The Kubernetes documentation recommends using httpHeaders with Host instead of the host value
-              httpHeaders: 
+              httpHeaders:
                 - name: Host
-                  value: 127.0.0.1              
+                  value: 127.0.0.1
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{- end }}
@@ -183,9 +189,9 @@ spec:
               path: /health
               port: {{ $protocol }}-web
               # The Kubernetes documentation recommends using httpHeaders with Host instead of the host value
-              httpHeaders: 
+              httpHeaders:
                 - name: Host
-                  value: 127.0.0.1              
+                  value: 127.0.0.1
               {{- if .Values.tls.enabled }}
               scheme: HTTPS
               {{- end }}

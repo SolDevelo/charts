@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 ##
@@ -253,6 +257,12 @@ resourcesPreset: "medium"
 ##     memory: 1024Mi
 ##
 resources: {}
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+## @param fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
+  java: relaxed
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enable NiFi pods' Security Context
@@ -1033,6 +1043,12 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.setAuth.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param defaultInitContainers.setAuth.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      java: relaxed
   ## "import-ca" init container
   ## Used to import the kube-apiserver and application TLS certificates in the Java keystore
   importCA:
@@ -1087,6 +1103,12 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.importCA.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param defaultInitContainers.importCA.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      java: relaxed
   ## Init container that changes the owner and group of the persistent volume mount point to runAsUser:fsGroup values based on the *podSecurityContext/*containerSecurityContext parameters
   ##
   volumePermissions:

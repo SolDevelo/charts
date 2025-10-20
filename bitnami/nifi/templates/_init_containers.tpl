@@ -160,6 +160,12 @@ Returns an init-container that prepares CA for accessing kube-apiserver and othe
         {{- end }}
         echo "CA certificates imported"
   env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.importCA.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.importCA.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -219,6 +225,12 @@ Returns an init-container that prepares the NiFi configuration files for main co
         secretKeyRef:
           name: {{ include "nifi.auth.secretName" . }}
           key: {{ include "nifi.auth.secretPasswordKey" . }}
+    {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.setAuth.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.setAuth.fips "global" .Values.global) | quote }}
     {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
