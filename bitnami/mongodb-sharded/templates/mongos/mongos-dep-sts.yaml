@@ -104,6 +104,10 @@ spec:
               value: {{ .Values.common.mongodbInitRetryAttempts | quote }}
             - name: MONGODB_INIT_RETRY_DELAY
               value: {{ .Values.common.mongodbInitRetryDelay | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.mongos.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if $.Values.auth.enabled }}
             - name: MONGODB_ROOT_USER
               value: {{ .Values.auth.rootUser | quote }}
@@ -274,6 +278,12 @@ spec:
           securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.metrics.containerSecurityContext "context" $) | nindent 12 }}
           {{- end }}
           env:
+          {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- if $.Values.auth.enabled }}
             - name: MONGODB_ROOT_USER
               value: {{ .Values.auth.rootUser | quote }}
