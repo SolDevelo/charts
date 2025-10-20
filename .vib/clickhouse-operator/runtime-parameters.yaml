@@ -50,6 +50,10 @@ extraDeploy:
                 env:
                   - name: BITNAMI_DEBUG
                     value: "true"
+                  {{- if include "common.fips.enabled" . }}
+                  - name: OPENSSL_FIPS
+                    value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.clickHouseImage.fips "global" .Values.global) | quote }}
+                  {{- end }}
                 resources:
                   requests:
                     memory: "256M"
@@ -173,6 +177,10 @@ extraDeploy:
                     value: "true"
                   - name: CLICKHOUSE_KEEPER_SERVER_ID
                     value: "1"
+                  {{- if include "common.fips.enabled" . }}
+                  - name: OPENSSL_FIPS
+                    value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.keeperImage.fips "global" .Values.global) | quote }}
+                  {{- end }}
                 resources:
                   requests:
                     memory: "256M"

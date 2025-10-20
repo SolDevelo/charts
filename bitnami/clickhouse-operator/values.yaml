@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -36,6 +37,9 @@ global:
     ## @param global.compatibility.omitEmptySeLinuxOptions If set to true, removes the seLinuxOptions from the securityContexts when it is set to an empty object
     ##
     omitEmptySeLinuxOptions: false
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 ##
@@ -97,6 +101,12 @@ image:
   ##   - myRegistryKeySecretName
   ##
   pullSecrets: []
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+## @param fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
+  golang: relaxed
 ## Bitnami ClickHouse image
 ## ref: https://hub.docker.com/r/bitnami/clickhouse/tags/
 ## @param clickHouseImage.registry [default: REGISTRY_NAME] ClickHouse image registry
@@ -124,6 +134,10 @@ clickHouseImage:
   ##   - myRegistryKeySecretName
   ##
   pullSecrets: []
+  ## @param clickHouseImage.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 ## Bitnami ClickHouse Keeper image
 ## ref: https://hub.docker.com/r/bitnami/clickhouse-keeper/tags/
 ## @param keeperImage.registry [default: REGISTRY_NAME] ClickHouse Keeper image registry
@@ -151,6 +165,10 @@ keeperImage:
   ##   - myRegistryKeySecretName
   ##
   pullSecrets: []
+  ## @param keeperImage.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 ## Authentication
 ## @param auth.username ClickHouse Operator username
 ## @param auth.password ClickHouse Operator password
@@ -684,6 +702,12 @@ metrics:
   ##     containerPort: 9090
   ##
   extraContainerPorts: []
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for ClickHouse Operator Metrics exporter containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param metrics.livenessProbe.enabled Enable livenessProbe on ClickHouse Operator Metrics exporter containers

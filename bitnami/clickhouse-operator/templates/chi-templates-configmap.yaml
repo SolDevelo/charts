@@ -46,6 +46,10 @@ data:
                       value: "9001"
                     - name: CLICKHOUSE_INTERSERVER_HTTP_PORT
                       value: "9010"
+                    {{- if include "common.fips.enabled" . }}
+                    - name: OPENSSL_FIPS
+                      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.clickHouseImage.fips "global" .Values.global) | quote }}
+                    {{- end }}
                   ports:
                     - name: http
                       containerPort: 8124
