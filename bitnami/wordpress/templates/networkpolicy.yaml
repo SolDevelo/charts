@@ -65,7 +65,7 @@ spec:
         - port: {{ .Values.metrics.containerPorts.metrics }}
         {{- end}}
         {{- range .Values.extraContainerPorts }}
-        - port: {{ . }}
+        - port: {{ .containerPort }}
         {{- end }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
