@@ -43,4 +43,4 @@ maintainers:
 name: kyverno
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/kyverno
-version: 0.1.9
+version: 0.2.0
