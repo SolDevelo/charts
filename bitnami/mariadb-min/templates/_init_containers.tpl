@@ -30,6 +30,11 @@ Returns an init-container that changes the owner and group of the persistent vol
       {{- else }}
       find {{ $componentValues.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" |  xargs -r chown -R {{ $componentValues.containerSecurityContext.runAsUser }}:{{ $componentValues.podSecurityContext.fsGroup }}
       {{- end }}
+  {{- if include "common.fips.enabled" .context }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.volumePermissions.fips "global" .context.Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ $componentValues.persistence.mountPath }}
@@ -120,6 +125,10 @@ Returns an init-container that sets up the MariaDB instance
       value: {{ .context.Values.defaultInitContainers.setup.startupWaitOptions.retries | default 300 | quote }}
     - name: MARIADB_STARTUP_WAIT_SLEEP_TIME
       value: {{ .context.Values.defaultInitContainers.setup.startupWaitOptions.sleepTime | default 2 | quote }}
+    {{- end }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.setup.fips "global" .context.Values.global) | quote }}
     {{- end }}
   volumeMounts:
     - name: data
