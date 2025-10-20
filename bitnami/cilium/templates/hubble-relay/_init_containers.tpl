@@ -53,6 +53,12 @@ Returns an init-container that waits for Hubble to be ready
   env:
     - name: HUBBLE_PEERS_ENDPOINT
       value: {{ printf "%s.%s.svc.%s:%d" (printf "%s-hubble-peers" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-") (include "common.names.namespace" .) .Values.clusterDomain (int .Values.hubble.peers.service.port) | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.hubble.relay.defaultInitContainers.waitForHubble.fips "global" .Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.hubble.relay.defaultInitContainers.waitForHubble.fips "global" .Values.global) | quote }}
+    {{- end }}
   {{- if not .Values.hubble.tls.enabled }}
     - name: GRPC_FLAGS
       value: "-rpc-timeout=5s -connect-timeout=5s"

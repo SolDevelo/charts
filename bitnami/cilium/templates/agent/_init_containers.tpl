@@ -40,6 +40,11 @@ Returns an init-container that copies some dirs to an empty dir volume to make t
           cp -r --preserve=mode /var/lib/alternatives /emptydir/alternatives-admin-dir
       fi
       info "Copy operation completed"
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.prepareWriteDirs.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /emptydir
@@ -79,6 +84,12 @@ Returns an init-container that generate the Cilium configuration
         fieldRef:
           apiVersion: v1
           fieldPath: metadata.namespace
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.buildConfig.fips "global" .Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.agent.defaultInitContainers.buildConfig.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /config
@@ -106,6 +117,10 @@ Returns an init-container that installs Cilium CNI plugin in the host
   env:
     - name: HOST_CNI_BIN_DIR
       value: {{ template "cilium.agent.hostCNIBinDir" . }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.installCniPlugin.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: host-cni-bin
       mountPath: {{ printf "/host%s" (include "cilium.agent.hostCNIBinDir" .) }}
@@ -132,6 +147,11 @@ Returns an init-container that mount bpf fs in the host
     - -ec
     - |
       mount | grep "{{ .Values.agent.bpf.hostRoot }} type bpf" || mount -t bpf bpf {{ .Values.agent.bpf.hostRoot }}
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.mountBpf.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: bpf-maps
       mountPath: {{ .Values.agent.bpf.hostRoot }}
@@ -160,6 +180,10 @@ Returns an init-container that mount cgroup2 filesystem in the host
   env:
     - name: HOST_CNI_BIN_DIR
       value: {{ template "cilium.agent.hostCNIBinDir" . }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.mountBpf.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: host-cni-bin
       mountPath: {{ printf "/host%s" (include "cilium.agent.hostCNIBinDir" .) }}
@@ -212,6 +236,10 @@ Returns an init-container that cleans up the Cilium state
           name: {{ template "cilium.configmapName" . }}
           key: write-cni-conf-when-ready
           optional: true
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.cleanState.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     {{- if .Values.agent.bpf.autoMount }}
     - name: bpf-maps
@@ -241,4 +269,9 @@ Returns an init-container that waits for kube-proxy to be ready
   {{- end }}
   args:
     - /opt/bitnami/scripts/cilium/wait-for-kube-proxy.sh
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.defaultInitContainers.waitForKubeProxy.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}

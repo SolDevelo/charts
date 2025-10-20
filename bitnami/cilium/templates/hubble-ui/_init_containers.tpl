@@ -53,6 +53,12 @@ Returns an init-container that waits for Hubble Relay to be ready
   env:
     - name: HUBBLE_RELAY_ENDPOINT
       value: {{ printf "%s.%s.svc.%s:%d" (include "cilium.hubble.relay.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain (int .Values.hubble.relay.service.ports.grpc) | quote }}
+  {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.hubble.ui.defaultInitContainers.waitForHubbleRelay.fips "global" .Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.hubble.ui.defaultInitContainers.waitForHubbleRelay.fips "global" .Values.global) | quote }}
+  {{- end }}
   {{- if not .Values.hubble.tls.enabled }}
     - name: GRPC_FLAGS
       value: "-rpc-timeout=5s -connect-timeout=5s"
@@ -92,6 +98,11 @@ Returns an init-container that preserves the NGINX logs symlinks
       if ! is_dir_empty /opt/bitnami/nginx/logs; then
         cp -r /opt/bitnami/nginx/logs /emptydir/nginx-logs-dir
       fi
+  env:
+  {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.hubble.ui.frontend.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /emptydir

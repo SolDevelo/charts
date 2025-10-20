@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 ##
@@ -147,6 +151,12 @@ agent:
     ##
     pullSecrets: []
     debug: false
+  ## @param agent.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param agent.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param agent.containerPorts.health Cilium Agent health container port
   ## @param agent.containerPorts.pprof Cilium Agent pprof container port
   ## @param agent.containerPorts.hubblePeer Cilium Agent Hubble peer service container port
@@ -496,6 +506,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.prepareWriteDirs.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
     ## Cilium Agent "build-config" init container
     ## Used to generate the Cilium configuration
     ##
@@ -545,6 +559,12 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.buildConfig.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ## @param agent.defaultInitContainers.buildConfig.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
+        golang: relaxed
     ## Cilium Agent "install-cni-plugin" init container
     ## Used to install the Cilium CNI plugin in the host
     ##
@@ -605,6 +625,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.installCniPlugin.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
     ## Cilium Agent "host-mount-bpf" init container
     ## Used to mount bpf fs in the host
     ##
@@ -654,6 +678,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.mountBpf.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
     ## Cilium Agent "host-mount-cgroup2" init container
     ## Used to mount cgroup2 filesystem in the host
     ##
@@ -703,6 +731,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.mountCgroup2.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
     ## Cilium Agent "clean-state" init container
     ## Used to cleans up the Cilium state
     ##
@@ -761,6 +793,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.cleanState.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
     ## Cilium Agent "wait-for-kube-proxy" init container
     ## Used to waits for kube-proxy to be ready
     ##
@@ -810,6 +846,10 @@ agent:
       ##     memory: 1024Mi
       ##
       resources: {}
+      ## @param agent.defaultInitContainers.waitForKubeProxy.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
   ## Autoscaling configuration
   ## ref: https://kubernetes.io/docs/concepts/workloads/autoscaling/
   ##
@@ -1431,6 +1471,12 @@ operator:
     ##
     ingressNSMatchLabels: {}
     ingressNSPodMatchLabels: {}
+  ## @param operator.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param operator.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
 
   ## @section Cilium Operator Metrics Parameters
   ##
@@ -1527,6 +1573,10 @@ envoy:
     ##
     pullSecrets: []
     debug: false
+  ## @param envoy.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param envoy.containerPorts.health Cilium Envoy health container port
   ## @param envoy.containerPorts.metrics Cilium Envoy metrics container port
   ##
@@ -2127,6 +2177,12 @@ hubble:
     ## @param hubble.relay.replicaCount Number of Hubble Relay replicas to deploy
     ##
     replicaCount: 1
+    ## @param hubble.relay.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param hubble.relay.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: relaxed
     ## @param hubble.relay.containerPorts.grpc Hubble Relay gRPC container port
     ## @param hubble.relay.containerPorts.pprof Hubble Relay pprof container port
     ## @param hubble.relay.containerPorts.gops Hubble Relay gops container port
@@ -2446,6 +2502,12 @@ hubble:
         ##     memory: 1024Mi
         ##
         resources: {}
+        ## @param hubble.relay.defaultInitContainers.waitForHubble.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+        ## @param hubble.relay.defaultInitContainers.waitForHubble.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+        ##
+        fips:
+          openssl: ""
+          golang: relaxed
     ## Pod Disruption Budget configuration
     ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
     ## @param hubble.relay.pdb.create Enable/disable a Pod Disruption Budget creation
@@ -2728,6 +2790,12 @@ hubble:
       ##     containerPort: 9090
       ##
       extraContainerPorts: []
+      ## @param hubble.ui.frontend.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ## @param hubble.ui.frontend.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
+        golang: relaxed
       ## Configure extra options for Hubble UI frontend containers' liveness and readiness probes
       ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
       ## @param hubble.ui.frontend.livenessProbe.enabled Enable livenessProbe on Hubble UI frontend containers
@@ -2907,6 +2975,12 @@ hubble:
       ##     containerPort: 9090
       ##
       extraContainerPorts: []
+      ## @param hubble.ui.backend.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ## @param hubble.ui.backend.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
+        golang: relaxed
       ## Configure extra options for Hubble UI backend containers' liveness and readiness probes
       ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
       ## @param hubble.ui.backend.livenessProbe.enabled Enable livenessProbe on Hubble UI backend containers
@@ -3197,6 +3271,12 @@ hubble:
         ##     memory: 1024Mi
         ##
         resources: {}
+        ## @param hubble.ui.defaultInitContainers.waitForHubbleRelay.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+        ## @param hubble.ui.defaultInitContainers.waitForHubbleRelay.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+        ##
+        fips:
+          openssl: ""
+          golang: relaxed
     ## Pod Disruption Budget configuration
     ## ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb
     ## @param hubble.ui.pdb.create Enable/disable a Pod Disruption Budget creation
@@ -3531,6 +3611,11 @@ etcd:
   service:
     ports:
       client: 2379
+  ## @param etcd.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## Golang configuration for FIPS not available due to Golang 1.23.x
+  ##
+  fips:
+    openssl: ""
 ## External Key-Value Store Configuration
 ##
 externalKvstore:

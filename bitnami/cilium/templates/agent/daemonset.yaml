@@ -142,6 +142,12 @@ spec:
               value: {{ template "cilium.agent.hostCNIBinDir" . }}
             - name: HOST_CNI_CONF_DIR
               value: {{ template "cilium.agent.hostCNINetDir" . }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.agent.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.agent.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.agent.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -503,4 +509,4 @@ spec:
         {{- if .Values.agent.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.agent.extraVolumes "context" $) | nindent 8 }}
         {{- end }}
-       
+

@@ -113,8 +113,15 @@ spec:
             - --debug
             {{- end }}
           {{- end }}
+          env:
+          {{- if include "common.fips.enabled" . }}
+          - name: OPENSSL_FIPS
+            value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.hubble.relay.fips "global" .Values.global) | quote }}
+          - name: GODEBUG
+            value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.hubble.relay.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- if .Values.hubble.relay.extraEnvVars }}
-          env: {{- include "common.tplvalues.render" (dict "value" .Values.hubble.relay.extraEnvVars "context" $) | nindent 12 }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.hubble.relay.extraEnvVars "context" $) | nindent 12 }}
           {{- end }}
           {{- if or .Values.hubble.relay.extraEnvVarsCM .Values.hubble.relay.extraEnvVarsSecret }}
           envFrom:
