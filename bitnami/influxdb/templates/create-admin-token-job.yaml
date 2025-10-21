@@ -176,6 +176,10 @@ spec:
                   key: azure-storage-access-key
             {{- end }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -224,6 +228,13 @@ spec:
               data:
                 admin-token: $encoded_token
               EOF
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.createAdminTokenJob.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.createAdminTokenJob.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp

@@ -9,7 +9,8 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
-##
+
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object##
 global:
   imageRegistry: ""
   ## E.g.
@@ -32,6 +33,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -211,6 +215,10 @@ azure:
 ## @param replicaCount Number of InfluxDB(TM) Core replicas (ignored if `objectStore` is set to `file` or `memory`)
 ##
 replicaCount: 1
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
 ## @param initdbScripts Dictionary of initdb scripts
 ## Alternatively, you can put your scripts under the files/docker-entrypoint-initdb.d directory
 ##
@@ -570,7 +578,7 @@ service:
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
 ingress:
-  ## @param ingress.enabled Enable ingress record generation for InfluxDB(TM) Core 
+  ## @param ingress.enabled Enable ingress record generation for InfluxDB(TM) Core
   ##
   enabled: false
   ## @param ingress.ingressClassName IngressClass that will be be used to implement the Ingress (Kubernetes 1.18+)
@@ -893,6 +901,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## @section Other Parameters
 
@@ -998,6 +1010,12 @@ createAdminTokenJob:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param createAdminTokenJob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param createAdminTokenJob.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param createAdminTokenJob.automountServiceAccountToken Mount Service Account token in InfluxDB(TM) Core "create-admin-token" job's pods
   ##
   automountServiceAccountToken: true
