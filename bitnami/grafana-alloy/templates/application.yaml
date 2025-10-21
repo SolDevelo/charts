@@ -82,7 +82,7 @@ spec:
       {{- if .Values.priorityClassName }}
       priorityClassName: {{ .Values.priorityClassName | quote }}
       {{- end }}
-      {{- if .Values.schedulerName }} 
+      {{- if .Values.schedulerName }}
       schedulerName: {{ .Values.schedulerName | quote }}
       {{- end }}
       {{- if .Values.topologySpreadConstraints }}
@@ -149,6 +149,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.alloy.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.alloy.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.alloy.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.alloy.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -269,6 +275,12 @@ spec:
             - -web.listen-address=:{{ .Values.configReloader.containerPorts.http }}
           {{- end }}
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.configReloader.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.configReloader.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.configReloader.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.configReloader.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
