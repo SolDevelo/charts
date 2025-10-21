@@ -1,7 +1,8 @@
 extraDeploy:
 # BEGIN EXAMPLE
 # Example taken from https://github.com/grafana/k6-operator/blob/main/config/samples/k6_v1alpha1_configmap.yaml#L2
-- apiVersion: k6.io/v1alpha1
+- |
+  apiVersion: k6.io/v1alpha1
   kind: TestRun
   metadata:
     name: testrun-sample
@@ -23,6 +24,13 @@ extraDeploy:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.fips "global" .Values.global) | quote }}
+      {{- end }}
     starter:
       containerSecurityContext:
         allowPrivilegeEscalation: false
@@ -33,6 +41,13 @@ extraDeploy:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.starterImage.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.starterImage.fips "global" .Values.global) | quote }}
+      {{- end }}
     runner:
       containerSecurityContext:
         allowPrivilegeEscalation: false
@@ -43,6 +58,13 @@ extraDeploy:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.runnerImage.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.runnerImage.fips "global" .Values.global) | quote }}
+      {{- end }}
 
 - apiVersion: v1
   kind: ConfigMap
