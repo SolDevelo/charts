@@ -104,6 +104,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+            {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             {{- range .Values.volume.dataVolumes }}
             - name: data
@@ -179,6 +184,12 @@ spec:
                   fieldPath: metadata.namespace
             - name: WEED_CLUSTER_DEFAULT
               value: {{ .Values.clusterDefault | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volume.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.volume.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.volume.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.volume.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

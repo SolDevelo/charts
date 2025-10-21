@@ -125,6 +125,12 @@ spec:
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
             - name: WEED_CLUSTER_DEFAULT
               value: {{ .Values.clusterDefault | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.s3.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.s3.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.s3.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.s3.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

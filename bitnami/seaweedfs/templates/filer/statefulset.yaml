@@ -138,6 +138,12 @@ spec:
                   fieldPath: metadata.namespace
             - name: WEED_CLUSTER_DEFAULT
               value: {{ .Values.clusterDefault | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.filer.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.filer.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if or .Values.mariadb.enabled (and .Values.externalDatabase.enabled (eq .Values.externalDatabase.store "mariadb") ) }}
             - name: WEED_MYSQL_ENABLED
               value: "true"

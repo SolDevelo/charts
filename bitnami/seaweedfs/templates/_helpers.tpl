@@ -498,6 +498,12 @@ Returns an init-container that generates auth configuration for the Amazon S3 AP
       }
       EOF
   env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.s3.fips "global" .Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.s3.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.usePasswordFiles }}
     - name: ADMIN_ACCESS_KEY_ID_FILE
       value: "/opt/bitnami/seaweed/secrets/admin_access_key_id"

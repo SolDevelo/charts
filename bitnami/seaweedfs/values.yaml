@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 ##
@@ -295,6 +299,12 @@ master:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param master.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param master.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param master.podSecurityContext.enabled Enable Master Server pods' Security Context
@@ -990,6 +1000,12 @@ volume:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param volume.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param volume.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param volume.podSecurityContext.enabled Enable Volume Server pods' Security Context
@@ -1698,6 +1714,12 @@ filer:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param filer.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param filer.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param filer.podSecurityContext.enabled Enable Filer Server pods' Security Context
@@ -2357,6 +2379,12 @@ s3:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param s3.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param s3.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param s3.podSecurityContext.enabled Enable Amazon S3 API pods' Security Context
@@ -2953,6 +2981,12 @@ webdav:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param webdav.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param webdav.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param webdav.podSecurityContext.enabled Enable WebDAV pods' Security Context
@@ -3487,6 +3521,12 @@ iam:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param iam.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param iam.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param iam.podSecurityContext.enabled Enable IAM pods' Security Context
@@ -3781,6 +3821,10 @@ volumePermissions:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Init container Container Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param volumePermissions.containerSecurityContext.enabled Enabled init container' Security Context
@@ -3917,6 +3961,10 @@ mariadb:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param mariadb.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## PostgresSQL chart configuration
 ## ref: https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
 ##
@@ -3988,6 +4036,10 @@ postgresql:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## @param postgresql.primary.initdb.scripts [object] Dictionary of initdb scripts
     ##
     initdb:
