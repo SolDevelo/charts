@@ -136,6 +136,12 @@ spec:
                 secretKeyRef:
                   name: {{ include "spark.passwordsSecretName" . }}
                   key: ssl-truststore-password
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.security.ssl.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.security.ssl.fips "global" .Values.global) | quote }}
+            {{- end }}
           {{- if .Values.security.ssl.resources }}
           resources: {{- toYaml .Values.security.ssl.resources | nindent 12 }}
           {{- else if ne .Values.security.ssl.resourcesPreset "none" }}
@@ -234,6 +240,12 @@ spec:
               value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
             - name: SPARK_DAEMON_MEMORY
               value: {{ .Values.worker.daemonMemoryLimit | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.worker.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.worker.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.metrics.enabled }}
             - name: SPARK_METRICS_ENABLED
               value: "true"
