@@ -22,6 +22,11 @@ Returns an init-container that changes the owner and group of the persistent vol
   {{- else if ne .Values.defaultInitContainers.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.defaultInitContainers.volumePermissions.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
   command:
     - /bin/bash
   args:

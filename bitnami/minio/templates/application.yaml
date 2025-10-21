@@ -115,6 +115,12 @@ spec:
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
             - name: MINIO_DISTRIBUTED_MODE_ENABLED
               value: {{ ternary "yes" "no" (eq .Values.mode "distributed") | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if eq .Values.mode "distributed" }}
             - name: MINIO_DISTRIBUTED_NODES
               {{- $clusters := list }}
