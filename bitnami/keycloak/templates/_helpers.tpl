@@ -225,7 +225,7 @@ Return the secret containing Keycloak HTTPS/TLS keystore and truststore password
 {{- if .Values.tls.passwordsSecret -}}
     {{- tpl .Values.tls.passwordsSecret . -}}
 {{- else -}}
-    {{- printf "%s-tls-passwords" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-tls-passwords" (include "common.names.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 
