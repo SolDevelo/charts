@@ -8,15 +8,15 @@ annotations:
       version: 1.0.10
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r60
     - name: matomo
-      version: 5.5.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/matomo:5.5.0-debian-12-r2
+      version: 5.5.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/matomo:5.5.1-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 5.5.0
+appVersion: 5.5.1
 dependencies:
 - condition: mariadb.enabled
   name: mariadb
@@ -44,4 +44,4 @@ maintainers:
 name: matomo
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/matomo
-version: 11.0.9
+version: 11.0.10
