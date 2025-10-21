@@ -91,7 +91,7 @@ diagnosticMode:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner
-  tag: 18.4.0-debian-12-r6
+  tag: 18.5.0-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -117,7 +117,7 @@ image:
 helperImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper
-  tag: 18.4.0-debian-12-r6
+  tag: 18.5.0-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

@@ -5,15 +5,15 @@ annotations:
   fips: "false"
   images: |
     - name: gitlab-runner
-      version: 18.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner:18.4.0-debian-12-r6
+      version: 18.5.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner:18.5.0-debian-12-r0
     - name: gitlab-runner-helper
-      version: 18.4.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper:18.4.0-debian-12-r6
+      version: 18.5.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/gitlab-runner-helper:18.5.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 18.4.0
+appVersion: 18.5.0
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -34,4 +34,4 @@ maintainers:
 name: gitlab-runner
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/gitlab-runner
-version: 1.2.0
+version: 2.0.0
