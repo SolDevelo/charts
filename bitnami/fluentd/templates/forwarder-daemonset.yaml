@@ -95,6 +95,11 @@ spec:
           {{- else if ne .Values.forwarder.initResourcePresets "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.forwarder.initResourcePresets) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.forwarder.fips "global" .Values.global) | quote }}
+          {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
             runAsUser: 0
@@ -127,6 +132,11 @@ spec:
           resources: {{- toYaml .Values.forwarder.initResources | nindent 12 }}
           {{- else if ne .Values.forwarder.initResourcePresets "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.forwarder.initResourcePresets) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.forwarder.fips "global" .Values.global) | quote }}
           {{- end }}
           securityContext:
             allowPrivilegeEscalation: false
@@ -175,6 +185,10 @@ spec:
               value: {{ .Values.forwarder.daemonUser | quote }}
             - name: FLUENTD_DAEMON_GROUP
               value: {{ .Values.forwarder.daemonGroup | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.forwarder.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.forwarder.extraEnvVars }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.forwarder.extraEnvVars "context" $ ) | nindent 12 }}
             {{- end }}
