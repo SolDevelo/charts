@@ -67,9 +67,16 @@ data:
                     {{- if .Values.agent.args }}
                     args: {{- include "common.tplvalues.render" (dict "value" .Values.agent.args "context" $) | nindent 20 }}
                     {{- end }}
-                    {{- if .Values.agent.containerExtraEnvVars }}
-                    envVars: {{- include "common.tplvalues.render" (dict "value" .Values.agent.containerExtraEnvVars "context" $) | nindent 22 }}
-                    {{- end }}
+                    envVars:
+                      {{- if include "common.fips.enabled" . }}
+                      - name: OPENSSL_FIPS
+                        value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.agent.fips "global" .Values.global) | quote }}
+                      - name: JAVA_TOOL_OPTIONS
+                        value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.agent.fips "global" .Values.global) | quote }}
+                      {{- end }}
+                      {{- if .Values.agent.containerExtraEnvVars }}
+                      {{- include "common.tplvalues.render" (dict "value" .Values.agent.containerExtraEnvVars "context" $) | nindent 22 }}
+                      {{- end }}
                     image: {{ include "jenkins.agent.image" . }}
                     {{- if or .Values.agent.resources (ne .Values.agent.resourcesPreset "none") }}
                     {{- include "jenkins.agent.resources" . | nindent 16 }}
