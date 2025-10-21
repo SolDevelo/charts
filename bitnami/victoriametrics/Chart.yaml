@@ -8,26 +8,26 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: victoriametrics-vmagent
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmagent:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmagent:1.128.0-debian-12-r0
     - name: victoriametrics-vmalert
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmalert:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmalert:1.128.0-debian-12-r0
     - name: victoriametrics-vmauth
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmauth:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmauth:1.128.0-debian-12-r0
     - name: victoriametrics-vminsert
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vminsert:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vminsert:1.128.0-debian-12-r0
     - name: victoriametrics-vmselect
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmselect:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmselect:1.128.0-debian-12-r0
     - name: victoriametrics-vmstorage
-      version: 1.127.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmstorage:1.127.0-debian-12-r2
+      version: 1.128.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/victoriametrics-vmstorage:1.128.0-debian-12-r0
   licenses: Apache-2.0
 apiVersion: v2
-appVersion: 1.127.0
+appVersion: 1.128.0
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -47,4 +47,4 @@ maintainers:
 name: victoriametrics
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/victoriametrics
-version: 0.2.0
+version: 0.2.1
