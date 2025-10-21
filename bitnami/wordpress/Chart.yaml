@@ -12,7 +12,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: wordpress
       version: 6.8.3
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/wordpress:6.8.3-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/wordpress:6.8.3-debian-12-r3
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -50,4 +50,4 @@ maintainers:
 name: wordpress
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/wordpress
-version: 27.1.0
+version: 27.1.1
