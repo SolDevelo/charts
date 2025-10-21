@@ -99,7 +99,7 @@ spec:
           {{- else if .Values.history.command }}
             {{- include "common.tplvalues.render" (dict "value" .Values.history.command "context" .) | nindent 12 }}
           {{- end }}
-          args: 
+          args:
           {{- if .Values.diagnosticMode.enabled }}
             {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" .) | nindent 12 }}
           {{- else if .Values.history.args }}
@@ -108,6 +108,12 @@ spec:
           env:
             - name: TEMPORAL_SERVICES
               value: history
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.history.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.history.fips "global" .Values.global) | quote }}
+            {{- end }}
           {{- if .Values.history.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.history.extraEnvVars "context" .) | nindent 12 }}
           {{- end }}

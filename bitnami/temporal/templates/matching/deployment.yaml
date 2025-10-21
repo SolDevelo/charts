@@ -99,7 +99,7 @@ spec:
           {{- else if .Values.matching.command }}
             {{- include "common.tplvalues.render" (dict "value" .Values.matching.command "context" .) | nindent 12 }}
           {{- end }}
-          args: 
+          args:
           {{- if .Values.diagnosticMode.enabled }}
             {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.args "context" .) | nindent 12 }}
           {{- else if .Values.matching.args }}
@@ -108,6 +108,12 @@ spec:
           env:
             - name: TEMPORAL_SERVICES
               value: matching
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.matching.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.matching.fips "global" .Values.global) | quote }}
+            {{- end }}
           {{- if .Values.matching.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.matching.extraEnvVars "context" .) | nindent 12 }}
           {{- end }}

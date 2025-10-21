@@ -37,6 +37,10 @@ env:
         name: {{ include (printf "%s.secretName" $dbHelperPrefix) .context }}
         key: {{ include (printf "%s.secretPasswordKey" $dbHelperPrefix) .context }}
   {{- end }}
+  {{- if include "common.fips.enabled" .context }}
+  - name: OPENSSL_FIPS
+    value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.setupDBJob.fips "global" .context.Values.global) | quote }}
+  {{- end }}
 {{- end }}
 {{- if or (and (not (empty .database)) .context.Values.usePasswordFiles) .context.Values.tls.enabled }}
 volumeMounts:
@@ -156,6 +160,12 @@ spec:
           env:
             - name: TEMPORAL_ADDRESS
               value: {{ printf "%s.%s.svc.%s:%d" (include "temporal.frontend.fullname" .) (include "common.names.namespace" .) .Values.clusterDomain (int .Values.frontend.service.ports.rpc) | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.setupDBJob.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.setupDBJob.fips "global" .Values.global) | quote }}
+            {{- end }}
         {{- end }}
       volumes:
         - name: empty-dir

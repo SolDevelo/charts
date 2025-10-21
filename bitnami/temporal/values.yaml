@@ -30,6 +30,9 @@ global:
     ## @param global.compatibility.omitEmptySeLinuxOptions If set to true, removes the seLinuxOptions from the securityContexts when it is set to an empty object
     ##
     omitEmptySeLinuxOptions: false
+  ## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -296,6 +299,12 @@ frontend:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param frontend.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param frontend.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param frontend.podSecurityContext.enabled Enable Frontend Service pods' Security Context
@@ -837,6 +846,12 @@ history:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param history.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param history.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param history.podSecurityContext.enabled Enable History Service pods' Security Context
@@ -1220,6 +1235,12 @@ matching:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param matching.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param matching.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param matching.podSecurityContext.enabled Enable Matching Service pods' Security Context
@@ -1601,6 +1622,12 @@ worker:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param worker.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param worker.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param worker.podSecurityContext.enabled Enable Worker Service pods' Security Context
@@ -2008,6 +2035,12 @@ web:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param web.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param web.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param web.podSecurityContext.enabled Enable Temporal UI pods' Security Context
@@ -2572,6 +2605,10 @@ pgDefault:
           PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres <<< "CREATE DATABASE {{ .Values.auth.visibilityDatabase }};"
           PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres <<< "GRANT ALL PRIVILEGES ON DATABASE {{ .Values.auth.visibilityDatabase }} TO {{ .Values.auth.username }};"
           PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD psql -U postgres <<< "ALTER DATABASE {{ .Values.auth.visibilityDatabase }} OWNER TO {{ .Values.auth.username }};"
+    ## @param pgDefault.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## External Database Configuration
 ## All of these values are only used if `pgDefault.enabled` is set to `false`
 ## @param externalDatabaseDefault.host External database server host for default store
@@ -2619,6 +2656,10 @@ pgVisibility:
   architecture: standalone
   primary:
     resourcesPreset: micro
+    ## @param pgVisibility.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## External Database Configuration
 ## All of these values are only used if `pgVisibility.enabled` is set to `false`
 ## @param externalDatabaseVisibility.host External database server host for visibility store
@@ -2706,6 +2747,12 @@ setupDBJob:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param setupDBJob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param setupDBJob.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param setupDBJob.automountServiceAccountToken Mount Service Account token in Temporal "setup-db" job's pods
   ##
   automountServiceAccountToken: false
@@ -2862,6 +2909,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.waitForDB.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   ## 'render-config' init container
   ## Used to render config template at startup
   ##
@@ -2911,3 +2962,9 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.renderConfig.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param defaultInitContainers.renderConfig.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: relaxed

@@ -65,6 +65,10 @@ Returns an init-container that waits for db to be ready
     {{- end }}
     - name: DATABASE_READY_QUERY
       value: {{ ternary "SELECT 1 FROM information_schema.tables WHERE table_name='schema_version'" "SELECT 1" .initialized }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.waitForDB.fips "global" .context.Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /tmp
@@ -123,6 +127,12 @@ Returns an init-container that renders config template
         secretKeyRef:
           name: {{ include "temporal.database.visibility.secretName" .context }}
           key: {{ include "temporal.database.visibility.secretPasswordKey" .context }}
+    {{- end }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.renderConfig.fips "global" .context.Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .context.Values.defaultInitContainers.renderConfig.fips "global" .context.Values.global) | quote }}
     {{- end }}
   volumeMounts:
     - name: configuration
