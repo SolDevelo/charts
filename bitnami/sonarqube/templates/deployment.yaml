@@ -90,6 +90,13 @@ spec:
               cp -r --preserve=mode /opt/bitnami/sonarqube /emptydir/app-base-dir
 
               info "Copy operation completed"
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /emptydir
@@ -109,6 +116,11 @@ spec:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.plugins.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- if .Values.plugins.resources }}
           resources: {{- toYaml .Values.plugins.resources | nindent 12 }}
           {{- else if ne .Values.plugins.resourcesPreset "none" }}
@@ -133,6 +145,11 @@ spec:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.caCerts.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- if .Values.caCerts.resources }}
           resources: {{- toYaml .Values.caCerts.resources | nindent 12 }}
           {{- else if ne .Values.caCerts.resourcesPreset "none" }}
@@ -155,6 +172,11 @@ spec:
               {{- include "sonarqube.sysctl.ifLess" (dict "key" "fs.file-max" "value" "65536") | nindent 14 }}
           {{- if .Values.sysctl.containerSecurityContext.enabled }}
           securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.sysctl.containerSecurityContext "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.sysctl.fips "global" .Values.global) | quote }}
           {{- end }}
           {{- if .Values.sysctl.resources }}
           resources: {{- toYaml .Values.sysctl.resources | nindent 12 }}
@@ -179,6 +201,11 @@ spec:
           resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
           {{- end }}
           volumeMounts:
             - name: sonarqube
@@ -237,6 +264,12 @@ spec:
             {{- if .Values.maxHeapSize }}
             - name: SONARQUBE_MAX_HEAP_SIZE
               value: {{ .Values.maxHeapSize | quote }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.sonarSecurityRealm }}
             - name: SONAR_SECURITY_REALM
@@ -462,6 +495,13 @@ spec:
           resources: {{- toYaml .Values.metrics.jmx.resources | nindent 12 }}
           {{- else if ne .Values.metrics.jmx.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.metrics.jmx.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.jmx.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.jmx.fips "global" .Values.global) | quote }}
           {{- end }}
           {{- if .Values.metrics.jmx.livenessProbe.enabled }}
           livenessProbe: {{- omit .Values.metrics.jmx.livenessProbe "enabled" | toYaml | nindent 12 }}
