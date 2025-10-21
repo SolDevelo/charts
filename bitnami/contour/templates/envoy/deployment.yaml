@@ -85,8 +85,14 @@ spec:
             {{- end }}
           image: {{ include "common.images.image" ( dict "imageRoot" .Values.contour.image "global" .Values.global) }}
           imagePullPolicy: {{ .Values.contour.image.pullPolicy }}
-          {{- if .Values.contour.extraEnvVars }}
           env:
+          {{- if include "common.fips.enabled" . }}
+          - name: OPENSSL_FIPS
+            value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.envoy.shutdownManager.fips "global" .Values.global) | quote }}
+          - name: GODEBUG
+            value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.envoy.shutdownManager.fips "global" .Values.global) | quote }}
+          {{- end }}
+          {{- if .Values.contour.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.contour.extraEnvVars "context" $) | nindent 12 }}
           {{- end }}
           {{- if or .Values.contour.extraEnvVarsCM .Values.contour.extraEnvVarsSecret }}
@@ -207,6 +213,10 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.name
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.envoy.fips "global" .Values.global) | quote }}
+            {{- end }}
           {{- if .Values.envoy.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.envoy.extraEnvVars "context" $) | nindent 12 }}
           {{- end }}

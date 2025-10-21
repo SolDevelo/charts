@@ -37,6 +37,12 @@ Returns an init-container that bootstraps Envoy configuration so it's ready to b
       valueFrom:
         fieldRef:
           fieldPath: metadata.namespace
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.envoy.defaultInitContainers.initConfig.fips "global" .Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.envoy.defaultInitContainers.initConfig.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.contour.extraEnvVars }}
       {{- include "common.tplvalues.render" (dict "value" .Values.contour.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}

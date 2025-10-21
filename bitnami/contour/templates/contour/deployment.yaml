@@ -214,6 +214,12 @@ spec:
                   fieldPath: metadata.name
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" (or .Values.contour.image.debug .Values.diagnosticMode.enabled) | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.contour.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.contour.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.contour.extraEnvVars }}
               {{- include "common.tplvalues.render" (dict "value" .Values.contour.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
