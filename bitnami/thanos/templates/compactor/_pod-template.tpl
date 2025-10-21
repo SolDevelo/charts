@@ -83,6 +83,11 @@ spec:
           chown -R "{{ .Values.compactor.containerSecurityContext.runAsUser }}:{{ .Values.compactor.podSecurityContext.fsGroup }}" /data
       securityContext:
         runAsUser: 0
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+      {{- end }}
       volumeMounts:
         - name: data
           mountPath: /data
@@ -130,7 +135,22 @@ spec:
         {{- end }}
         {{- end }}
       {{- if .Values.compactor.extraEnvVars }}
-      env: {{- include "common.tplvalues.render" (dict "value" .Values.compactor.extraEnvVars "context" $) | nindent 8 }}
+      env:
+      {{- if include "common.fips.enabled" . }}
+         - name: OPENSSL_FIPS
+           value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.compactor.fips "global" .Values.global) | quote }}
+         - name: GODEBUG
+           value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.compactor.fips "global" .Values.global) | quote }}
+      {{- end }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.compactor.extraEnvVars "context" $) | nindent 8 }}
+      {{- else }}
+      {{- if include "common.fips.enabled" . }}
+      env:
+         - name: OPENSSL_FIPS
+           value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.compactor.fips "global" .Values.global) | quote }}
+         - name: GODEBUG
+           value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.compactor.fips "global" .Values.global) | quote }}
+      {{- end }}
       {{- end }}
       {{- if or .Values.compactor.extraEnvVarsCM .Values.compactor.extraEnvVarsSecret }}
       envFrom:

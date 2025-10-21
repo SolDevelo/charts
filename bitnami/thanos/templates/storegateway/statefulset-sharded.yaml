@@ -133,6 +133,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
         {{- end }}
         {{- if $.Values.storegateway.initContainers }}
         {{- include "common.tplvalues.render" (dict "value" $.Values.storegateway.initContainers "context" $) | nindent 8 }}
@@ -209,7 +214,22 @@ spec:
             {{- end }}
             {{- end }}
           {{- if $.Values.storegateway.extraEnvVars }}
-          env: {{- include "common.tplvalues.render" (dict "value" $.Values.storegateway.extraEnvVars "context" $) | nindent 12 }}
+          env:
+          {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.storegateway.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.storegateway.fips "global" .Values.global) | quote }}
+          {{- end }}
+            {{- include "common.tplvalues.render" (dict "value" $.Values.storegateway.extraEnvVars "context" $) | nindent 12 }}
+          {{- else }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.storegateway.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.storegateway.fips "global" .Values.global) | quote }}
+          {{- end }}
           {{- end }}
           {{- if or $.Values.storegateway.extraEnvVarsCM $.Values.storegateway.extraEnvVarsSecret }}
           envFrom:

@@ -116,6 +116,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/thanos/receive
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
         {{- end }}
         {{- if .Values.receive.initContainers }}
         {{- include "common.tplvalues.render" (dict "value" .Values.receive.initContainers "context" $) | nindent 8 }}
@@ -189,6 +194,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.receive.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.receive.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if or .Values.objstoreConfig .Values.existingObjstoreSecret }}
             - name: OBJSTORE_CONFIG
               valueFrom:

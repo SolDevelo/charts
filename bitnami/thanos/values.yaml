@@ -9,6 +9,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -32,6 +33,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 
 ## @param kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
@@ -277,6 +281,12 @@ query:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param query.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param query.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Query containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param query.livenessProbe.enabled Enable livenessProbe on Thanos Query containers
@@ -1071,6 +1081,12 @@ queryFrontend:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param queryFrontend.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param queryFrontend.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Query Frontend containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param queryFrontend.livenessProbe.enabled Enable livenessProbe on Thanos Query Frontend containers
@@ -1620,6 +1636,12 @@ bucketweb:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param bucketweb.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param bucketweb.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Bucket Web containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param bucketweb.livenessProbe.enabled Enable livenessProbe on Thanos Bucket Web containers
@@ -2176,6 +2198,12 @@ compactor:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param compactor.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param compactor.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Compactor containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param compactor.livenessProbe.enabled Enable livenessProbe on Thanos Compactor containers
@@ -2750,6 +2778,12 @@ storegateway:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param storegateway.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param storegateway.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Store Gateway containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param storegateway.livenessProbe.enabled Enable livenessProbe on Thanos Store Gateway containers
@@ -3532,6 +3566,12 @@ ruler:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param ruler.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param ruler.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Ruler containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param ruler.livenessProbe.enabled Enable livenessProbe on Thanos Ruler containers
@@ -4178,6 +4218,12 @@ receive:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param receive.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param receive.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Receive containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param receive.livenessProbe.enabled Enable livenessProbe on Thanos Receive containers
@@ -4777,6 +4823,12 @@ receiveDistributor:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param receiveDistributor.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param receiveDistributor.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Thanos Receive Distributor containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param receiveDistributor.livenessProbe.enabled Enable livenessProbe on Thanos Receive Distributor containers
@@ -5163,6 +5215,11 @@ volumePermissions:
     ##   - myRegistryKeySecretName
     ##
     pullSecrets: []
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+
 ## @section MinIO&reg; chart parameters
 ## @extra minio For full list of MinIO&reg; values configurations please refer [here](https://github.com/bitnami/charts/tree/main/bitnami/minio)
 minio:
@@ -5203,6 +5260,12 @@ minio:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param minio.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param minio.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param minio.console.enabled Enable MinIO&reg; Console
   ##
   console:
