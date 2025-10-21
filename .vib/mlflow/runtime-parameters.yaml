@@ -1,5 +1,6 @@
 tracking:
   enabled: true
+  disableSecurityMiddleware: true
   auth:
     enabled: true
     username: vib-user

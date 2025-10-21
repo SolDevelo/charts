@@ -142,9 +142,18 @@ tracking:
   ## @param tracking.replicaCount Number of mlflow replicas to deploy
   ##
   replicaCount: 1
-  ## @param tracking.host mlflow tracking listening host. Set to "[::]" to use ipv6. 
-  ## 
+  ## @param tracking.host mlflow tracking listening host. Set to "[::]" to use ipv6.
+  ##
   host: "0.0.0.0"
+  ## @param tracking.allowedHosts Controls which Host headers the server accepts. This prevents DNS rebinding attacks by validating incoming requests.
+  ##
+  allowedHosts: "*"
+  ## @param tracking.corsAllowedOrigin Specifies which web applications can make API requests from browsers.
+  ##
+  corsAllowedOrigin: "*"
+  ## @param tracking.disableSecurityMiddleware Completely disables security middleware. Use this only when security is handled by a reverse proxy or gateway.
+  ##
+  disableSecurityMiddleware: false
   ## @param tracking.containerPorts.http mlflow HTTP container port
   ##
   containerPorts:
