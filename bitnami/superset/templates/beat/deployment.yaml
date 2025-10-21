@@ -102,6 +102,10 @@ spec:
             {{- include "superset.configure.redis" . | nindent 12 }}
             - name: SUPERSET_ROLE
               value: "celery-beat"
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.beat.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.beat.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.beat.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

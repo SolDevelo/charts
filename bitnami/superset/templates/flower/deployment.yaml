@@ -105,6 +105,10 @@ spec:
             {{- include "superset.configure.redis" . | nindent 12 }}
             - name: SUPERSET_ROLE
               value: "celery-flower"
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.flower.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.flower.auth.enabled }}
             {{- if .Values.auth.usePasswordFiles }}
             - name: FLOWER_BASIC_AUTH_FILE

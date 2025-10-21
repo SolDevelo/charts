@@ -315,6 +315,10 @@ Init container definition to wait for PostgreSQL
             info "Connected to the PostgreSQL instance"
         fi
   env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.waitForDB.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- include "superset.configure.database" . | nindent 4 }}
   {{- if .Values.usePasswordFiles }}
   volumeMounts:
@@ -372,6 +376,10 @@ Init container definition to wait for Redis
             info "Connected to the Redis instance"
         fi
   env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.waitForRedis.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- include "superset.configure.redis" . | nindent 4 }}
   {{- if .Values.usePasswordFiles }}
   volumeMounts:
@@ -426,6 +434,10 @@ Init container definition to wait for Redis
             info "Connected to the PostgreSQL instance"
         fi
   env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.web.waitForExamples.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- include "superset.configure.database" . | nindent 4 }}
   {{- if .Values.usePasswordFiles }}
   volumeMounts:
