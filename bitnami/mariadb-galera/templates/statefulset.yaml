@@ -89,6 +89,11 @@ spec:
               if ! is_dir_empty /opt/bitnami/mariadb/logs; then
                 cp -r /opt/bitnami/mariadb/logs /emptydir/app-logs-dir
               fi
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /emptydir
@@ -247,6 +252,10 @@ spec:
               value: {{ template "mariadb-galera.tlsCertKey" . }}
             - name:  MARIADB_TLS_CA_FILE
               value: {{ template "mariadb-galera.tlsCACert" . }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
@@ -414,6 +423,12 @@ spec:
                 secretKeyRef:
                   name: {{ template "mariadb-galera.secretName" . }}
                   key: mariadb-root-password
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
             {{- end }}
           {{- if .Values.diagnosticMode.enabled }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.diagnosticMode.command "context" $) | nindent 12 }}
