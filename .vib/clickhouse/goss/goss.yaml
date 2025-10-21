@@ -53,9 +53,9 @@ file:
     exists: true
     contents:
       - "openSSL"
-      - /certificateFile>/opt/bitnami/clickhouse/certs/server/tls.crt</
-      - /privateKeyFile>/opt/bitnami/clickhouse/certs/server/tls.key</
-      - /caConfig>/opt/bitnami/clickhouse/certs/ca/tls.crt</
+      - /certificateFile>/opt/bitnami/clickhouse/certs/tls.crt</
+      - /privateKeyFile>/opt/bitnami/clickhouse/certs/tls.key</
+      - /caConfig>/opt/bitnami/clickhouse/certs/ca.crt</
   {{ end }}
   {{ if .Vars.metrics.enabled }}
   /opt/bitnami/clickhouse/etc/config.d/07-prometheus.xml:

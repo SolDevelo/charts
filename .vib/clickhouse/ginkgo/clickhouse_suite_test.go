@@ -86,8 +86,8 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 								Value: "1234",
 							}},
 							VolumeMounts: []v1.VolumeMount{{
-								Name:      "ca-cert",
-								MountPath: "/opt/bitnami/clickhouse/certs/ca",
+								Name:      "tls-certs",
+								MountPath: "/opt/bitnami/clickhouse/certs",
 							}, {
 								Name:      "configd-configuration",
 								MountPath: "/opt/bitnami/clickhouse/etc/config.d",
@@ -95,10 +95,10 @@ func createJob(ctx context.Context, c kubernetes.Interface, name, port, image, s
 						},
 					},
 					Volumes: []v1.Volume{{
-						Name: "ca-cert",
+						Name: "tls-certs",
 						VolumeSource: v1.VolumeSource{
 							Secret: &v1.SecretVolumeSource{
-								SecretName: fmt.Sprintf("%s-ca-crt", releaseName),
+								SecretName: fmt.Sprintf("%s-crt", releaseName),
 							},
 						},
 					}, {

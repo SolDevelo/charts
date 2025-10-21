@@ -51,9 +51,9 @@ data:
         </keeper_server>
         <openSSL>
             <server>
-                <certificateFile>/opt/bitnami/clickhouse-keeper/certs/keeper/tls.crt</certificateFile>
-                <privateKeyFile>/opt/bitnami/clickhouse-keeper/certs/keeper/tls.key</privateKeyFile>
-                <caConfig>/opt/bitnami/clickhouse-keeper/certs/ca/tls.crt</caConfig>
+                <certificateFile>/opt/bitnami/clickhouse-keeper/certs/tls.crt</certificateFile>
+                <privateKeyFile>/opt/bitnami/clickhouse-keeper/certs/tls.key</privateKeyFile>
+                <caConfig>/opt/bitnami/clickhouse-keeper/certs/ca.crt</caConfig>
                 <cacheSessions>true</cacheSessions>
                 <disableProtocols>sslv2,sslv3</disableProtocols>
                 <preferServerCiphers>true</preferServerCiphers>
@@ -61,7 +61,7 @@ data:
             </server>
             <client>
                 <loadDefaultCAFile>false</loadDefaultCAFile>
-                <caConfig>/opt/bitnami/clickhouse-keeper/certs/ca/tls.crt</caConfig>
+                <caConfig>/opt/bitnami/clickhouse-keeper/certs/ca.crt</caConfig>
                 <cacheSessions>true</cacheSessions>
                 <disableProtocols>sslv2,sslv3</disableProtocols>
                 <preferServerCiphers>true</preferServerCiphers>

@@ -110,12 +110,12 @@ data:
         <https_port from_env="CLICKHOUSE_HTTPS_PORT"></https_port>
         <openSSL>
             <server>
-                <certificateFile>/opt/bitnami/clickhouse/certs/server/tls.crt</certificateFile>
-                <privateKeyFile>/opt/bitnami/clickhouse/certs/server/tls.key</privateKeyFile>
+                <certificateFile>/opt/bitnami/clickhouse/certs/tls.crt</certificateFile>
+                <privateKeyFile>/opt/bitnami/clickhouse/certs/tls.key</privateKeyFile>
                 <cacheSessions>true</cacheSessions>
                 <disableProtocols>sslv2,sslv3</disableProtocols>
                 <preferServerCiphers>true</preferServerCiphers>
-                <caConfig>/opt/bitnami/clickhouse/certs/ca/tls.crt</caConfig>
+                <caConfig>/opt/bitnami/clickhouse/certs/ca.crt</caConfig>
                 <verificationMode>relaxed</verificationMode>
             </server>
             <client>
@@ -127,7 +127,7 @@ data:
                     <name>AcceptCertificateHandler</name>
                 </invalidCertificateHandler>
   {{- if .Values.tls.mTLS }}
-                <caConfig>/opt/bitnami/clickhouse/certs/ca/tls.crt</caConfig>
+                <caConfig>/opt/bitnami/clickhouse/certs/ca.crt</caConfig>
                 <verificationMode>relaxed</verificationMode>
   {{- end }}
             </client>
