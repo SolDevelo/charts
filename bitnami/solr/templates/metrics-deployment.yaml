@@ -100,6 +100,12 @@ spec:
                   name: {{ include "solr.secretName" . }}
                   key: {{ include "solr.secretPasswordKey" . }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /basicauth-properties/
@@ -143,6 +149,12 @@ spec:
           env:
           {{- if .Values.metrics.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.metrics.extraEnvVars "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
           {{- end }}
           {{- if .Values.auth.enabled }}
             - name: JAVA_OPTS
