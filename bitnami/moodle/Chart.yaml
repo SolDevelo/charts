@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r60
     - name: moodle
       version: 5.1.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/moodle:5.1.0-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/moodle:5.1.0-debian-12-r3
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -42,4 +42,4 @@ maintainers:
 name: moodle
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/moodle
-version: 29.0.2
+version: 29.0.3
