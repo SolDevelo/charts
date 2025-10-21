@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r60
     - name: matomo
       version: 5.5.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/matomo:5.5.0-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/matomo:5.5.0-debian-12-r2
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -44,4 +44,4 @@ maintainers:
 name: matomo
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/matomo
-version: 11.0.8
+version: 11.0.9

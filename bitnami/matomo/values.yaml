@@ -77,7 +77,7 @@ usePasswordFiles: true
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/matomo
-  tag: 5.5.0-debian-12-r1
+  tag: 5.5.0-debian-12-r2
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
