@@ -13,15 +13,12 @@ defaultInitContainers:
       runAsUser: 1002
 rbac:
   create: true
-tls:
-  type: PEM
 listeners:
   client:
     containerPort: 9192
     protocol: PLAINTEXT
   controller:
     containerPort: 9193
-    protocol: SASL_SSL
   interbroker:
     containerPort: 9194
   external:
