@@ -8,6 +8,7 @@
 
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -30,6 +31,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 
 ## @param kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
@@ -128,6 +132,12 @@ helperImage:
   ##   - myRegistryKeySecretName
   ##
   pullSecrets: []
+  ## @param helperImage.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param helperImage.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
 ## @param automountServiceAccountToken Mount Service Account token in pod
 ##
 automountServiceAccountToken: true
@@ -602,6 +612,11 @@ runners:
         image = "{{ include "gitlab-runner.image" . }}"
         helper_image = "{{ include "gitlab-runner.helper.image" . }}"
         image_pull_secrets = [{{ include "gitlab-runner.imagePullSecretsRaw" . }}]
+        {{ if include "common.fips.enabled" . }}
+        {{- $opensslFips := include "common.fips.config" (dict "tech" "openssl" "fips" .Values.helperImage.fips "global" .Values.global) -}}
+        {{- $godebug := include "common.fips.config" (dict "tech" "golang" "fips" .Values.helperImage.fips "global" .Values.global) -}}
+        environment = ["{{printf "OPENSSL_FIPS=%s" $opensslFips}}", "{{printf "GODEBUG=%s" $godebug}}"]
+        {{- end }}
 
   ## @param runners.configPath Absolute path for an existing runner configuration file (to be used with volumes/extraVolumes)
   ##
@@ -624,6 +639,13 @@ runners:
   ## @param runners.protected Run only in protected branches
   ##
   protected: true
+
+  ## @param runners.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param runners.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
 
 ## @section Session Server Parameters
 ##
