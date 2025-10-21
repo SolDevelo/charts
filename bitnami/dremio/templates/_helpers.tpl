@@ -217,7 +217,7 @@ Return true if a TLS credentials secret object should be created
 {{- end -}}
 
 {{/*
-Return the Jenkins JKS password secret name
+Return the Dremio password secret name
 */}}
 {{- define "dremio.tls.passwordSecretName" -}}
 {{- $secretName := .Values.dremio.tls.passwordSecret -}}
@@ -229,7 +229,7 @@ Return the Jenkins JKS password secret name
 {{- end -}}
 
 {{/*
-Return the Scylladb TLS credentials secret
+Return the Dremio TLS credentials secret
 */}}
 {{- define "dremio.tls.secretName" -}}
 {{- if .Values.dremio.tls.existingSecret -}}
