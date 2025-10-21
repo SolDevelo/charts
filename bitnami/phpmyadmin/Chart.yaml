@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r60
     - name: phpmyadmin
       version: 5.2.3
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/phpmyadmin:5.2.3-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/phpmyadmin:5.2.3-debian-12-r2
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -41,4 +41,4 @@ maintainers:
 name: phpmyadmin
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/phpmyadmin
-version: 20.0.9
+version: 20.0.10
