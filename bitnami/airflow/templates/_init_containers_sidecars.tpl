@@ -127,6 +127,10 @@ Returns an init-container that prepares the Airflow configuration files for main
           key: redis-password
     {{- end }}
     {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.prepareConfig.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -192,6 +196,10 @@ Returns an init-container that prepares the Airflow Webserver configuration file
           key: bind-password
     {{- end }}
     {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.prepareConfig.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -241,6 +249,10 @@ Returns an init-container that waits for db migrations to be ready
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.waitForDBMigrations.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -303,6 +315,10 @@ Returns an init-container that prepares the venv directory
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.prepareVenv.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /emptydir
@@ -330,6 +346,10 @@ Returns shared structure between load-dags and load-plugins init containers
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.loadDAGsPlugins.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.defaultInitContainers.loadDAGsPlugins.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.defaultInitContainers.loadDAGsPlugins.extraEnvVars "context" .) | nindent 4 }}
     {{- end }}
@@ -477,6 +497,10 @@ Returns shared structure between sync-dags and sync-plugins sidecars
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.image.debug .Values.diagnosticMode.enabled) | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultSidecars.syncDAGsPlugins.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.defaultSidecars.syncDAGsPlugins.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.defaultSidecars.syncDAGsPlugins.extraEnvVars "context" .) | nindent 4 }}
     {{- end }}

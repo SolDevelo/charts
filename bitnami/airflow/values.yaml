@@ -9,6 +9,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -35,6 +36,9 @@ global:
     ## @param global.compatibility.omitEmptySeLinuxOptions If set to true, removes the seLinuxOptions from the securityContexts when it is set to an empty object
     ##
     omitEmptySeLinuxOptions: false
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -273,6 +277,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.prepareConfig.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   ## Airflow "wait-for-db-migrations" init container
   ## Used to wait for db migrations to be ready
   ##
@@ -322,6 +330,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.waitForDBMigrations.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   prepareVenv:
     ## Configure "prepare-venv" init-container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
@@ -368,6 +380,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.prepareVenv.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
   ## Airflow "load-dags-plugins" init container
   ## Used to load DAGs and/or plugins from a ConfigMap or Git repositories
   ##
@@ -429,6 +445,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.loadDAGsPlugins.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## Default sidecars
 ##
 defaultSidecars:
@@ -495,6 +515,10 @@ defaultSidecars:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultSidecars.syncDAGsPlugins.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## @param extraEnvVars Add extra environment variables for all the Airflow pods
 ##
 extraEnvVars: []
@@ -584,6 +608,10 @@ web:
     cert: ""
     key: ""
     existingSecret: ""
+  ## @param web.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param web.command Override default container command (useful when using custom images)
   ##
   command: []
@@ -959,6 +987,10 @@ scheduler:
   ## @param scheduler.extraEnvVarsSecrets List of secrets with extra environment variables for Airflow scheduler pods
   ##
   extraEnvVarsSecrets: []
+  ## @param scheduler.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Configure extra options for Airflow scheduler containers' liveness, readiness and startup probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
   ## @param scheduler.livenessProbe.enabled Enable livenessProbe on Airflow scheduler containers
@@ -1301,12 +1333,16 @@ dagProcessor:
   ## @param dagProcessor.extraEnvVarsCM ConfigMap with extra environment variables
   ##
   extraEnvVarsCM: ""
-  ## @param dagProcessor.extraEnvVarsCMs List of ConfigMaps with extra environment variables for Airflow dagProcessor pods 
+  ## @param dagProcessor.extraEnvVarsCMs List of ConfigMaps with extra environment variables for Airflow dagProcessor pods
   ##
   extraEnvVarsCMs: []
   ## @param dagProcessor.extraEnvVarsSecret Secret with extra environment variables
   ##
   extraEnvVarsSecret: ""
+  ## @param dagProcessor.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Configure extra options for Airflow Dag Processor containers' liveness, readiness and startup probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
   ## @param dagProcessor.livenessProbe.enabled Enable livenessProbe on Airflow Dag Processor containers
@@ -1662,6 +1698,10 @@ triggerer:
   ##
   containerPorts:
     logs: 8794
+  ## @param triggerer.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Configure extra options for Airflow Triggerer containers' liveness, readiness and startup probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
   ## @param triggerer.livenessProbe.enabled Enable livenessProbe on Airflow Triggerer containers
@@ -2119,6 +2159,10 @@ worker:
   ## @param worker.replicaCount Number of Airflow worker replicas
   ##
   replicaCount: 1
+  ## @param worker.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Configure extra options for Airflow worker containers' liveness, readiness and startup probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
   ## @param worker.livenessProbe.enabled Enable livenessProbe on Airflow worker containers
@@ -2521,6 +2565,10 @@ setupDBJob:
   ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
   ##
   resourcesPreset: "small"
+  ## @param setupDBJob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param setupDBJob.resources Set Airflow "setup-db" job's container requests and limits for different resources like CPU or memory (essential for production workloads)
   ## E.g:
   ## resources:
@@ -2930,6 +2978,12 @@ metrics:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: ""
   ## StatsD exporter pods' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param metrics.podSecurityContext.enabled Enable security context for the pods
@@ -3266,6 +3320,15 @@ postgresql:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+  readReplicas:
+    ## @param postgresql.readReplicas.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
 ## @param externalDatabase.host Database host (ignored if externalDatabase.sqlConnection is set)
@@ -3313,6 +3376,10 @@ redis:
     service:
       ports:
         redis: 6379
+    ## @param redis.master.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Redis&reg; master resource requests and limits
     ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## @param redis.master.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if master.resources is set (master.resources is recommended for production).
@@ -3330,6 +3397,11 @@ redis:
     ##     memory: 1024Mi
     ##
     resources: {}
+  replica:
+    ## @param redis.replica.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## External Redis&reg; configuration
 ## All of these values are only used when redis.enabled is set to false
