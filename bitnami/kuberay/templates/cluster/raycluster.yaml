@@ -90,9 +90,16 @@ spec:
             {{- else if .Values.cluster.head.args }}
             args: {{- include "common.tplvalues.render" (dict "value" .Values.cluster.head.args "context" $) | nindent 14 }}
             {{- end }}
-            {{- if .Values.cluster.head.extraEnvVars }}
-            env: {{- include "common.tplvalues.render" (dict "value" .Values.cluster.head.extraEnvVars "context" $) | nindent 14 }}
-            {{- end }}
+            env:
+              {{- if include "common.fips.enabled" . }}
+              - name: OPENSSL_FIPS
+                value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.cluster.head.fips "global" .Values.global) | quote }}
+              - name: GODEBUG
+                value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.cluster.head.fips "global" .Values.global) | quote }}
+              {{- end }}
+              {{- if .Values.cluster.head.extraEnvVars }}
+              {{- include "common.tplvalues.render" (dict "value" .Values.cluster.head.extraEnvVars "context" $) | nindent 14 }}
+              {{- end }}
             envFrom:
               {{- if .Values.cluster.head.extraEnvVarsCM }}
               - configMapRef:
@@ -226,8 +233,15 @@ spec:
               args: {{- include "common.tplvalues.render" (dict "value" $args "context" $) | nindent 16 }}
               {{- end }}
               {{- $extraEnvVars := coalesce .extraEnvVars $.Values.cluster.worker.common.extraEnvVars }}
+              env:
+              {{- if include "common.fips.enabled" $ }}
+              - name: OPENSSL_FIPS
+                value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" $.Values.cluster.worker.common.fips "global" $.Values.global) | quote }}
+              - name: GODEBUG
+                value: {{ include "common.fips.config" (dict "tech" "golang" "fips" $.Values.cluster.worker.common.fips "global" $.Values.global) | quote }}
+              {{- end }}
               {{- if $extraEnvVars }}
-              env: {{- include "common.tplvalues.render" (dict "value" $extraEnvVars "context" $) | nindent 16 }}
+              {{- include "common.tplvalues.render" (dict "value" $extraEnvVars "context" $) | nindent 16 }}
               {{- end }}
               envFrom:
                 {{- $extraEnvVarsCM := coalesce .extraEnvVarsCM $.Values.cluster.worker.common.extraEnvVarsCM }}

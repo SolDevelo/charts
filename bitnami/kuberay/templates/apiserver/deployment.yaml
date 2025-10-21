@@ -98,9 +98,16 @@ spec:
             - -rpcPortFlag=:{{ .Values.apiserver.containerPorts.grpc }}
             - -httpPortFlag=:{{ .Values.apiserver.containerPorts.http }}
           {{- end }}
-          {{- if .Values.apiserver.extraEnvVars }}
-          env: {{- include "common.tplvalues.render" (dict "value" .Values.apiserver.extraEnvVars "context" $) | nindent 12 }}
-          {{- end }}
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.apiserver.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.apiserver.fips "global" .Values.global) | quote }}
+            {{- end }}
+            {{- if .Values.apiserver.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.apiserver.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           envFrom:
             {{- if .Values.apiserver.extraEnvVarsCM }}
             - configMapRef:
