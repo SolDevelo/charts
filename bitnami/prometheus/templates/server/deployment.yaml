@@ -87,6 +87,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -144,6 +149,12 @@ spec:
             {{- end }}
           {{- end }}
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.server.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.server.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.server.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.server.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -227,6 +238,12 @@ spec:
                 secretKeyRef:
                   name: {{ include "common.tplvalues.render" (dict "value" .Values.server.thanos.objectStorageConfig.secretName "context" .) }}
                   key: {{ .Values.server.thanos.objectStorageConfig.secretKey | default "thanos.yaml" }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.server.thanos.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.server.thanos.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.server.thanos.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.server.thanos.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
