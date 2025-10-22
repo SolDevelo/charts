@@ -91,6 +91,11 @@ spec:
           {{- else if ne .Values.certificateVolume.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.certificateVolume.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.certificateVolume.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /certs
@@ -132,6 +137,12 @@ spec:
                   name: {{ tpl .Values.existingSecret . }}
                   key: {{ template "harbor.secret.adminPasswordKey" . }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.exporter.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.exporter.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.exporter.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.exporter.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -155,7 +166,7 @@ spec:
             httpGet:
               path: {{ .Values.metrics.path | quote }}
               port: metrics
-              # Metrics are exposed only though HTTP https://github.com/goharbor/harbor/issues/16252
+              # Metrics are exposed only though HTTP https://github.com/goharbor/harbor/issues/16252
               scheme: HTTP
           {{- end }}
           {{- if .Values.exporter.customLivenessProbe }}

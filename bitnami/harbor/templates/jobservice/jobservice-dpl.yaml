@@ -94,6 +94,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -117,6 +122,11 @@ spec:
           resources: {{- toYaml .Values.certificateVolume.resources | nindent 12 }}
           {{- else if ne .Values.certificateVolume.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.certificateVolume.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.certificateVolume.fips "global" .Values.global) | quote }}
           {{- end }}
           volumeMounts:
             - name: empty-dir
@@ -164,6 +174,12 @@ spec:
               value: /etc/harbor/ssl/jobservice/tls.crt
             - name: INTERNAL_TLS_TRUST_CA_PATH
               value: /etc/harbor/ssl/jobservice/ca.crt
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.jobservice.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.jobservice.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.jobservice.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.jobservice.extraEnvVars "context" $) | nindent 12 }}

@@ -88,6 +88,11 @@ spec:
           {{- else if ne .Values.certificateVolume.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.certificateVolume.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.certificateVolume.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /certs
@@ -112,6 +117,10 @@ spec:
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.portal.image.debug | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.portal.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.portal.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.portal.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

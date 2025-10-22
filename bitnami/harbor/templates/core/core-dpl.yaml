@@ -93,6 +93,11 @@ spec:
           {{- else if ne .Values.certificateVolume.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.certificateVolume.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.certificateVolume.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /certs
@@ -157,6 +162,12 @@ spec:
               value: /etc/harbor/ssl/core/tls.crt
             - name: INTERNAL_TLS_TRUST_CA_PATH
               value: /etc/harbor/ssl/core/ca.crt
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.core.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.core.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.core.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.core.extraEnvVars "context" $) | nindent 12 }}
