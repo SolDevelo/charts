@@ -86,6 +86,10 @@ spec:
             - --dir
             - file:///migrations
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.controlplane.migration.fips "global" .Values.global) | quote }}
+            {{- end }}
             - name: CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
@@ -126,6 +130,10 @@ spec:
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.controlplane.lifecycleHooks "context" $) | nindent 12 }}
           {{- end }}
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.controlplane.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.controlplane.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.controlplane.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

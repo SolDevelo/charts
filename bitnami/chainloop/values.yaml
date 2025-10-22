@@ -10,6 +10,7 @@
 
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @param development Deploys Chainloop pre-configured FOR DEVELOPMENT ONLY. It includes a Vault instance in development mode and pre-configured authentication certificates and passphrases
 ##
@@ -241,6 +245,10 @@ controlplane:
   ##  prometheus_org_metrics:
   ##    - org_name: "read-only-demo"
   prometheus_org_metrics: []
+  ## @param controlplane.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 
   # Database migration
   ## @param controlplane.migration.ssl Connect to the database using SSL (required fro AWS RDS, etc)
@@ -274,6 +282,10 @@ controlplane:
       pullSecrets: [ ]
     # Run the migration job forcing SSL, required in AWS RDS for PostgreSQL 15
     ssl: false
+    ## @param controlplane.migration.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
   ## ServiceAccount configuration for the Controlplane Migration
   ##
@@ -1030,6 +1042,16 @@ cas:
     metrics: 5000
 
   ##
+  ## FIPS configuration
+  ##
+  ## @param cas.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param cas.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
+
+  ##
   ## TLS configuration
   ##
   tls:
@@ -1698,14 +1720,22 @@ cas:
 ## @param postgresql.auth.password Password for the custom user to create
 ## @param postgresql.auth.database Name for a custom database to create
 ## @param postgresql.auth.existingSecret Name of existing secret to use for PostgreSQL credentials
+## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+## @param postgresql.readReplicas.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
 postgresql:
   enabled: true
   auth:
     enablePostgresUser: false
     username: "chainloop"
-    password: "chainlooppwd"
+    password: "chainlooppwd1234567"
     database: "chainloop-cp"
     existingSecret: ""
+  primary:
+    fips:
+      openssl: ""
+  readReplicas:
+    fips:
+      openssl: ""
 
 # Vault server running in development mode --set development=true
 # IMPORTANT: This is not meant to run in production
@@ -1718,6 +1748,8 @@ postgresql:
 ## @param vault.server.extraEnvVars[0].value The value of the root token. Default: notasecret
 ## @param vault.server.extraEnvVars[1].name Address to listen on development mode
 ## @param vault.server.extraEnvVars[1].value The address to listen on. Default: [::]:8200
+## @param vault.server.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+## @param vault.server.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
 vault:
   server:
     args: [
@@ -1730,6 +1762,9 @@ vault:
       - name: VAULT_DEV_LISTEN_ADDRESS
         value: "[::]:8200"
     config: "storage \"inmem\" {}\ndisable_mlock = true\nui = true\nservice_registration \"kubernetes\" {}"
+    fips:
+      openssl: ""
+      golang: relaxed
 
 # IMPORTANT: This is not meant to run in production
 # Dex server
@@ -1777,6 +1812,12 @@ dex:
   ## @param dex.replicaCount Number of Dex replicas to deploy
   ##
   replicaCount: 1
+  ## @param dex.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param dex.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Dex containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param dex.startupProbe.enabled Enable startupProbe on Dex nodes
