@@ -34,4 +34,4 @@ maintainers:
 name: rabbitmq
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq
-version: 16.0.18
+version: 16.1.0
