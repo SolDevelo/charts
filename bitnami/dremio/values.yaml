@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 ##
@@ -226,6 +230,12 @@ masterCoordinator:
   ## @param masterCoordinator.extraJavaOpts Add extra Java opts
   ##
   extraJavaOpts: ""
+  ## @param masterCoordinator.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param masterCoordinator.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: "off"
   ## Configure extra options for Dremio Master Coordinator containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param masterCoordinator.livenessProbe.enabled Enable livenessProbe on Dremio Master Coordinator containers
@@ -670,6 +680,12 @@ coordinator:
   ## @param coordinator.extraJavaOpts Add extra Java opts
   ##
   extraJavaOpts: ""
+  ## @param coordinator.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param coordinator.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: "off"
   ## Configure extra options for Dremio Coordinator containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param coordinator.livenessProbe.enabled Enable livenessProbe on Dremio Coordinator containers
@@ -1101,6 +1117,12 @@ executor:
   ## @section Dremio Executor common Parameters
   ##
   ##
+  ## @param executor.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param executor.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: "off"
   common:
     ## @param executor.common.replicaCount Number of Dremio Executor replicas to deploy
     ##
@@ -1748,6 +1770,10 @@ bootstrapUserJob:
   ## @param bootstrapUserJob.extraCommands Extra commands to pass to the generation job
   ##
   extraCommands: ""
+  ## @param bootstrapUserJob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Configure Container Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param bootstrapUserJob.containerSecurityContext.enabled Enabled containers' Security Context
@@ -1993,6 +2019,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.wait.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.wait.containerSecurityContext.enabled Enabled Init container' Security Context
@@ -2042,6 +2072,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.generateConf.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.generateConf.containerSecurityContext.enabled Enabled Init container' Security Context
@@ -2107,6 +2141,12 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.initCerts.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param defaultInitContainers.initCerts.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      java: "off"
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.initCerts.containerSecurityContext.enabled Enabled Init container' Security Context
@@ -2156,6 +2196,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.copyDefaultConf.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.copyDefaultConf.containerSecurityContext.enabled Enabled Init container' Security Context
@@ -2205,6 +2249,12 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.upgradeKeystore.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param defaultInitContainers.upgradeKeystore.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      java: "off"
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.upgradeKeystore.containerSecurityContext.enabled Enabled Init container' Security Context
@@ -2254,6 +2304,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## Init container Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param defaultInitContainers.volumePermissions.containerSecurityContext.enabled Enabled init container' Security Context
@@ -2368,6 +2422,11 @@ minio:
   ##
   console:
     enabled: false
+    ## @param minio.console.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param minio.console.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    fips:
+      openssl: ""
+      golang: relaxed
 
 ## @section Prometheus metrics parameters
 ##
@@ -2403,6 +2462,12 @@ metrics:
   ## @param metrics.extraArgs Add extra arguments to the default container args section
   ##
   extraArgs: []
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: restricted
   ## Prometheus JMX exporter containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param metrics.containerSecurityContext.enabled Enable Prometheus JMX exporter containers' Security Context
@@ -2644,3 +2709,9 @@ zookeeper:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param zookeeper.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param zookeeper.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: restricted

@@ -74,6 +74,10 @@ Init container definition for generating the configuration
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.generateConf.fips "global" .context.Values.global) | quote }}
+    {{- end }}
     {{- if .context.Values.defaultInitContainers.generateConf.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .context.Values.defaultInitContainers.generateConf.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -120,7 +124,7 @@ Init container definition for generating the configuration
 {{- /* As most Bitnami charts have volumePermissions in the root, we add this overwrite to maintain a similar UX */}}
 {{- $volumePermissionsValues := mustMergeOverwrite .context.Values.defaultInitContainers.volumePermissions .context.Values.volumePermissions }}
 - name: volume-permissions
-  image: {{ include "dremio.init-containers.default-image" . }}
+  image: {{ include "dremio.init-containers.default-image" .context }}
   imagePullPolicy: {{ .context.Values.defaultInitContainers.defaultImage.pullPolicy | quote }}
   command:
     - /bin/bash
@@ -132,13 +136,18 @@ Init container definition for generating the configuration
       chown -R {{ .componentValues.containerSecurityContext.runAsUser }}:{{ .componentValues.podSecurityContext.fsGroup }} {{ .componentValues.persistence.mountPath }}
       {{- end }}
   {{- if $volumePermissionsValues.containerSecurityContext.enabled }}
-  securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" $volumePermissionsValues.containerSecurityContext "context" $) | nindent 4 }}
+  securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" $volumePermissionsValues.containerSecurityContext "context" .context) | nindent 4 }}
   {{- end }}
   {{- if $volumePermissionsValues.resources }}
   resources: {{- toYaml $volumePermissionsValues.resources | nindent 4 }}
   {{- else if ne $volumePermissionsValues.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" $volumePermissionsValues.resourcesPreset) | nindent 4 }}
   {{- end }}
+  env:
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.volumePermissions.fips "global" .context.Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ .componentValues.persistence.mountPath }}
@@ -212,6 +221,11 @@ Init container definition for waiting for the database to be ready
 
       echo "Connection success"
       exit 0
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.wait.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}
 
 {{/*
@@ -277,6 +291,12 @@ Init container definition for waiting for the database to be ready
           key: keystore-password
     {{- end }}
     {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.initCerts.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.initCerts.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: input-tls-certs
       mountPath: /certs
@@ -319,6 +339,11 @@ Init container definition for waiting for the database to be ready
       # First copy the default configuration files so we can fully replace the folder
 
       cp /opt/bitnami/dremio/conf/* /bitnami/dremio/conf/
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.copyDefaultConf.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /bitnami/dremio/conf
@@ -386,6 +411,13 @@ Init container definition for waiting for the database to be ready
   env:
     - name: BITNAMI_DEBUG
       value: {{ ternary "true" "false" (or .Values.dremio.image.debug .Values.diagnosticMode.enabled) | quote }}
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.upgradeKeystore.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.upgradeKeystore.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /.dremio
@@ -472,6 +504,11 @@ Init container definition for waiting for the database to be ready
 
       echo "Connection success"
       exit 0
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.wait.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}
 
 {{/*
@@ -529,4 +566,9 @@ Init container definition for waiting for the database to be ready
 
       echo "Connection success"
       exit 0
+  env:
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.wait.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}

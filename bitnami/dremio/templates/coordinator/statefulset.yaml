@@ -147,6 +147,12 @@ spec:
                   containerName: dremio
                   resource: limits.memory
                   divisor: 1Mi
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.coordinator.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.coordinator.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.coordinator.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.coordinator.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -283,6 +289,13 @@ spec:
           {{- else if ne .Values.metrics.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.metrics.resourcesPreset) | nindent 12 }}
           {{- end }}
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            {{- end }}
           {{- if not .Values.diagnosticMode.enabled }}
           {{- if .Values.metrics.livenessProbe.enabled }}
           livenessProbe: {{- omit .Values.metrics.livenessProbe "enabled" | toYaml | nindent 12 }}
