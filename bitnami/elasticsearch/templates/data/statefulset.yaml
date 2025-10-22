@@ -107,6 +107,11 @@ spec:
           {{- else if ne .Values.sysctlImage.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.sysctlImage.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.sysctlImage.fips "global" .Values.global) | quote }}
+          {{- end }}
         {{- end }}
         {{- if and .Values.volumePermissions.enabled .Values.data.persistence.enabled .Values.enableDefaultInitContainers }}
         - name: volume-permissions
@@ -125,6 +130,11 @@ spec:
           resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
           {{- end }}
           volumeMounts:
             - name: empty-dir
@@ -158,6 +168,11 @@ spec:
               if ! is_dir_empty "$DB_DEFAULT_PLUGINS_DIR"; then
                   cp -nr "$DB_DEFAULT_PLUGINS_DIR"/* /plugins
               fi
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.data.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -236,6 +251,12 @@ spec:
             {{- end }}
             {{- if .Values.security.enabled }}
             {{- include "elasticsearch.configure.security" . | nindent 12 }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.data.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.data.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.data.extraEnvVars }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.data.extraEnvVars "context" $ ) | nindent 12 }}

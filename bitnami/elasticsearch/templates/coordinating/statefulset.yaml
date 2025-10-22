@@ -107,6 +107,11 @@ spec:
           {{- else if ne .Values.sysctlImage.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.sysctlImage.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.sysctlImage.fips "global" .Values.global) | quote }}
+          {{- end }}
         {{- end }}
         - name: copy-default-plugins
           image: {{ include "elasticsearch.image" . }}
@@ -132,6 +137,13 @@ spec:
               if ! is_dir_empty "$DB_DEFAULT_PLUGINS_DIR"; then
                   cp -nr "$DB_DEFAULT_PLUGINS_DIR"/* /plugins
               fi
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.coordinating.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.coordinating.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /tmp
@@ -208,6 +220,12 @@ spec:
             {{- end }}
             {{- if .Values.coordinating.extraEnvVars }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.coordinating.extraEnvVars "context" $ ) | nindent 12 }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.master.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.master.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.extraEnvVars "context" $ ) | nindent 12 }}
