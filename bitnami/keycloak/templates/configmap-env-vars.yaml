@@ -92,3 +92,7 @@ data:
   {{- if .Values.extraStartupArgs }}
   KEYCLOAK_EXTRA_ARGS: {{ .Values.extraStartupArgs | quote }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  OPENSSL_FIPS: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+  JAVA_TOOL_OPTIONS: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.fips "global" .Values.global) | quote }}
+  {{- end }}

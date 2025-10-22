@@ -30,6 +30,9 @@ global:
     ## @param global.compatibility.omitEmptySeLinuxOptions If set to true, removes the seLinuxOptions from the securityContexts when it is set to an empty object
     ##
     omitEmptySeLinuxOptions: false
+  ## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -350,6 +353,10 @@ resourcesPreset: "small"
 ##     memory: 1024Mi
 ##
 resources: {}
+## @param fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+##
+fips:
+  openssl: ""
 ## Configure extra options for Keycloak containers' liveness, readiness and startup probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe on Keycloak containers
@@ -1058,6 +1065,12 @@ keycloakConfigCli:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param keycloakConfigCli.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param keycloakConfigCli.fips.java Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: ""
   ## keycloak-config-cli containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param keycloakConfigCli.containerSecurityContext.enabled Enabled keycloak-config-cli Security Context
@@ -1250,6 +1263,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.prepareWriteDirs.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## @section Database parameters
 
@@ -1275,6 +1292,12 @@ postgresql:
     secretKeys:
       userPasswordKey: password
   architecture: standalone
+  primary:
+    ## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+
 ## External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
 ## @param externalDatabase.host Database host

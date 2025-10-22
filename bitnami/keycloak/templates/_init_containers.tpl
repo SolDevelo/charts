@@ -33,6 +33,11 @@ Returns an init-container that copies writable directories to an empty dir volum
       cp -r --preserve=mode,timestamps /opt/bitnami/keycloak/providers /emptydir/app-providers-dir
       cp -r --preserve=mode,timestamps /opt/bitnami/keycloak/themes /emptydir/app-themes-dir
       info "Copy operation completed"
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.prepareWriteDirs.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
    - name: empty-dir
      mountPath: /emptydir
