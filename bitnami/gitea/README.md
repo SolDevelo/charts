@@ -106,6 +106,10 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 
 To back up and restore Helm chart deployments on Kubernetes, you need to back up the persistent volumes from the source deployment and attach them to a new deployment using [Velero](https://velero.io/), a Kubernetes backup/restore tool. Find the instructions for using Velero in [this guide](https://techdocs.broadcom.com/us/en/vmware-tanzu/application-catalog/tanzu-application-catalog/services/tac-doc/apps-tutorials-backup-restore-deployments-velero-index.html).
 
+### FIPS parameters
+
+The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
+
 ## Persistence
 
 The [Bitnami Gitea](https://github.com/bitnami/containers/tree/main/bitnami/gitea) image stores the Gitea data and configurations at the `/bitnami/gitea` path of the container.
@@ -150,13 +154,14 @@ helm install my-release --set persistence.existingClaim=PVC_NAME oci://REGISTRY_
 
 ### Global parameters
 
-| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value   |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`    |
-| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`    |
-| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`    |
-| `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false` |
-| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`  |
+| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value        |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`         |
+| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`         |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`         |
+| `global.defaultFips`                                  | Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object                                                                                                                                                                                                                                      | `restricted` |
+| `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false`      |
+| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`       |
 
 ### Common parameters
 
@@ -236,6 +241,8 @@ helm install my-release --set persistence.existingClaim=PVC_NAME oci://REGISTRY_
 | `nodeSelector`                                      | Node labels for pod assignment. Evaluated as a template.                                                                                                                                                          | `{}`                    |
 | `resourcesPreset`                                   | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production). | `micro`                 |
 | `resources`                                         | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                 | `{}`                    |
+| `fips.openssl`                                      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                | `""`                    |
+| `fips.golang`                                       | Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                 | `relaxed`               |
 | `podSecurityContext.enabled`                        | Enable Gitea pods' Security Context                                                                                                                                                                               | `true`                  |
 | `podSecurityContext.fsGroupChangePolicy`            | Set filesystem group change policy                                                                                                                                                                                | `Always`                |
 | `podSecurityContext.sysctls`                        | Set kernel settings using the sysctl interface                                                                                                                                                                    | `[]`                    |
@@ -327,22 +334,24 @@ helm install my-release --set persistence.existingClaim=PVC_NAME oci://REGISTRY_
 
 ### Database parameters
 
-| Name                                         | Description                                                             | Value           |
-| -------------------------------------------- | ----------------------------------------------------------------------- | --------------- |
-| `postgresql.enabled`                         | Switch to enable or disable the PostgreSQL helm chart                   | `true`          |
-| `postgresql.auth.username`                   | Name for a custom user to create                                        | `bn_gitea`      |
-| `postgresql.auth.password`                   | Password for the custom user to create                                  | `""`            |
-| `postgresql.auth.database`                   | Name for a custom database to create                                    | `bitnami_gitea` |
-| `postgresql.auth.existingSecret`             | Name of existing secret to use for PostgreSQL credentials               | `""`            |
-| `postgresql.architecture`                    | PostgreSQL architecture (`standalone` or `replication`)                 | `standalone`    |
-| `postgresql.service.ports.postgresql`        | PostgreSQL service port                                                 | `5432`          |
-| `externalDatabase.host`                      | Database host                                                           | `""`            |
-| `externalDatabase.port`                      | Database port number                                                    | `5432`          |
-| `externalDatabase.user`                      | Non-root username for JupyterHub                                        | `postgres`      |
-| `externalDatabase.password`                  | Password for the non-root username for JupyterHub                       | `""`            |
-| `externalDatabase.database`                  | JupyterHub database name                                                | `gitea`         |
-| `externalDatabase.existingSecret`            | Name of an existing secret resource containing the database credentials | `""`            |
-| `externalDatabase.existingSecretPasswordKey` | Name of an existing secret key containing the database credentials      | `db-password`   |
+| Name                                         | Description                                                                                                        | Value           |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------- |
+| `postgresql.enabled`                         | Switch to enable or disable the PostgreSQL helm chart                                                              | `true`          |
+| `postgresql.auth.username`                   | Name for a custom user to create                                                                                   | `bn_gitea`      |
+| `postgresql.auth.password`                   | Password for the custom user to create                                                                             | `""`            |
+| `postgresql.auth.database`                   | Name for a custom database to create                                                                               | `bitnami_gitea` |
+| `postgresql.auth.existingSecret`             | Name of existing secret to use for PostgreSQL credentials                                                          | `""`            |
+| `postgresql.architecture`                    | PostgreSQL architecture (`standalone` or `replication`)                                                            | `standalone`    |
+| `postgresql.service.ports.postgresql`        | PostgreSQL service port                                                                                            | `5432`          |
+| `postgresql.primary.fips.openssl`            | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used | `""`            |
+| `postgresql.readReplicas.fips.openssl`       | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used | `""`            |
+| `externalDatabase.host`                      | Database host                                                                                                      | `""`            |
+| `externalDatabase.port`                      | Database port number                                                                                               | `5432`          |
+| `externalDatabase.user`                      | Non-root username for JupyterHub                                                                                   | `postgres`      |
+| `externalDatabase.password`                  | Password for the non-root username for JupyterHub                                                                  | `""`            |
+| `externalDatabase.database`                  | JupyterHub database name                                                                                           | `gitea`         |
+| `externalDatabase.existingSecret`            | Name of an existing secret resource containing the database credentials                                            | `""`            |
+| `externalDatabase.existingSecretPasswordKey` | Name of an existing secret key containing the database credentials                                                 | `db-password`   |
 
 ### Volume Permissions parameters
 
@@ -356,6 +365,7 @@ helm install my-release --set persistence.existingClaim=PVC_NAME oci://REGISTRY_
 | `volumePermissions.image.pullSecrets` | Specify docker-registry secret names as an array                                                                                                                                                                                                      | `[]`                       |
 | `volumePermissions.resourcesPreset`   | Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if volumePermissions.resources is set (volumePermissions.resources is recommended for production). | `nano`                     |
 | `volumePermissions.resources`         | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                                                     | `{}`                       |
+| `volumePermissions.fips.openssl`      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                                                    | `""`                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
