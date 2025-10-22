@@ -9,7 +9,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/configurable-http-proxy:5.1.0-debian-12-r26
     - name: jupyter-base-notebook
       version: 5.4.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jupyter-base-notebook:5.4.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jupyter-base-notebook:5.4.1-debian-12-r2
     - name: jupyterhub
       version: 5.4.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jupyterhub:5.4.1-debian-12-r0
@@ -44,4 +44,4 @@ maintainers:
 name: jupyterhub
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/jupyterhub
-version: 10.1.4
+version: 10.1.5
