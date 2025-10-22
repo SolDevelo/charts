@@ -132,6 +132,10 @@ spec:
                   name: {{ template "mysql.update-job.newSecretName" . }}
                   key: mysql-root-password
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.passwordUpdateJob.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if not (empty .Values.auth.username) }}
             - name: MYSQL_USER
               value: {{ .Values.auth.username | quote }}
