@@ -82,27 +82,27 @@ spec:
       {{- if .Values.pgpool.tls.enabled }}
         - name: init-chmod-data
           image: {{ template "postgresql-ha.volumePermissions.image" . }}
-          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.defaultInitContainers.volumePermissions.image.pullPolicy | quote }}
           command:
             - /bin/sh
             - -cx
             - |
               cp /tmp/certs/* /opt/bitnami/pgpool/certs/
-              {{- if eq ( toString ( .Values.volumePermissions.podSecurityContext.runAsUser )) "auto" }}
+              {{- if eq ( toString ( .Values.defaultInitContainers.volumePermissions.containerSecurityContext.runAsUser )) "auto" }}
               chown -R `id -u`:`id -G | cut -d " " -f2` /opt/bitnami/pgpool/certs/
               {{- else }}
               chown -R {{ .Values.pgpool.containerSecurityContext.runAsUser }}:{{ .Values.pgpool.podSecurityContext.fsGroup }} /opt/bitnami/pgpool/certs/
               {{- end }}
               chmod 600 {{ template "postgresql-ha.pgpool.tlsCertKey" . }}
-          {{- if eq ( toString ( .Values.volumePermissions.podSecurityContext.runAsUser )) "auto" }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" (omit .Values.volumePermissions.podSecurityContext "runAsUser") "context" $) | nindent 12 }}
+          {{- if eq ( toString ( .Values.defaultInitContainers.volumePermissions.containerSecurityContext.runAsUser )) "auto" }}
+          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" (omit .Values.defaultInitContainers.volumePermissions.containerSecurityContext "runAsUser") "context" $) | nindent 12 }}
           {{- else }}
-          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.volumePermissions.podSecurityContext "context" $) | nindent 12 }}
+          securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.defaultInitContainers.volumePermissions.containerSecurityContext "context" $) | nindent 12 }}
           {{- end }}
-          {{- if .Values.volumePermissions.resources }}
-          resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
-          {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
-          resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+          {{- if .Values.defaultInitContainers.volumePermissions.resources }}
+          resources: {{- toYaml .Values.defaultInitContainers.volumePermissions.resources | nindent 12 }}
+          {{- else if ne .Values.defaultInitContainers.volumePermissions.resourcesPreset "none" }}
+          resources: {{- include "common.resources.preset" (dict "type" .Values.defaultInitContainers.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: raw-certificates
