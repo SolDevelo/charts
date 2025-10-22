@@ -10,6 +10,7 @@
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
 ## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -34,6 +35,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -193,9 +197,13 @@ hub:
         {{- if .Values.singleuser.podLabels }}
         {{- include "common.tplvalues.render" ( dict "value" .Values.singleuser.podLabels "context" $ ) | nindent 4 }}
         {{- end }}
-      {{- if .Values.singleuser.extraEnvVars }}
-      extraEnv: {{- include "common.tplvalues.render" ( dict "value" .Values.singleuser.extraEnvVars "context" $ ) | nindent 4 }}
-      {{- end }}
+      extraEnv:
+        {{- if include "common.fips.enabled" $ }}
+        OPENSSL_FIPS: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.singleuser.fips "global" .Values.global) | quote }}
+        {{- end }}
+        {{- if .Values.singleuser.extraEnvVars }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.singleuser.extraEnvVars "context" $ ) | nindent 4 }}
+        {{- end }}
       {{- if .Values.singleuser.lifecycleHooks }}
       lifecycleHooks: {{- include "common.tplvalues.render" ( dict "value" .Values.singleuser.lifecycleHooks "context" $ ) | nindent 4 }}
       {{- end }}
@@ -374,6 +382,10 @@ hub:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param hub.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## hub containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param hub.containerSecurityContext.enabled Enabled containers' Security Context
@@ -840,6 +852,10 @@ proxy:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param proxy.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Proxy containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param proxy.containerSecurityContext.enabled Enabled containers' Security Context
@@ -1652,6 +1668,10 @@ singleuser:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param singleuser.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## singleuser containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param singleuser.containerSecurityContext.enabled Enabled containers' Security Context
@@ -1872,6 +1892,11 @@ postgresql:
   service:
     ports:
       postgresql: 5432
+  primary:
+    ## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 ## External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
 ## @param externalDatabase.host Database host
