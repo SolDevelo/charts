@@ -34,6 +34,11 @@ Returns an init-container that changes the owner and group of the persistent vol
       find {{ $roleValues.persistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" |  xargs -r chown -R {{ $roleValues.containerSecurityContext.runAsUser }}:{{ $roleValues.podSecurityContext.fsGroup }}
       find {{ $roleValues.logPersistence.mountPath }} -mindepth 1 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" |  xargs -r chown -R {{ $roleValues.containerSecurityContext.runAsUser }}:{{ $roleValues.podSecurityContext.fsGroup }}
       {{- end }}
+  {{- if include "common.fips.enabled" .context }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.volumePermissions.fips "global" .context.Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ $roleValues.persistence.mountPath }}
@@ -125,6 +130,12 @@ Returns an init-container that auto-discovers the external access details
           fieldPath: metadata.namespace
     - name: AUTODISCOVERY_SERVICE_TYPE
       value: {{ $externalAccess.service.type | quote }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.autoDiscovery.fips "global" .context.Values.global) | quote }}
+    - name: GODEBUG
+      value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .context.Values.defaultInitContainers.autoDiscovery.fips "global" .context.Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: init-shared
       mountPath: /shared
@@ -481,6 +492,12 @@ Returns an init-container that prepares the Kafka configuration files for main c
           name: {{ include "kafka.tlsPasswordsSecretName" .context }}
           key: {{ default "key-password" .context.Values.tls.passwordsSecretPemPasswordKey | quote }}
     {{- end }}
+    {{- end }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.prepareConfig.fips "global" .context.Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .context.Values.defaultInitContainers.prepareConfig.fips "global" .context.Values.global) | quote }}
     {{- end }}
   volumeMounts:
     - name: data
