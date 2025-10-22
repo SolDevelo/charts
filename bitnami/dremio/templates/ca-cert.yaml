@@ -10,12 +10,12 @@ kind: Issuer
 metadata:
   name: {{ printf "%s-clusterissuer" (include "common.names.fullname" .) }}
   namespace: {{ include "common.names.namespace" . | quote }}
-  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
     app.kubernetes.io/part-of: dremio
     {{- /* We need an extra label that applies to both master and non-master coordinators. Taken from upstream dremio chart */}}
     app: dremio-coordinator
   {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
   {{- end }}
 spec:
   selfSigned: {}
@@ -26,13 +26,12 @@ kind: Certificate
 metadata:
   name: {{ printf "%s-ca-crt" (include "common.names.fullname" .) }}
   namespace: {{ include "common.names.namespace" . | quote }}
-  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
     app.kubernetes.io/part-of: dremio
-    app.kubernetes.io/component: dremio
     {{- /* We need an extra label that applies to both master and non-master coordinators. Taken from upstream dremio chart */}}
     app: dremio-coordinator
   {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
   {{- end }}
 spec:
   secretName: {{ printf "%s-ca-crt" (include "common.names.fullname" .) }}
@@ -47,12 +46,12 @@ kind: Issuer
 metadata:
   name: {{ printf "%s-ca-issuer" (include "common.names.fullname" .) }}
   namespace: {{ include "common.names.namespace" . | quote }}
-  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+  labels: {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
     app.kubernetes.io/part-of: dremio
     {{- /* We need an extra label that applies to both master and non-master coordinators. Taken from upstream dremio chart */}}
     app: dremio-coordinator
   {{- if .Values.commonAnnotations }}
-  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  annotations: {{- include "common.tplvalues.render" (dict "value" .Values.commonAnnotations "context" .) | nindent 4 }}
   {{- end }}
 spec:
   ca:

@@ -233,9 +233,9 @@ Return the Dremio TLS credentials secret
 */}}
 {{- define "dremio.tls.secretName" -}}
 {{- if .Values.dremio.tls.existingSecret -}}
-    {{- print (tpl .Values.dremio.tls.existingSecret $) -}}
+    {{- tpl .Values.dremio.tls.existingSecret . -}}
 {{- else -}}
-    {{- printf "%s-crt" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+    {{- printf "%s-crt" (include "common.names.fullname" .) -}}
 {{- end -}}
 {{- end -}}
 
