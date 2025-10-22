@@ -92,9 +92,16 @@ spec:
             - -config.file=/bitnami/grafana-tempo/conf/tempo.yaml
             - -mem-ballast-size-mbs={{ .Values.tempo.memBallastSizeMbs }}
           {{- end }}
-          {{- if .Values.querier.extraEnvVars }}
-          env: {{- include "common.tplvalues.render" (dict "value" .Values.querier.extraEnvVars "context" $) | nindent 12 }}
-          {{- end }}
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.querier.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.querier.fips "global" .Values.global) | quote }}
+            {{- end }}
+            {{- if .Values.querier.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.querier.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           envFrom:
             {{- if .Values.querier.extraEnvVarsCM }}
             - configMapRef:
