@@ -38,7 +38,7 @@ var _ = Describe("Pinniped:", func() {
 
 			// We need to make sure the pod is out of the "ContainerCreating" phase
 			// to avoid errors when checking its logs
-			isPodRunning, err := retry("isPodRunning", 5, 3*time.Second, func() (bool, error) {
+			isPodRunning, err := retry("isPodRunning", 5, 6*time.Second, func() (bool, error) {
 				return isPodRunning(ctx, coreclient, testingPod.GetName())
 			})
 			if err != nil {
