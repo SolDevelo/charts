@@ -11,8 +11,8 @@ annotations:
       version: 0.27.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/blackbox-exporter:0.27.0-debian-12-r9
     - name: prometheus
-      version: 3.7.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.7.1-debian-12-r0
+      version: 3.7.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.7.2-debian-12-r0
     - name: prometheus-operator
       version: 0.86.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus-operator:0.86.1-debian-12-r1
@@ -56,4 +56,4 @@ maintainers:
 name: kube-prometheus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus
-version: 11.3.32
+version: 11.3.33
