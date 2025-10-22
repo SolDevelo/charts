@@ -9,6 +9,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -32,6 +33,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 
 ## @param kubeVersion Override Kubernetes version
@@ -100,6 +104,12 @@ controller:
   ## @param controller.replicaCount Number of Argo CD replicas to deploy
   ##
   replicaCount: 1
+  ## @param controller.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param controller.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Argo CD containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param controller.startupProbe.enabled Enable startupProbe on Argo CD nodes
@@ -712,6 +722,12 @@ applicationSet:
   containerPorts:
     metrics: 8085
     probe: 8081
+  ## @param applicationSet.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param applicationSet.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: ""
   ## Metrics configuration for Argo CD applicationSet controller
   ##
   metrics:
@@ -1205,6 +1221,12 @@ notifications:
   ##
   containerPorts:
     metrics: 8085
+  ## @param notifications.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param notifications.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: ""
   ## Metrics configuration for Argo CD notifications controller
   ##
   metrics:
@@ -1613,6 +1635,12 @@ notifications:
       ## @param notifications.webhook.ingress.tls Ingress TLS configuration
       ##
       tls: []
+    ## @param notifications.webhook.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param notifications.webhook.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: ""
   ## The optional bot component simplifies managing subscriptions
   ## For more information: https://argocd-notifications.readthedocs.io/en/stable/bots/overview/
   bots:
@@ -1682,6 +1710,12 @@ notifications:
         ##     timeoutSeconds: 300
         ##
         sessionAffinityConfig: {}
+      ## @param notifications.bots.slack.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ## @param notifications.bots.slack.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+      ##
+      fips:
+        openssl: ""
+        golang: ""
       ## Network Policies
       ## Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
       ##
@@ -1957,6 +1991,12 @@ server:
   ## @param server.replicaCount Number of Argo CD server replicas to deploy
   ##
   replicaCount: 1
+  ## @param server.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param server.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Argo CD server containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param server.startupProbe.enabled Enable startupProbe on Argo CD server nodes
@@ -2768,6 +2808,12 @@ repoServer:
   ## @param repoServer.replicaCount Number of Argo CD repo server replicas to deploy
   ##
   replicaCount: 1
+  ## @param repoServer.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param repoServer.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for Argo CD repo server containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param repoServer.startupProbe.enabled Enable startupProbe on Argo CD repo server nodes
@@ -3323,6 +3369,12 @@ dex:
   ## @param dex.replicaCount Number of Dex replicas to deploy
   ##
   replicaCount: 1
+  ## @param dex.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param dex.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: ""
   ## Configure extra options for Dex containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param dex.startupProbe.enabled Enable startupProbe on Dex nodes
@@ -4102,6 +4154,14 @@ redis:
   ## TODO(miguelaeh): We need to test the chart with redis sentinel, it seems to be supported at: https://github.com/argoproj/argo-cd/blob/2a410187565e15633b6f2a8c8d8da22cf02b257d/util/cache/cache.go#L40
   ##
   architecture: standalone
+  master:
+    ## @param redis.master.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    fips:
+      openssl: ""
+  replica:
+    ## @param redis.replica.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    fips:
+      openssl: ""
 ##
 ## External Redis&reg;
 ##

@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
-  fips: "false"
   images: |
     - name: argo-cd
       version: 3.1.9
@@ -44,4 +43,4 @@ maintainers:
 name: argo-cd
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/argo-cd
-version: 11.0.21
+version: 11.1.0

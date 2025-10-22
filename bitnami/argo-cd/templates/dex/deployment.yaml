@@ -89,6 +89,11 @@ spec:
           {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /shared
@@ -111,6 +116,11 @@ spec:
             - -n
             - /opt/bitnami/argo-cd/bin/argocd
             - /shared/argocd-dex
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.dex.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /shared
@@ -157,6 +167,12 @@ spec:
               containerPort: {{ .Values.dex.containerPorts.metrics }}
               protocol: TCP
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.dex.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.dex.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.dex.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.dex.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

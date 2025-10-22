@@ -110,14 +110,18 @@ spec:
                 else
                     info "Connected to the Redis instance"
                 fi
-          {{- if include "argocd.redis.auth.enabled" . }}
           env:
+            {{- if include "argocd.redis.auth.enabled" . }}
             - name: REDISCLI_AUTH
               valueFrom:
                 secretKeyRef:
                   name: {{ include "argocd.redis.secretName" . }}
                   key: {{ include "argocd.redis.secretPasswordKey" . }}
-          {{- end }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.redis.master.fips "global" .Values.global) | quote }}
+            {{- end }}
         {{- end }}
       containers:
         - name: argocd-server
@@ -189,6 +193,12 @@ spec:
                   name: {{ .Values.externalRedis.existingSecret }}
                   key: {{ .Values.externalRedis.existingSecretPasswordKey }}
               {{- end }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.server.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.server.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.server.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.server.extraEnvVars "context" $) | nindent 12 }}
