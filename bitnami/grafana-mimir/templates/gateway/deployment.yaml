@@ -100,6 +100,10 @@ spec:
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.gateway.image.debug | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.gateway.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.gateway.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.gateway.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

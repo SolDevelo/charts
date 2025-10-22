@@ -111,8 +111,14 @@ spec:
                   name: {{ include "grafana-mimir.minio.secretName" . }}
                   key: {{ include "grafana-mimir.minio.secretAccessKeyKey" . }}
             {{- end }}
-            {{- if .Values.compactor.extraEnvVars }}
-            {{- include "common.tplvalues.render" (dict "value" .Values.compactor.extraEnvVars "context" $) | nindent 12 }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.distributor.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.distributor.fips "global" .Values.global) | quote }}
+            {{- end }}
+            {{- if .Values.distributor.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.distributor.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
           envFrom:
             {{- if .Values.distributor.extraEnvVarsCM }}
