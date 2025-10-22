@@ -341,6 +341,10 @@ Dynamic Seed Discovery Init-Container
       valueFrom:
         fieldRef:
             fieldPath: status.podIP
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.dynamicSeedDiscovery.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: empty-dir
       mountPath: /opt/bitnami/cassandra/tmp

@@ -143,6 +143,11 @@ spec:
           {{- else if ne $.Values.volumePermissions.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" $.Values.volumePermissions.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: {{ $.Values.persistence.mountPath }}
@@ -219,6 +224,12 @@ spec:
                   name: {{ include "cassandra.tlsPasswordsSecret" $ }}
                   key: truststore-password
             {{- end }}
+            {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tls.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.tls.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if and (not $.Values.tls.useExternalSecretProvider) $useKeystorePassword }}
             {{- if $.Values.usePasswordFiles }}
@@ -324,6 +335,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            {{- if include "common.fips.enabled" $ }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" $.Values.fips "global" $.Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" $.Values.fips "global" $.Values.global) | quote }}
+            {{- end }}
             - name: CASSANDRA_USER
               value: {{ $.Values.dbUser.user | quote }}
             - name: CASSANDRA_NUM_TOKENS
@@ -585,6 +602,13 @@ spec:
           resources: {{- toYaml $.Values.metrics.resources | nindent 12 }}
           {{- else if ne $.Values.metrics.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" $.Values.metrics.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
           {{- end }}
           {{- if not $.Values.diagnosticMode.enabled }}
           livenessProbe:
