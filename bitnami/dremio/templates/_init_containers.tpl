@@ -453,7 +453,7 @@ Init container definition for waiting for the database to be ready
 
       check_s3() {
           local -r s3_host="${1:-?missing s3}"
-          if curl -k --max-time 5 "${s3_host}" | grep "RequestId"; then
+          if curl -Ik --silent --max-time 5 "${s3_host}" | grep 'Server: \(MinIO\|AmazonS3\)'; then
               return 0
           else
               return 1

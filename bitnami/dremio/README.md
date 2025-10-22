@@ -226,7 +226,7 @@ For configuring AWS as distributed storage, use the `externalS3` section (replac
 
 ```yaml
 dremio:
-  distStorageType: minio
+  distStorageType: aws
 
 minio:
   enabled: false
@@ -235,7 +235,19 @@ externalS3:
   accessKeyID: DREMIO_ACCESS_KEY_ID
   accessKeySecret: DREMIO_ACCESS_KEY_SECRET
   bucket: DREMIO_BUCKET
-  regien: DREMIO_REGION
+  region: DREMIO_REGION
+```
+
+If a role needs to be assumed to access s3, append this configuration to your deployment
+
+```yaml
+dremio:
+  coreSite:
+    appendConfiguration: |
+      <property>
+        <name>fs.s3a.assumed.role.arn</name>
+        <value>ROLE_TO_ASSUME</value>
+      </property>
 ```
 
 #### Azure Storage as distributed storage

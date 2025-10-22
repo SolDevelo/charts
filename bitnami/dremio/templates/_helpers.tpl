@@ -276,7 +276,7 @@ Return the Dremio auth credentials secret
 {{- define "dremio.dremio-conf.common.default" -}}
 paths.local: {{ .Values.masterCoordinator.persistence.mountPath | quote }}
 {{- if or (eq .Values.dremio.distStorageType "minio") (eq .Values.dremio.distStorageType "aws") }}
-paths.dist: {{ printf "dremioS3://%s%s" (include "dremio.s3.bucket" .) (include "dremio.s3.path" .) | quote }}
+paths.dist: {{ printf "dremioS3:///%s%s" (include "dremio.s3.bucket" .) (include "dremio.s3.path" .) | quote }}
 {{- end }}
 zookeeper: {{ include "dremio.zookeeper.hosts-with-port" . | quote }}
 {{- /* Container ports */}}
@@ -342,6 +342,8 @@ Return the S3 backend host
 {{- define "dremio.s3.host" -}}
     {{- if .Values.minio.enabled -}}
         {{- include "dremio.minio.fullname" . -}}
+    {{- else if and (eq .Values.dremio.distStorageType "aws") (not .Values.externalS3.host) -}}
+        {{- printf "s3.%s.amazonaws.com" .Values.externalS3.region -}}
     {{- else -}}
         {{- print .Values.externalS3.host -}}
     {{- end -}}
