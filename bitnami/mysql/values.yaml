@@ -283,7 +283,7 @@ primary:
     bind-address=*
     pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
     log-error=/opt/bitnami/mysql/logs/mysqld.log
-    character-set-server=UTF8
+    character-set-server=utf8mb4
     slow_query_log=0
     long_query_time=10.0
     {{- if .Values.tls.enabled }}
@@ -297,7 +297,7 @@ primary:
     [client]
     port={{ .Values.primary.containerPorts.mysql }}
     socket=/opt/bitnami/mysql/tmp/mysql.sock
-    default-character-set=UTF8
+    default-character-set=utf8mb4
     plugin_dir=/opt/bitnami/mysql/lib/plugin
 
     [manager]
@@ -726,7 +726,7 @@ secondary:
     bind-address=*
     pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
     log-error=/opt/bitnami/mysql/logs/mysqld.log
-    character-set-server=UTF8
+    character-set-server=utf8mb4
     slow_query_log=0
     long_query_time=10.0
     {{- if .Values.tls.enabled }}
@@ -740,7 +740,7 @@ secondary:
     [client]
     port={{ .Values.secondary.containerPorts.mysql }}
     socket=/opt/bitnami/mysql/tmp/mysql.sock
-    default-character-set=UTF8
+    default-character-set=utf8mb4
     plugin_dir=/opt/bitnami/mysql/lib/plugin
 
     [manager]
