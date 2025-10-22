@@ -81,6 +81,11 @@ spec:
           securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.server.containerSecurityContext "context" $) | nindent 12 }}
           {{- end }}
           resources: {{ toYaml .Values.volumePermissions.resources | nindent 12 }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
           volumeMounts:
             - name: parse-data
               mountPath: /bitnami/parse
@@ -105,6 +110,11 @@ spec:
           resources: {{- toYaml .Values.server.resources | nindent 12 }}
           {{- else if ne .Values.server.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.server.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.server.fips "global" .Values.global) | quote }}
           {{- end }}
           volumeMounts:
             - name: empty-dir
@@ -146,6 +156,10 @@ spec:
               value: {{ .Values.server.mountPath | quote }}
             - name: PARSE_APP_ID
               value: {{ .Values.server.appId | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.server.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.usePasswordFiles }}
             - name: PARSE_MASTER_KEY_FILE
               value: "/opt/bitnami/parse/secrets/master-key"
