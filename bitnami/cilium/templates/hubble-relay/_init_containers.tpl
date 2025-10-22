@@ -64,10 +64,10 @@ Returns an init-container that waits for Hubble to be ready
       value: "-rpc-timeout=5s -connect-timeout=5s"
   {{- else }}
     - name: GRPC_FLAGS
-      value: "-rpc-timeout=5s -connect-timeout=5s -tls -tls-ca-cert=/certs/client/ca.crt -tls-client-cert=/certs/client/tls.crt -tls-client-key=/certs/client/tls.key"
+      value: "-rpc-timeout=5s -connect-timeout=5s -tls -tls-ca-cert=/certs/ca.crt -tls-client-cert=/certs/client.crt -tls-client-key=/certs/client.key"
   volumeMounts:
-    - name: client-cert
+    - name: certs
       readOnly: true
-      mountPath: /certs/client
+      mountPath: /certs
   {{- end }}
 {{- end -}}
