@@ -12,8 +12,8 @@ annotations:
       version: 1.29.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal:1.29.0-debian-12-r2
     - name: temporal-ui
-      version: 2.41.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.41.0-debian-12-r1
+      version: 2.42.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/temporal-ui:2.42.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -49,4 +49,4 @@ sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/temporal
 - https://github.com/bitnami/containers-private/tree/main/bitnami/temporal
 - https://github.com/temporalio/temporal
-version: 0.4.0
+version: 0.4.1
