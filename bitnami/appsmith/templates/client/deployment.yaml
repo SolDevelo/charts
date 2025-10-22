@@ -92,6 +92,11 @@ spec:
                 cp -r /opt/bitnami/nginx/logs /emptydir/nginx-logs-dir
               fi
               info "Copy operation completed"
+          env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.client.fips "global" .Values.global) | quote }}
+            {{- end }}
           volumeMounts:
             - name: empty-dir
               mountPath: /emptydir
@@ -136,6 +141,10 @@ spec:
               value: {{ .Values.client.containerPorts.http | quote }}
             - name: APPSMITH_UI_HTTPS_PORT
               value: {{ .Values.client.containerPorts.https | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.client.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.client.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.client.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

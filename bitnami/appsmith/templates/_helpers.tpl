@@ -250,6 +250,12 @@ Return the MongoDB Secret Name
       value: {{ ternary (index .Values.mongodb.auth.usernames 0) .Values.externalDatabase.username .Values.mongodb.enabled | quote }}
     - name: APPSMITH_DATABASE_NAME
       value: {{ ternary (index .Values.mongodb.auth.databases 0) .Values.externalDatabase.database .Values.mongodb.enabled | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.backend.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.backend.fips "global" .Values.global) | quote }}
+    {{- end }}
   {{- if  .Values.usePasswordFiles }}
   volumeMounts:
     - name: appsmith-secrets
@@ -297,6 +303,10 @@ Return the MongoDB Secret Name
       value: {{ include "appsmith.backend.fullname" . | quote }}
     - name: APPSMITH_API_PORT
       value: {{ .Values.backend.service.ports.http | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.backend.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}
 
 {{- define "appsmith.waitForRTSInitContainer" -}}
@@ -339,6 +349,10 @@ Return the MongoDB Secret Name
       value: {{ include "appsmith.rts.fullname" . | quote }}
     - name: APPSMITH_RTS_PORT
       value: {{ .Values.rts.service.ports.http | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.rts.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}
 
 {{/*

@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -230,6 +234,10 @@ client:
       drop: ["ALL"]
     seccompProfile:
       type: "RuntimeDefault"
+  ## @param client.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: off
   ## @param client.command Override default container command (useful when using custom images)
   ##
   command: []
@@ -724,6 +732,12 @@ backend:
       drop: ["ALL"]
     seccompProfile:
       type: "RuntimeDefault"
+  ## @param backend.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param backend.fips.java Configure Java FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: off
+    java: relaxed
   ## @param backend.command Override default container command (useful when using custom images)
   ##
   command: []
@@ -881,6 +895,9 @@ backend:
       ##   - myRegistryKeySecretName
       ##
       pullSecrets: []
+    ## @param backend.redirectAmbassador.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    fips:
+      openssl: off
     ## Configure Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
     ## @param backend.redirectAmbassador.containerSecurityContext.enabled Enabled Appsmith backend redirect sidecar containers' Security Context
@@ -1296,6 +1313,10 @@ rts:
       drop: ["ALL"]
     seccompProfile:
       type: "RuntimeDefault"
+  ## @param rts.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: off
   ## @param rts.command Override default container command (useful when using custom images)
   ##
   command: []
@@ -1599,6 +1620,10 @@ volumePermissions:
   containerSecurityContext:
     seLinuxOptions: {}
     runAsUser: 0
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: off
 ## @section Other Parameters
 ##
 
@@ -1685,6 +1710,10 @@ redis:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param redis.master.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: off
   ## @param redis.auth.enabled Enable Redis auth
   ## @param redis.auth.password Redis password
   ## @param redis.auth.existingSecret Name of a secret containing the Redis password
@@ -1693,6 +1722,11 @@ redis:
     enabled: true
     password: ""
     existingSecret: ""
+  replica:
+    ## @param redis.replica.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: off
 ## @section MongoDB sub-chart parameters
 ##
 mongodb:
@@ -1743,3 +1777,7 @@ mongodb:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param mongodb.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: off

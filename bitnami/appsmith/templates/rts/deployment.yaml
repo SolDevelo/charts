@@ -119,6 +119,10 @@ spec:
               value: {{ .Values.backend.service.ports.http | quote }}
             - name: APPSMITH_RTS_PORT
               value: {{ .Values.rts.containerPorts.http | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.rts.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.rts.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.rts.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
