@@ -20,7 +20,7 @@ dependencies:
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
   tags:
   - ghost-database
-  version: 14.x.x
+  version: 15.x.x
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
   tags:
@@ -45,4 +45,4 @@ maintainers:
 name: ghost
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/ghost
-version: 25.0.18
+version: 26.0.0
