@@ -714,6 +714,10 @@ Find more information about how to deal with common errors related to Bitnami's 
 
 ## Upgrading
 
+### To 15.0.0
+
+This major bump uses mysql `9.5` image. Follow the [official instructions](https://dev.mysql.com/doc/refman/9.5/en/upgrading.html) to upgrade.
+
 ### To 14.0.0
 
 This major bump uses mysql `9.4` image. Follow the [official instructions](https://dev.mysql.com/doc/refman/9.4/en/upgrading.html) to upgrade.
