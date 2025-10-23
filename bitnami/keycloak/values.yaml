@@ -96,7 +96,7 @@ usePasswordFiles: true
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/keycloak
-  tag: 26.4.1-debian-12-r0
+  tag: 26.4.2-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
