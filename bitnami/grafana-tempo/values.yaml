@@ -228,6 +228,8 @@ tempo:
       abort_if_cluster_join_fails: false
       join_members:
         - {{ include "grafana-tempo.gossip-ring.fullname" . }}:{{ .Values.tempo.gossipRing.service.ports.http }}
+      bind_addr:
+        - ${POD_IP}
     overrides:
       per_tenant_override_config: /bitnami/grafana-tempo/conf/overrides.yaml
     server:

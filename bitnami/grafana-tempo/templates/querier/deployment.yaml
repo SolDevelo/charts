@@ -91,8 +91,13 @@ spec:
             - -target=querier
             - -config.file=/bitnami/grafana-tempo/conf/tempo.yaml
             - -mem-ballast-size-mbs={{ .Values.tempo.memBallastSizeMbs }}
+            - -config.expand-env=true
           {{- end }}
           env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             {{- if include "common.fips.enabled" . }}
             - name: OPENSSL_FIPS
               value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.querier.fips "global" .Values.global) | quote }}

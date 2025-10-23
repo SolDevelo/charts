@@ -127,10 +127,16 @@ spec:
             - -target=metrics-generator
             - -config.file=/bitnami/grafana-tempo/conf/tempo.yaml
             - -mem-ballast-size-mbs={{ .Values.tempo.memBallastSizeMbs }}
+            - -config.expand-env=true
           {{- end }}
-          {{- if .Values.metricsGenerator.extraEnvVars }}
-          env: {{- include "common.tplvalues.render" (dict "value" .Values.metricsGenerator.extraEnvVars "context" $) | nindent 12 }}
-          {{- end }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if .Values.metricsGenerator.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.metricsGenerator.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
           envFrom:
             {{- if .Values.metricsGenerator.extraEnvVarsCM }}
             - configMapRef:
