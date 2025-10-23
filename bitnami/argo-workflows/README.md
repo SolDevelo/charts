@@ -614,6 +614,10 @@ Find more information about how to deal with common errors related to Bitnami's 
 
 ## Upgrading
 
+### To 15.0.0
+
+This major updates the MySQL subchart to its newest major, 15.0.0. For more information on this subchart's major, please refer to [MySQL upgrade notes](https://github.com/bitnami/charts/blob/main/bitnami/mysql/README.md#user-content-to-1500).
+
 ### To 14.0.0
 
 This major updates the PostgreSQL subchart to its newest major, 18.0.0. Follow the [official instructions](https://www.postgresql.org/docs/18/upgrading.html) to upgrade to 18.x.
