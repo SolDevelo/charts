@@ -101,6 +101,7 @@ spec:
           args:
             - -target=ingester
             - -config.file={{ .Values.pyroscope.dataDir }}/conf/pyroscope.yaml
+            - -memberlist.bind-addr=$(POD_IP)
             {{- if or .Values.minio.enabled .Values.externalS3.host }}
             - -storage.s3.access-key-id=$(S3_ACCESS_KEY_ID)
             - -storage.s3.secret-access-key=$(S3_SECRET_ACCESS_KEY)
@@ -121,6 +122,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "grafana-pyroscope.s3.secretName" . }}
                   key: {{ include "grafana-pyroscope.s3.secretAccessKeyKey" . | quote }}
+            {{- end }}
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.ingester.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.ingester.fips "global" .Values.global) | quote }}
             {{- end }}
             {{- if .Values.ingester.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.ingester.extraEnvVars "context" $) | nindent 12 }}

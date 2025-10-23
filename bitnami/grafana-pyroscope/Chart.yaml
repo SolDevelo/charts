@@ -45,4 +45,4 @@ maintainers:
 name: grafana-pyroscope
 sources:
 - https://github.com/bitnami/charts-private/tree/main/bitnami/grafana-pyroscope
-version: 0.1.8
+version: 0.2.0
