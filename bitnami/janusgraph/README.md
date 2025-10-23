@@ -173,18 +173,23 @@ This chart allows you to set your custom affinity using the `affinity` parameter
 
 As an alternative, use one of the preset configurations for pod affinity, pod anti-affinity, and node affinity available at the [bitnami/common](https://github.com/bitnami/charts/tree/main/bitnami/common#affinities) chart. To do so, set the `podAffinityPreset`, `podAntiAffinityPreset`, or `nodeAffinityPreset` parameters.
 
+### FIPS parameters
+
+The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
+
 ## Parameters
 
 ### Global parameters
 
-| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value   |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`    |
-| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`    |
-| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`    |
-| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`    |
-| `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false` |
-| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`  |
+| Name                                                  | Description                                                                                                                                                                                                                                                                                                                                                         | Value        |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| `global.imageRegistry`                                | Global Docker image registry                                                                                                                                                                                                                                                                                                                                        | `""`         |
+| `global.imagePullSecrets`                             | Global Docker registry secret names as an array                                                                                                                                                                                                                                                                                                                     | `[]`         |
+| `global.defaultStorageClass`                          | Global default StorageClass for Persistent Volume(s)                                                                                                                                                                                                                                                                                                                | `""`         |
+| `global.storageClass`                                 | DEPRECATED: use global.defaultStorageClass instead                                                                                                                                                                                                                                                                                                                  | `""`         |
+| `global.defaultFips`                                  | Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object                                                                                                                                                                                                                                      | `restricted` |
+| `global.security.allowInsecureImages`                 | Allows skipping image verification                                                                                                                                                                                                                                                                                                                                  | `false`      |
+| `global.compatibility.openshift.adaptSecurityContext` | Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation) | `auto`       |
 
 ### Common parameters
 
@@ -300,6 +305,8 @@ As an alternative, use one of the preset configurations for pod affinity, pod an
 | `extraVolumeMounts`                                 | Optionally specify extra list of additional volumeMounts for the JanusGraph container(s)                                                                                                                             | `[]`                               |
 | `sidecars`                                          | Add additional sidecar containers to the JanusGraph pod(s)                                                                                                                                                           | `[]`                               |
 | `initContainers`                                    | Add additional init containers to the JanusGraph pod(s)                                                                                                                                                              | `[]`                               |
+| `fips.openssl`                                      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                   | `""`                               |
+| `fips.java`                                         | Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                      | `""`                               |
 
 ### Autoscaling
 
@@ -377,6 +384,8 @@ As an alternative, use one of the preset configurations for pod affinity, pod an
 | `metrics.containerPorts.metrics`                            | Prometheus JMX exporter metrics container port                                                                                                                                                                             | `5556`                         |
 | `metrics.resourcesPreset`                                   | Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if metrics.resources is set (metrics.resources is recommended for production). | `nano`                         |
 | `metrics.resources`                                         | Set container requests and limits for different resources like CPU or memory (essential for production workloads)                                                                                                          | `{}`                           |
+| `metrics.fips.openssl`                                      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                         | `""`                           |
+| `metrics.fips.java`                                         | Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                            | `""`                           |
 | `metrics.livenessProbe.enabled`                             | Enable livenessProbe                                                                                                                                                                                                       | `true`                         |
 | `metrics.livenessProbe.initialDelaySeconds`                 | Initial delay seconds for livenessProbe                                                                                                                                                                                    | `60`                           |
 | `metrics.livenessProbe.periodSeconds`                       | Period seconds for livenessProbe                                                                                                                                                                                           | `10`                           |
@@ -409,20 +418,21 @@ As an alternative, use one of the preset configurations for pod affinity, pod an
 
 ### Other Parameters
 
-| Name                                                   | Description                                                                                     | Value                      |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- | -------------------------- |
-| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup` | `false`                    |
-| `volumePermissions.image.registry`                     | OS Shell + Utility image registry                                                               | `REGISTRY_NAME`            |
-| `volumePermissions.image.repository`                   | OS Shell + Utility image repository                                                             | `REPOSITORY_NAME/os-shell` |
-| `volumePermissions.image.pullPolicy`                   | OS Shell + Utility image pull policy                                                            | `IfNotPresent`             |
-| `volumePermissions.image.pullSecrets`                  | OS Shell + Utility image pull secrets                                                           | `[]`                       |
-| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                     | `{}`                       |
-| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                  | `{}`                       |
-| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                 | `0`                        |
-| `serviceAccount.create`                                | Specifies whether a ServiceAccount should be created                                            | `true`                     |
-| `serviceAccount.name`                                  | The name of the ServiceAccount to use.                                                          | `""`                       |
-| `serviceAccount.annotations`                           | Additional Service Account annotations (evaluated as a template)                                | `{}`                       |
-| `serviceAccount.automountServiceAccountToken`          | Automount service account token for the server service account                                  | `false`                    |
+| Name                                                   | Description                                                                                                        | Value                      |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `volumePermissions.enabled`                            | Enable init container that changes the owner/group of the PV mount point to `runAsUser:fsGroup`                    | `false`                    |
+| `volumePermissions.image.registry`                     | OS Shell + Utility image registry                                                                                  | `REGISTRY_NAME`            |
+| `volumePermissions.image.repository`                   | OS Shell + Utility image repository                                                                                | `REPOSITORY_NAME/os-shell` |
+| `volumePermissions.image.pullPolicy`                   | OS Shell + Utility image pull policy                                                                               | `IfNotPresent`             |
+| `volumePermissions.image.pullSecrets`                  | OS Shell + Utility image pull secrets                                                                              | `[]`                       |
+| `volumePermissions.resources.limits`                   | The resources limits for the init container                                                                        | `{}`                       |
+| `volumePermissions.resources.requests`                 | The requested resources for the init container                                                                     | `{}`                       |
+| `volumePermissions.containerSecurityContext.runAsUser` | Set init container's Security Context runAsUser                                                                    | `0`                        |
+| `volumePermissions.fips.openssl`                       | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used | `""`                       |
+| `serviceAccount.create`                                | Specifies whether a ServiceAccount should be created                                                               | `true`                     |
+| `serviceAccount.name`                                  | The name of the ServiceAccount to use.                                                                             | `""`                       |
+| `serviceAccount.annotations`                           | Additional Service Account annotations (evaluated as a template)                                                   | `{}`                       |
+| `serviceAccount.automountServiceAccountToken`          | Automount service account token for the server service account                                                     | `false`                    |
 
 ### NetworkPolicy parameters
 
@@ -438,12 +448,14 @@ As an alternative, use one of the preset configurations for pod affinity, pod an
 
 ### Cassandra storage sub-chart
 
-| Name                          | Description                                             | Value                |
-| ----------------------------- | ------------------------------------------------------- | -------------------- |
-| `cassandra.keyspace`          | Name for cassandra's janusgraph keyspace                | `bitnami_janusgraph` |
-| `cassandra.dbUser.user`       | Cassandra admin user                                    | `bn_janusgraph`      |
-| `cassandra.dbUser.password`   | Password for `dbUser.user`. Randomly generated if empty | `""`                 |
-| `cassandra.service.ports.cql` | Cassandra cql port                                      | `9043`               |
+| Name                          | Description                                                                                                        | Value                |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------- |
+| `cassandra.keyspace`          | Name for cassandra's janusgraph keyspace                                                                           | `bitnami_janusgraph` |
+| `cassandra.dbUser.user`       | Cassandra admin user                                                                                               | `bn_janusgraph`      |
+| `cassandra.dbUser.password`   | Password for `dbUser.user`. Randomly generated if empty                                                            | `""`                 |
+| `cassandra.service.ports.cql` | Cassandra cql port                                                                                                 | `9043`               |
+| `cassandra.fips.openssl`      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used | `""`                 |
+| `cassandra.fips.java`         | Configure JAVA FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used    | `""`                 |
 
 See <https://github.com/bitnami/readme-generator-for-helm> to create the table
 

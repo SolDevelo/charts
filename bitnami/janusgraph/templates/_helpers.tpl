@@ -66,6 +66,11 @@ Return the volume-permissions init container
   {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ .Values.persistence.mountPath }}
@@ -157,6 +162,12 @@ Return the wait-for-storage init container
     {{- if .Values.storageBackend.cassandra.enabled }}
     - name: JANUSGRAPH_CFG_STORAGE_CQL_KEYSPACE
       value: {{ .Values.cassandra.keyspace | quote }}
+    {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOLS_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
     {{- end }}
     {{- if .Values.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 4 }}
