@@ -105,6 +105,10 @@ spec:
                       name: {{ include "matomo.databaseSecretName" . }}
                       key: {{ include "matomo.databasePasswordKey" . | quote }}
                 {{- end }}
+                {{- if include "common.fips.enabled" . }}
+                - name: OPENSSL_FIPS
+                  value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.cronjobs.archive.fips "global" .Values.global) | quote }}
+                {{- end }}
                 {{- if gt (len .Values.cronjobs.archive.extraEnvVars) 0  }}
                 {{- toYaml .Values.cronjobs.archive.extraEnvVars | nindent 16 }}
                 {{- end }}
@@ -299,6 +303,10 @@ spec:
                     secretKeyRef:
                       name: {{ include "matomo.databaseSecretName" . }}
                       key: {{ include "matomo.databasePasswordKey" . | quote }}
+                {{- end }}
+                {{- if include "common.fips.enabled" . }}
+                - name: OPENSSL_FIPS
+                  value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.cronjobs.taskScheduler.fips "global" .Values.global) | quote }}
                 {{- end }}
                 {{- if gt (len .Values.cronjobs.taskScheduler.extraEnvVars) 0  }}
                 {{- toYaml .Values.cronjobs.taskScheduler.extraEnvVars | nindent 16 }}
