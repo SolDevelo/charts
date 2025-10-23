@@ -315,6 +315,8 @@ on both PostgreSQL and Witness StatefulSets
   value: {{ $componentValues.containerPorts.postgresql | quote }}
 - name: REPMGR_NODE_NETWORK_NAME
   value: {{ printf "$(MY_POD_NAME).%s.%s.svc.%s" (printf "%s-%s" (include "postgresql-ha.postgresql" .context) (ternary "headless" "witness" (eq .component "postgresql"))) (include "common.names.namespace" .context) .context.Values.clusterDomain | quote }}
+- name: REPMGR_USE_PGREWIND
+  value: {{ ternary "yes" "no" $componentValues.usePgRewind | quote }}
 {{- end -}}
 
 {{/* Set PostgreSQL PGPASSWORD as environment variable depends on configuration */}}

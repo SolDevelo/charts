@@ -176,10 +176,6 @@ Returns an init-container that sets up the PostgreSQL+repmgr instance
       value: "data"
     - name: REPMGR_FENCE_OLD_PRIMARY
       value: {{ ternary "yes" "no" $componentValues.repmgrFenceOldPrimary | quote }}
-    {{- if $componentValues.usePgRewind }}
-    - name: REPMGR_USE_PGREWIND
-      value: {{ $componentValues.usePgRewind | quote }}
-    {{- end }}
     {{- if $componentValues.repmgrChildNodesCheckInterval }}
     - name: REPMGR_CHILD_NODES_CHECK_INTERVAL
       value: {{ $componentValues.repmgrChildNodesCheckInterval | quote }}
