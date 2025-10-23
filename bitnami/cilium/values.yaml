@@ -136,7 +136,7 @@ agent:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/cilium
-    tag: 1.18.2-debian-12-r3
+    tag: 1.18.3-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1049,7 +1049,7 @@ operator:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/cilium-operator
-    tag: 1.18.2-debian-12-r3
+    tag: 1.18.3-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -2175,7 +2175,7 @@ hubble:
     image:
       registry: registry.app-catalog.vmware.com
       repository: eam/prd/containers/verified/common/minideb-bookworm/hubble-relay
-      tag: 1.18.2-debian-12-r3
+      tag: 1.18.3-debian-12-r0
       digest: ""
       ## Specify a imagePullPolicy
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
