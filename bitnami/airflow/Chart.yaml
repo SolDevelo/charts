@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: airflow
       version: 3.1.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/airflow:3.1.0-debian-12-r17
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/airflow:3.1.0-debian-12-r18
     - name: statsd-exporter
       version: 0.28.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/statsd-exporter:0.28.0-debian-12-r29
@@ -44,4 +44,4 @@ maintainers:
 name: airflow
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/airflow
-version: 26.2.0
+version: 26.2.1
