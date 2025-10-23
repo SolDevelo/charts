@@ -160,6 +160,10 @@ spec:
             - name: KONG_DECLARATIVE_CONFIG
               value: "/bitnami/kong/declarative-conf/kong.yml"
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.kong.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.kong.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.kong.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -310,6 +314,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.ingressController.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.ingressController.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.ingressController.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.ingressController.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
