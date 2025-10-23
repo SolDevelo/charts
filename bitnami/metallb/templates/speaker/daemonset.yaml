@@ -165,6 +165,12 @@ spec:
             - name: METALLB_BGP_TYPE
               value: frr
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.speaker.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.speaker.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.speaker.extraEnvVars }}
             {{- include "common.tplvalues.render" ( dict "value" .Values.speaker.extraEnvVars "context" $ ) | nindent 12 }}
             {{- end }}
@@ -252,6 +258,13 @@ spec:
           {{- else if ne .Values.speaker.frr.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.speaker.frr.resourcesPreset) | nindent 12 }}
           {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
+          {{- end }}
         - name: reloader
           image: {{ include "common.images.image" (dict "imageRoot" .Values.speaker.frr.image "global" .Values.global) }}
           imagePullPolicy: {{ .Values.speaker.frr.image.pullPolicy }}
@@ -270,6 +283,13 @@ spec:
           resources: {{- toYaml .Values.speaker.frr.resources | nindent 12 }}
           {{- else if ne .Values.speaker.frr.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.speaker.frr.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
           {{- end }}
         - name: frr-metrics
           image: {{ include "common.images.image" (dict "imageRoot" .Values.speaker.frr.image "global" .Values.global) }}
@@ -320,6 +340,13 @@ spec:
           resources: {{- toYaml .Values.speaker.frr.resources | nindent 12 }}
           {{- else if ne .Values.speaker.frr.resourcesPreset "none" }}
           resources: {{- include "common.resources.preset" (dict "type" .Values.speaker.frr.resourcesPreset) | nindent 12 }}
+          {{- end }}
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.speaker.frr.fips "global" .Values.global) | quote }}
           {{- end }}
         {{- end }}
         {{- if .Values.speaker.sidecars }}

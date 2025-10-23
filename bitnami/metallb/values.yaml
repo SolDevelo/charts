@@ -8,6 +8,7 @@
 
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -30,6 +31,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 
 ## @param kubeVersion Force target Kubernetes version (using Helm capabilities if not set)
@@ -249,6 +253,12 @@ controller:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param controller.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param controller.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param controller.nodeSelector Node labels for controller pod assignment
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -481,7 +491,7 @@ controller:
   ##
   tlsMinVersion: ""
   ## @param controller.tlsCipherSuites Comma separated list of TLS cipher suites for the controller
-  ##  
+  ##
   tlsCipherSuites: ""
   ## @param controller.webhookMode Controller webhook mode
   ## Allowed values: enabled, disabled or only webhook if we want the controller to act as webhook endpoint only
@@ -702,6 +712,12 @@ speaker:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param speaker.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param speaker.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param speaker.nodeSelector Node labels for speaker pod assignment
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
@@ -969,6 +985,12 @@ speaker:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param speaker.frr.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param speaker.frr.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: relaxed
     ## Configure Container Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param speaker.frr.containerSecurityContext.enabled Enabled Speaker containers' Security Context
