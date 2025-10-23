@@ -112,6 +112,12 @@ Create a container for checking cassandra availability
           key: {{ include "jaeger.cassandra.secretKey" .context }}
     - name: CASSANDRA_KEYSPACE
       value: {{ .context.Values.cassandra.keyspace }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.cqlshImage.fips "global" .context.Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .context.Values.cqlshImage.fips "global" .context.Values.global) | quote }}
+    {{- end }}
   {{- if $block.containerSecurityContext.enabled }}
   securityContext: {{- include "common.compatibility.renderSecurityContext" (dict "secContext" $block.containerSecurityContext "context" .context) | nindent 4 }}
   {{- end }}
