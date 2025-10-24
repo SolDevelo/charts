@@ -10,6 +10,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -33,6 +34,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ## Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -401,6 +405,12 @@ operator:
   ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ##
   resources: {}
+  ## @param operator.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param operator.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param operator.podAffinityPreset Pod affinity preset
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
   ##
@@ -601,6 +611,12 @@ operator:
       timeoutSeconds: 5
       failureThreshold: 6
       successThreshold: 1
+    ## @param operator.prometheusConfigReloader.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param operator.prometheusConfigReloader.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: relaxed
   ## Restrict the namespaces that the operator watches
   ## ref: `-namespaces` in https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/operator.md
   ## @param operator.namespaces Optional comma-separated list of namespaces to watch (default=all).
@@ -1775,6 +1791,12 @@ prometheus:
       ## @param prometheus.thanos.serviceMonitor.sampleLimit Per-scrape limit on number of scraped samples that will be accepted.
       ##
       sampleLimit: ""
+    ## @param prometheus.thanos.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ## @param prometheus.thanos.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+      golang: relaxed
   ## config-reloader sidecar container configuration
   ##
   configReloader:
@@ -1876,6 +1898,12 @@ prometheus:
   ## @param prometheus.portName Port name used for the pods and governing service. This defaults to web
   ##
   portName: web
+  ## @param prometheus.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param prometheus.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
 ## @section Alertmanager Parameters
 ##
 
@@ -2474,6 +2502,12 @@ alertmanager:
   ## rules. `None` will not add any additional matchers other than the ones
   ## specified in the AlertmanagerConfig. Default is `OnNamespace`.
   configMatcherStrategy: {}
+  ## @param alertmanager.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param alertmanager.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
 ## @section Exporters
 ##
 
@@ -2897,6 +2931,12 @@ blackboxExporter:
   ##    command: ['sh', '-c', 'echo "hello world"']
   ##
   initContainers: []
+  ## @param blackboxExporter.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param blackboxExporter.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @section Blackbox Exporter Traffic Exposure Parameters
   ##
 

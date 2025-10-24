@@ -292,6 +292,12 @@ spec:
               name: {{ .Values.prometheus.thanos.objectStorageConfig.secretName }}
               key: {{ .Values.prometheus.thanos.objectStorageConfig.secretKey | default "thanos.yaml" }}
         {{- end }}
+        {{- if include "common.fips.enabled" . }}
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.prometheus.thanos.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.prometheus.thanos.fips "global" .Values.global) | quote }}
+        {{- end }}
         {{- if .Values.prometheus.thanos.extraEnvVars }}
         {{- include "common.tplvalues.render" (dict "value" .Values.prometheus.thanos.extraEnvVars "context" $) | nindent 8 }}
         {{- end }}
@@ -403,6 +409,13 @@ spec:
         failureThreshold: {{ .Values.prometheus.startupProbe.failureThreshold }}
         successThreshold: {{ .Values.prometheus.startupProbe.successThreshold }}
       {{- end }}
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.prometheus.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.prometheus.fips "global" .Values.global) | quote }}
+      {{- end }}
     {{- end }}
     {{- if or .Values.operator.prometheusConfigReloader.containerSecurityContext.enabled .Values.operator.prometheusConfigReloader.livenessProbe.enabled .Values.operator.prometheusConfigReloader.readinessProbe.enabled }}
     ## This monkey patching is needed until the securityContexts are
@@ -433,6 +446,13 @@ spec:
         timeoutSeconds: {{ .Values.operator.prometheusConfigReloader.readinessProbe.timeoutSeconds }}
         failureThreshold: {{ .Values.operator.prometheusConfigReloader.readinessProbe.failureThreshold }}
         successThreshold: {{ .Values.operator.prometheusConfigReloader.readinessProbe.successThreshold }}
+      {{- end }}
+      {{- if include "common.fips.enabled" . }}
+      env:
+        - name: OPENSSL_FIPS
+          value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.operator.prometheusConfigReloader.fips "global" .Values.global) | quote }}
+        - name: GODEBUG
+          value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.operator.prometheusConfigReloader.fips "global" .Values.global) | quote }}
       {{- end }}
     {{- end }}
     {{- if .Values.prometheus.containers }}
