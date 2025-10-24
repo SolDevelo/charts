@@ -48,6 +48,11 @@ Returns an init-container that changes the owner and group of the persistent vol
       chmod 600 {{ include "postgresql-ha.postgresql.tlsCertKey" .context }}
     {{- end }}
       echo "Done"
+  {{- if include "common.fips.enabled" .context }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.volumePermissions.fips "global" .context.Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     {{- if and .context.Values.defaultInitContainers.volumePermissions.enabled (or (or (not (empty $componentValues.extendedConf)) (not (empty $componentValues.extendedConfCM))) .context.Values.persistence.enabled) }}
     - name: data
@@ -117,6 +122,10 @@ Returns an init-container that sets up the PostgreSQL+repmgr instance
       value: {{ $componentValues.audit.pgAuditLogCatalog | quote }}
     - name: POSTGRESQL_CLIENT_MIN_MESSAGES
       value: {{ $componentValues.audit.clientMinMessages | quote }}
+    {{- if include "common.fips.enabled" .context }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.defaultInitContainers.setup.fips "global" .context.Values.global) | quote }}
+    {{- end }}
     {{- if $componentValues.maxConnections }}
     - name: POSTGRESQL_MAX_CONNECTIONS
       value: {{ $componentValues.maxConnections | quote }}

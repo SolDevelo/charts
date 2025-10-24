@@ -79,6 +79,10 @@ spec:
                     key: password
                     {{- end }}
               {{- end }}
+              {{- if include "common.fips.enabled" . }}
+              - name: OPENSSL_FIPS
+                value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.backup.cronjob.fips "global" .Values.global) | quote }}
+              {{- end }}
               - name: PGHOST
                 value: {{ include "postgresql-ha.postgresql" . }}
               - name: PGPORT

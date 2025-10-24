@@ -120,6 +120,10 @@ spec:
             {{- if not .Values.postgresql.usePasswordFiles }}
             {{- include "postgresql-ha.postgresql.passwordEnvVars" . | nindent 12 }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.witness.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.witness.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.witness.extraEnvVars "context" .) | nindent 12 }}
             {{- end }}
@@ -238,6 +242,12 @@ spec:
             {{- end }}
             - name: DATA_SOURCE_USER
               value: {{ (include "postgresql-ha.postgresqlUsername" .) | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.metrics.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.metrics.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.metrics.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

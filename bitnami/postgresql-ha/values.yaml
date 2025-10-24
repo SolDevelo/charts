@@ -23,6 +23,7 @@
 ## @param global.pgpool.srCheckUsername Pgpool-II SR Check username (overrides `pgpool.srCheckUsername`)
 ## @param global.pgpool.srCheckPassword Pgpool-II SR Check password (overrides `pgpool.srCheckPassword`)
 ## @param global.pgpool.existingSecret Pgpool-II existing secret
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -63,6 +64,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -336,6 +340,10 @@ postgresql:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param postgresql.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param postgresql.podManagementPolicy Sets the pod management policy
   ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
   ##
@@ -898,6 +906,10 @@ witness:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param witness.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## PostgreSQL container's liveness probe
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ## @param witness.livenessProbe.enabled Enable livenessProbe
@@ -1357,6 +1369,10 @@ pgpool:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param pgpool.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## Pgpool-II container's liveness probe
   ## ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ## @param pgpool.livenessProbe.enabled Enable livenessProbe
@@ -1789,6 +1805,12 @@ metrics:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param metrics.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param metrics.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param metrics.containerPorts.http PostgreSQL Prometheus exporter port
   ##
   containerPorts:
@@ -2145,6 +2167,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.setup.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## @param defaultInitContainers.setup.startupWaitOptions Override default builtin startup wait check options for PostgreSQL "setup" init container
     ## E.g. (with default options):
     ## startupWaitOptions:
@@ -2225,6 +2251,10 @@ defaultInitContainers:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param defaultInitContainers.volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## @section Backup parameters
 ## This section implements a trivial logical dump cronjob of the database.
@@ -2341,6 +2371,10 @@ backup:
     ## @param backup.cronjob.resources Set container requests and limits for different resources like CPU or memory
     ## Example:
     resources: {}
+    ## @param backup.cronjob.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
     ## resources:
     ##   requests:
     ##     cpu: 1
