@@ -222,6 +222,11 @@ Return the volume-permissions init container
   {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+  {{- end }}
   volumeMounts:
     - name: data
       mountPath: {{ .Values.persistence.mountPath }}
@@ -280,6 +285,10 @@ Return the volume-permissions init container
       value: {{ include "nessie.database.host" . | quote }}
     - name: DATABASE_PORT_NUMBER
       value: {{ include "nessie.database.port" . | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.waitContainer.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.usePasswordFiles }}
     - name: DATABASE_PASSWORD_FILE
       value: "/bitnami/nessie/secrets/database/QUARKUS_DATASOURCE_POSTGRESQL_PASSWORD"
