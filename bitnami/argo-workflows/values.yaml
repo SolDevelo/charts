@@ -8,6 +8,7 @@
 ## @param global.imageRegistry Global Docker image registry
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -31,6 +32,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 ## @section Common parameters
 ##
 
@@ -100,6 +104,12 @@ server:
   ## @param server.replicaCount Number of server replicas to deploy
   ##
   replicaCount: 1
+  ## @param server.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param server.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## Configure extra options for server containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param server.livenessProbe.enabled Enable livenessProbe on server nodes
@@ -584,6 +594,12 @@ controller:
   ## @param controller.replicaCount Number of controller replicas to deploy
   ##
   replicaCount: 1
+  ## @param controller.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param controller.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: "relaxed"
   ## Configure extra options for controller containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param controller.livenessProbe.enabled Enable livenessProbe on controller nodes
@@ -744,8 +760,15 @@ controller:
       {{- else if ne .Values.executor.resourcesPreset "none" }}
       resources: {{- include "common.resources.preset" (dict "type" .Values.executor.resourcesPreset) | nindent 4 }}
       {{- end }}
+      env:
+      {{- if include "common.fips.enabled" . }}
+      - name: OPENSSL_FIPS
+        value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.executor.fips "global" .Values.global) | quote }}
+      - name: GODEBUG
+        value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.executor.fips "global" .Values.global) | quote }}
+      {{- end }}
       {{- if .Values.executor.extraEnvVars }}
-      env: {{- include "common.tplvalues.render" (dict "value" .Values.executor.extraEnvVars "context" $) | nindent 4 }}
+      {{- include "common.tplvalues.render" (dict "value" .Values.executor.extraEnvVars "context" $) | nindent 4 }}
       {{- end }}
       {{- if .Values.executor.containerSecurityContext }}
       securityContext: {{- omit .Values.executor.containerSecurityContext "enabled" | toYaml | nindent 4 }}
@@ -1151,6 +1174,12 @@ executor:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param executor.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param executor.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    golang: relaxed
   ## @param executor.extraEnvVars Array with extra environment variables to add to server nodes
   ## e.g:
   ## extraEnvVars:
@@ -1352,6 +1381,15 @@ postgresql:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param postgresql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+  readReplicas:
+    ## @param postgresql.readReplicas.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## @section MySQL subchart
 ##
@@ -1394,6 +1432,15 @@ mysql:
     ##     memory: 1024Mi
     ##
     resources: {}
+    ## @param mysql.primary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
+  secondary:
+    ## @param mysql.secondary.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+    ##
+    fips:
+      openssl: ""
 
 ## @section External Database configuration
 ##
