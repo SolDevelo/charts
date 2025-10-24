@@ -4,7 +4,7 @@ module.exports = {
     password: 'ComplicatedPassword123!4',
   },
   hosts: {
-    'vmware-concourse.my': '{{ TARGET_IP }}',
+    'concourse.com': '{{ TARGET_IP }}',
   },
   e2e: {
     setupNodeEvents(on, config) {},
