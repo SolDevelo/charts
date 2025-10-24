@@ -267,7 +267,10 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
-
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tracking.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.externalGCS.googleCloudProject }}
             - name: GOOGLE_CLOUD_PROJECT
               value: {{ .Values.externalGCS.googleCloudProject }}

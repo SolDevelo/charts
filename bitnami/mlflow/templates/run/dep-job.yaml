@@ -157,6 +157,10 @@ spec:
                   key: {{ include "mlflow.v0.tracking.passwordKey" . | quote }}
             {{- end }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.run.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.run.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.run.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}

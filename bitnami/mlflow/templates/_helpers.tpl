@@ -149,6 +149,11 @@ Init container definition for copying the certificates
   {{- else if ne .Values.tracking.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.tracking.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tracking.fips "global" .Values.global) | quote }}
+  {{- end }}
 {{- end }}
 
 {{/*
@@ -172,6 +177,11 @@ Init container definition for waiting for the database to be ready
       mountPath: /tmp
     - name: rendered-basic-auth
       mountPath: /bitnami/rendered-basic-auth
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tracking.fips "global" .Values.global) | quote }}
+  {{- end }}
   {{- if .Values.tracking.resources }}
   resources: {{- toYaml .Values.tracking.resources | nindent 4 }}
   {{- else if ne .Values.tracking.resourcesPreset "none" }}
@@ -222,6 +232,10 @@ Init container definition for waiting for the database to be ready
         secretKeyRef:
           name: {{ include "mlflow.v0.tracking.secretName" . }}
           key: {{ include "mlflow.v0.tracking.passwordKey" . | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.waitContainer.fips "global" .Values.global) | quote }}
+    {{- end }}
     {{- if .Values.tracking.extraEnvVars }}
     {{- include "common.tplvalues.render" (dict "value" .Values.tracking.extraEnvVars "context" $) | nindent 4 }}
     {{- end }}
@@ -270,6 +284,10 @@ Init container definition for upgrading the database
         secretKeyRef:
           name: {{ include "mlflow.v0.database.secretName" . }}
           key: {{ include "mlflow.v0.database.passwordKey" . | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tracking.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: tmp
       mountPath: /tmp
@@ -305,6 +323,10 @@ Init container definition for upgrading the database
         secretKeyRef:
           name: {{ include "mlflow.v0.database.secretName" . }}
           key: {{ include "mlflow.v0.database.passwordKey" . | quote }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.tracking.fips "global" .Values.global) | quote }}
+    {{- end }}
   volumeMounts:
     - name: tmp
       mountPath: /tmp
@@ -550,7 +572,7 @@ Return the volume-permissions init container
 */}}
 {{- define "mlflow.v0.volumePermissionsInitContainer" -}}
 - name: volume-permissions
-  image: {{ include "mlflow.v0.volumePermissions.image"  }}
+  image: {{ include "mlflow.v0.volumePermissions.image" . }}
   imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
   command:
     - /bin/bash
@@ -568,6 +590,11 @@ Return the volume-permissions init container
   resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
   {{- else if ne .Values.volumePermissions.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.volumePermissions.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
   {{- end }}
   volumeMounts:
     - name: data
@@ -747,6 +774,11 @@ Return the definition of the git clone init container
   {{- else if ne .Values.run.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.run.resourcesPreset) | nindent 4 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.gitImage.fips "global" .Values.global) | quote }}
+  {{- end }}
 {{- end -}}
 
 {{/*
@@ -803,6 +835,11 @@ Init container definition for waiting for the database to be ready
   resources: {{- toYaml .context.Values.run.resources | nindent 4 }}
   {{- else if ne .context.Values.run.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .context.Values.run.resourcesPreset) | nindent 4 }}
+  {{- end }}
+  {{- if include "common.fips.enabled" .context }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .context.Values.waitContainer.fips "global" .context.Values.global) | quote }}
   {{- end }}
 {{- end -}}
 
