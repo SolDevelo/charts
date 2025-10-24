@@ -135,6 +135,12 @@ spec:
               value: {{ include "opensearch.hosts" . | quote }}
             - name: OPENSEARCH_TOTAL_NODES
               value: {{ add (ternary .Values.master.autoscaling.hpa.minReplicas .Values.master.replicaCount .Values.master.autoscaling.hpa.enabled) (ternary .Values.data.autoscaling.hpa.minReplicas .Values.data.replicaCount .Values.data.autoscaling.hpa.enabled) | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.coordinating.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.coordinating.fips "global" .Values.global) | quote }}
+            {{- end }}
             - name: OPENSEARCH_CLUSTER_MASTER_HOSTS
               {{- $opensearchMasterFullname := include "opensearch.master.fullname" . }}
               {{- $replicas := int (ternary .Values.master.autoscaling.hpa.minReplicas .Values.master.replicaCount .Values.master.autoscaling.hpa.enabled) }}

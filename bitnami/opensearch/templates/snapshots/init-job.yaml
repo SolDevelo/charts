@@ -73,6 +73,10 @@ spec:
               value: {{ include "opensearch.service.name" . | quote }}
             - name: OPENSEARCH_PORT_NUMBER
               value: {{ include "opensearch.service.ports.restAPI" . | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.snapshots.fips "global" .Values.global) | quote }}
+            {{- end }}
       containers:
         - args:
             - --silent
@@ -134,6 +138,10 @@ spec:
                 secretKeyRef:
                     name: {{ include "opensearch.secretName" . }}
                     key: opensearch-password
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.snapshots.fips "global" .Values.global) | quote }}
+            {{- end }}
           image: {{ template "opensearch.snapshots.image" . }}
           imagePullPolicy: {{ .Values.snapshots.image.pullPolicy }}
           name: shell

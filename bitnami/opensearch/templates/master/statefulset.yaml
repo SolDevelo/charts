@@ -108,6 +108,11 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/opensearch/data
+          {{- if include "common.fips.enabled" . }}
+          env:
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.volumePermissions.fips "global" .Values.global) | quote }}
+          {{- end }}
         {{- end }}
         {{- include "opensearch.copy-default-plugins.initContainer" (dict "component" "master" "context" $) | nindent 8 }}
         {{- if .Values.master.initContainers }}
@@ -163,6 +168,12 @@ spec:
               value: {{ .Values.containerPorts.transport | quote }}
             - name: OPENSEARCH_HTTP_PORT_NUMBER
               value: {{ .Values.containerPorts.restAPI | quote }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.master.fips "global" .Values.global) | quote }}
+            - name: JAVA_TOOL_OPTIONS
+              value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.master.fips "global" .Values.global) | quote }}
+            {{- end }}
             - name: OPENSEARCH_CLUSTER_NAME
               value: {{ .Values.clusterName | quote }}
             - name: OPENSEARCH_CLUSTER_HOSTS

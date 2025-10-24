@@ -69,6 +69,11 @@ Return the proper sysctl image name
   {{- else if ne .Values.sysctlImage.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.sysctlImage.resourcesPreset) | nindent 12 }}
   {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.sysctlImage.fips "global" .Values.global) | quote }}
+  {{- end }}
 {{- end -}}
 
 {{/*
@@ -128,6 +133,11 @@ Return the copy plugins init container definition
   resources: {{- toYaml .Values.dashboards.resources | nindent 12 }}
   {{- else if ne .Values.dashboards.resourcesPreset "none" }}
   resources: {{- include "common.resources.preset" (dict "type" .Values.dashboards.resourcesPreset) | nindent 12 }}
+  {{- end }}
+  {{- if include "common.fips.enabled" . }}
+  env:
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.dashboards.fips "global" .Values.global) | quote }}
   {{- end }}
   command:
     - /bin/bash

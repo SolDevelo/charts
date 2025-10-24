@@ -10,6 +10,7 @@
 ## @param global.imagePullSecrets Global Docker registry secret names as an array
 ## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
 ## @param global.storageClass DEPRECATED: use global.defaultStorageClass instead
+## @param global.defaultFips Default value for the FIPS configuration (allowed values: '', restricted, relaxed, off). Can be overriden by the 'fips' object
 ##
 global:
   imageRegistry: ""
@@ -34,6 +35,9 @@ global:
       ## @param global.compatibility.openshift.adaptSecurityContext Adapt the securityContext sections of the deployment to make them compatible with Openshift restricted-v2 SCC: remove runAsUser, runAsGroup and fsGroup and let the platform use their allowed default IDs. Possible values: auto (apply if the detected running cluster is Openshift), force (perform the adaptation always), disabled (do not perform adaptation)
       ##
       adaptSecurityContext: auto
+  ##  Configure FIPS mode: '', 'restricted', 'relaxed', 'off'
+  ##
+  defaultFips: restricted
 
 ## @section Common parameters
 
@@ -590,6 +594,12 @@ master:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param master.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param master.fips.java Configure Java FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: relaxed
   ## @param master.heapSize OpenSearch master-eligible node heap size.
   ## Note: The recommended heapSize is half of the container's memory.
   ## If omitted, it will be automatically set.
@@ -1128,6 +1138,12 @@ data:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param data.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param data.fips.java Configure Java FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: relaxed
   ## @param data.heapSize OpenSearch data node heap size.
   ## Note: The recommended heapSize is half of the container's memory.
   ## If omitted, it will be automatically set.
@@ -1667,6 +1683,12 @@ coordinating:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param coordinating.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param coordinating.fips.java Configure Java FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: relaxed
   ## @param coordinating.heapSize OpenSearch coordinating node heap size.
   ## Note: The recommended heapSize is half of the container's memory.
   ## If omitted, it will be automatically set.
@@ -2169,6 +2191,12 @@ ingest:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param ingest.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param ingest.fips.java Configure Java FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
+    java: relaxed
   ## @param ingest.heapSize OpenSearch ingest-only node heap size.
   ## Note: The recommended heapSize is half of the container's memory.
   ## If omitted, it will be automatically set.
@@ -2829,6 +2857,10 @@ volumePermissions:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param volumePermissions.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 ## Kernel settings modifier image
 ##
 sysctlImage:
@@ -2879,6 +2911,10 @@ sysctlImage:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param sysctlImage.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
 
 ## @section OpenSearch Dashboards Parameters
 
@@ -3127,6 +3163,10 @@ dashboards:
   ##     memory: 1024Mi
   ##
   resources: {}
+  ## @param dashboards.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""
   ## @param dashboards.heapSize OpenSearch data node heap size.
   ## Note: The recommended heapSize is half of the container's memory.
   ## If omitted, it will be automatically set.
@@ -3687,3 +3727,7 @@ snapshots:
   ##     memory: 20Mi
   ##
   resources: {}
+  ## @param snapshots.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ##
+  fips:
+    openssl: ""

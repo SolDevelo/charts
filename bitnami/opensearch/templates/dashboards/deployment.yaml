@@ -104,6 +104,10 @@ spec:
                   name: {{ include "opensearch.secretName" . }}
                   key: opensearch-dashboards-password
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.dashboards.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.dashboards.tls.enabled }}
             - name: OPENSEARCH_DASHBOARDS_SERVER_ENABLE_TLS
