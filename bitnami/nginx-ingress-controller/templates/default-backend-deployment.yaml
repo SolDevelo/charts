@@ -91,6 +91,10 @@ spec:
             {{- end }}
           {{- end }}
           env:
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultBackend.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.defaultBackend.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.defaultBackend.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
