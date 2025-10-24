@@ -115,6 +115,12 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.name
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.pluginBarmanCloud.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.pluginBarmanCloud.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.pluginBarmanCloud.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.pluginBarmanCloud.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
