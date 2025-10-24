@@ -57,6 +57,12 @@ Init container definition for waiting for the database to be ready
           key: {{ include "zipkin.cassandra.passwordKey" . }}
     - name: CASSANDRA_KEYSPACE
       value: {{ include "zipkin.cassandra.user" . }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.waitForCassandra.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.waitForCassandra.fips "global" .Values.global) | quote }}
+    {{- end }}
 {{- end -}}
 
 {{/*
@@ -121,6 +127,12 @@ Init container definition for initializing the TLS certificates
           name: {{ include "zipkin.tls.passwordSecretName" . }}
           key: keystore-password
     {{- end }}
+    {{- end }}
+    {{- if include "common.fips.enabled" . }}
+    - name: OPENSSL_FIPS
+      value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.defaultInitContainers.initCerts.fips "global" .Values.global) | quote }}
+    - name: JAVA_TOOL_OPTIONS
+      value: {{ include "common.fips.config" (dict "tech" "java" "fips" .Values.defaultInitContainers.initCerts.fips "global" .Values.global) | quote }}
     {{- end }}
   volumeMounts:
     - name: input-tls-certs
