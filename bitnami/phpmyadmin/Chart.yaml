@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: apache-exporter
-      version: 1.0.10
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.10-debian-12-r60
+      version: 1.0.11
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache-exporter:1.0.11-debian-12-r0
     - name: phpmyadmin
       version: 5.2.3
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/phpmyadmin:5.2.3-debian-12-r2
@@ -41,4 +41,4 @@ maintainers:
 name: phpmyadmin
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/phpmyadmin
-version: 20.0.10
+version: 20.0.11
