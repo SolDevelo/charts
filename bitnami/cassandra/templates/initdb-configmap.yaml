@@ -24,7 +24,7 @@ data:
     . /opt/bitnami/scripts/libcassandra.sh
 
     info "Updating system_auth keyspace"
-    echo "ALTER KEYSPACE system_auth WITH replication = { 'class': 'NetworkTopologyStrategy', '{{ .Values.cluster.datacenter }}': {{ .Values.replicaCount }} };" | cassandra_execute_with_retries "{{.Values.cluster.rackUpdateNetworkStrategy.retries}}" "{{.Values.cluster.rackUpdateNetworkStrategy.sleepTime}}" "$DB_USER" "$DB_PASSWORD"
+    echo "ALTER KEYSPACE system_auth WITH replication = { 'class': 'NetworkTopologyStrategy', '{{ .Values.cluster.datacenter }}': {{ len .Values.cluster.racks }} };" | cassandra_execute_with_retries "{{.Values.cluster.rackUpdateNetworkStrategy.retries}}" "{{.Values.cluster.rackUpdateNetworkStrategy.sleepTime}}" "$DB_USER" "$DB_PASSWORD"
     info "Running nodetool repair"
     nodetool repair --full system_auth
     info "Operation completed successfully"
