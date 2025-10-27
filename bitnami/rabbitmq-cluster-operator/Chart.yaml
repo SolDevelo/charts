@@ -5,11 +5,11 @@ annotations:
   fips: "false"
   images: |
     - name: rabbitmq
-      version: 4.1.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.1.4-debian-12-r2
+      version: 4.1.5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.1.5-debian-12-r0
     - name: rabbitmq-cluster-operator
-      version: 2.17.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq-cluster-operator:2.17.0-debian-12-r0
+      version: 2.16.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq-cluster-operator:2.16.1-debian-12-r5
     - name: rmq-default-credential-updater
       version: 1.0.9
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rmq-default-credential-updater:1.0.9-debian-12-r0
@@ -19,7 +19,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 2.17.0
+appVersion: 2.16.1
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -43,4 +43,4 @@ maintainers:
 name: rabbitmq-cluster-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
-version: 4.4.49
+version: 4.4.50
