@@ -175,6 +175,12 @@ spec:
             - name: ARANGOJOB_SA_NAME
               value: {{ include "kube-arangodb.job.serviceAccountName" . | quote }}
             {{- end }}
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -277,6 +283,12 @@ spec:
               valueFrom:
                   fieldRef:
                       fieldPath: status.podIP
+            {{- if include "common.fips.enabled" . }}
+            - name: OPENSSL_FIPS
+              value: {{ include "common.fips.config" (dict "tech" "openssl" "fips" .Values.webhooks.fips "global" .Values.global) | quote }}
+            - name: GODEBUG
+              value: {{ include "common.fips.config" (dict "tech" "golang" "fips" .Values.webhooks.fips "global" .Values.global) | quote }}
+            {{- end }}
             {{- if .Values.webhooks.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.webhooks.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
