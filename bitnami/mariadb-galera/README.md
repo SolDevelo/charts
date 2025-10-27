@@ -420,6 +420,8 @@ As an alternative, you can use of the preset configurations for pod affinity, po
 
 The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
+
 ## Persistence
 
 The [Bitnami MariaDB Galera](https://github.com/bitnami/containers/tree/main/bitnami/mariadb-galera) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.

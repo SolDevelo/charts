@@ -347,6 +347,8 @@ Note that this will not disable transparent huge tables.
 
 The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
+
 ### Backup and restore
 
 To backup and restore Redis deployments on Kubernetes, you will need to create a snapshot of the data in the source cluster, and later restore it in a new cluster with the new parameters. Follow the instructions below:

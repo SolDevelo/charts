@@ -498,6 +498,8 @@ As an alternative, you can use the preset configurations for pod affinity, pod a
 
 The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
+
 ## Persistence
 
 The [Bitnami MongoDB(&reg;)](https://github.com/bitnami/containers/tree/main/bitnami/mongodb) image stores the MongoDB(&reg;) data and configurations at the `/bitnami/mongodb` path of the container.

@@ -161,6 +161,8 @@ As an alternative, use one of the preset configurations for pod affinity, pod an
 
 The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/).
 
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
+
 ## Persistence
 
 The [Bitnami Fluent Bit](https://github.com/bitnami/containers/tree/main/bitnami/fluent-bit) doesn't implement storage persistence by default, but you could mount an extraVolume with Persistent Volume Claims to keep the buffer and/or the output if configured out-of-memory (see [Buffering & Storage](https://docs.fluentbit.io/manual/administration/buffering-and-storage))

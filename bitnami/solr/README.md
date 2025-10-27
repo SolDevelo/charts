@@ -182,6 +182,8 @@ To back up and restore Helm chart deployments on Kubernetes, you need to back up
 
 The FIPS parameters only have effect if you are using images from the [Bitnami Secure Images catalog](https://www.arrow.com/globalecs/uk/products/bitnami-secure-images/)
 
+For more information on this new support, please refer to the [FIPS Compliance section](https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/security-frameworks-FIPS-compliance.html).
+
 ## Persistence
 
 The [Bitnami Solr](https://github.com/bitnami/containers/tree/main/bitnami/solr) image can persist data. If enabled, the persisted path is `/bitnami/solr` by default.
