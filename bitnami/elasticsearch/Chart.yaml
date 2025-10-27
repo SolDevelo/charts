@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: elasticsearch
-      version: 9.1.6
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch:9.1.6-debian-12-r0
+      version: 9.2.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch:9.2.0-debian-12-r0
     - name: elasticsearch-exporter
       version: 1.9.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/elasticsearch-exporter:1.9.0-debian-12-r21
@@ -16,7 +16,7 @@ annotations:
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 9.1.6
+appVersion: 9.2.0
 dependencies:
 - condition: global.kibanaEnabled
   name: kibana
@@ -39,4 +39,4 @@ maintainers:
 name: elasticsearch
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch
-version: 22.2.1
+version: 23.0.0
