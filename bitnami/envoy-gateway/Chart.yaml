@@ -11,8 +11,8 @@ annotations:
       version: 1.5.4
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/envoy-gateway:1.5.4-debian-12-r0
     - name: envoy-ratelimit
-      version: 2025.10.23
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/envoy-ratelimit:2025.10.23-debian-12-r0
+      version: 2025.10.27
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/envoy-ratelimit:2025.10.27-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -39,4 +39,4 @@ maintainers:
 name: envoy-gateway
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/envoy-gateway
-version: 2.1.2
+version: 2.1.3
