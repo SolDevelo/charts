@@ -124,7 +124,7 @@ postgresql:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr
-    tag: 18.0.0-debian-12-r12
+    tag: 18.0.0-debian-12-r13
     digest: ""
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
