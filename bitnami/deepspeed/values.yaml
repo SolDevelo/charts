@@ -1041,7 +1041,7 @@ worker:
 gitImage:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/git
-  tag: 2.51.1-debian-12-r1
+  tag: 2.51.2-debian-12-r0
   digest: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
