@@ -1,6 +1,6 @@
 <!--- app-name: Kyverno -->
 
-# Bitnami package for Kyverno
+# Bitnami Secure Images Helm chart for Kyverno
 
 Kyverno is a Kubernetes-native policy engine that automates security, compliance, and resource validation using declarative YAML policies
 

@@ -1,6 +1,6 @@
 <!--- app-name: Temporal -->
 
-# Bitnami package for Temporal
+# Bitnami Secure Images Helm chart for Temporal
 
 Temporal is a durable execution platform that enables developers to build scalable applications without sacrificing productivity or reliability.
 

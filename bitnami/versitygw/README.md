@@ -1,6 +1,6 @@
 <!--- app-name: Versity S3 Gateway -->
 
-# Bitnami package for Versity S3 Gateway
+# Bitnami Secure Images Helm chart for Versity S3 Gateway
 
  Versity S3 Gateway translates S3 API calls to backend storage systems like POSIX, ScoutFS, Azure Blob, and more.
 
