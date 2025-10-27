@@ -5,15 +5,15 @@ annotations:
   fips: "false"
   images: |
     - name: airflow
-      version: 3.1.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/airflow:3.1.0-debian-12-r18
+      version: 3.1.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/airflow:3.1.1-debian-12-r0
     - name: statsd-exporter
       version: 0.28.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/statsd-exporter:0.28.0-debian-12-r29
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 3.1.0
+appVersion: 3.1.1
 dependencies:
 - condition: redis.enabled
   name: redis
@@ -44,4 +44,4 @@ maintainers:
 name: airflow
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/airflow
-version: 26.2.1
+version: 26.2.2
