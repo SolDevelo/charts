@@ -15,7 +15,7 @@ annotations:
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgres-exporter:0.18.1-debian-12-r3
     - name: postgresql-repmgr
       version: 18.0.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr:18.0.0-debian-12-r13
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql-repmgr:18.0.0-debian-12-r14
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -47,4 +47,4 @@ maintainers:
 name: postgresql-ha
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/postgresql-ha
-version: 17.3.1
+version: 17.3.2
