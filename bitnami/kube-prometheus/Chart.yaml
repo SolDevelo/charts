@@ -17,8 +17,8 @@ annotations:
       version: 0.86.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus-operator:0.86.1-debian-12-r1
     - name: thanos
-      version: 0.40.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.40.0-debian-12-r0
+      version: 0.40.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.40.1-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -56,4 +56,4 @@ maintainers:
 name: kube-prometheus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus
-version: 11.4.1
+version: 11.4.2
