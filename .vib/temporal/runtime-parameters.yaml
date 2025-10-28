@@ -59,107 +59,69 @@ setupDBJob:
   containerSecurityContext:
     runAsUser: 1002
 web:
+  containerPorts:
+    http: 8081
   sidecars:
-  - name: envoy
-    image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/envoy:1.35
-    imagePullPolicy: IfNotPresent
-    securityContext:
-      runAsNonRoot: true
-      privileged: false
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop: ["ALL"]
-      seccompProfile:
-        type: "RuntimeDefault"
-    args: ["-c", "/etc/envoy/envoy.yaml"]
-    ports:
-    - name: https
-      containerPort: 8443
-    volumeMounts:
-    - name: envoy-config
-      mountPath: /etc/envoy
-    - name: envoy-tls-certs
-      mountPath: /etc/certs
-  extraVolumes:
-  - name: envoy-config
-    configMap:
-      name: "{{ printf \"%s-envoy-config\" (include \"common.names.fullname\" .) }}"
-  - name: envoy-tls-certs
-    secret:
-      secretName: "{{ printf \"%s-tls-crt\" (include \"temporal.web.fullname\" .) }}"
+    - image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/apache:latest
+      name: apache
+      securityContext:
+        runAsNonRoot: true
+        privileged: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: "RuntimeDefault"
+      ports:
+        - name: proxy-https
+          containerPort: 8443
+      volumeMounts:
+        - name: apache-vhosts
+          mountPath: /vhosts
+      livenessProbe:
+        tcpSocket:
+          port: proxy-https
+      readinessProbe:
+        httpGet:
+          path: /
+          port: proxy-https
+          scheme: HTTPS
+  extraVolumes: |-
+    - name: apache-vhosts
+      configMap:
+        name: {{ printf "%s-apache-config" (include "common.names.fullname" .) }}
+  networkPolicy:
+    extraIngress:
+      - ports:
+        - port: 8443
+          protocol: TCP
   service:
     extraPorts:
     - name: https
       port: 443
-      targetPort: https
+      targetPort: proxy-https
       protocol: TCP
 extraDeploy:
-- |
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: {{ printf "%s-envoy-config" (include "common.names.fullname" .) }}
-    namespace: {{ include "common.names.namespace" . | quote }}
-  data:
-    envoy.yaml: |
-      static_resources:
-        listeners:
-        - name: listener_0
-          address:
-            socket_address: { address: 0.0.0.0, port_value: 8443 }
-          filter_chains:
-          - filters:
-            - name: envoy.filters.network.http_connection_manager
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
-                stat_prefix: ingress_http
-                route_config:
-                  name: local_route
-                  virtual_hosts:
-                  - name: app
-                    domains: ["*"]
-                    routes:
-                    - match: { prefix: "/" }
-                      route: { cluster: local_service }
-                http_filters:
-                - name: envoy.filters.http.router
-                  typed_config:
-                    "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
-            transport_socket:
-              name: envoy.transport_sockets.tls
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
-                common_tls_context:
-                  tls_certificates:
-                    - certificate_chain: { filename: "/etc/certs/tls.crt" }
-                      private_key: { filename: "/etc/certs/tls.key" }
-        clusters:
-        - name: local_service
-          connect_timeout: 0.25s
-          type: logical_dns
-          lb_policy: round_robin
-          load_assignment:
-            cluster_name: local_service
-            endpoints:
-            - lb_endpoints:
-              - endpoint:
-                  address:
-                    socket_address:
-                      address: 127.0.0.1
-                      port_value: 8080
-- |
-  {{- $ca := genCA "temporal-web-ca" 365 }}
-  {{- $releaseNamespace := include "common.names.namespace" . }}
-  {{- $clusterDomain := .Values.clusterDomain }}
-  {{- $webServiceName := include "temporal.web.fullname" . }}
-  {{- $altNames := list (printf "%s.%s.svc.%s" $webServiceName $releaseNamespace $clusterDomain) $webServiceName "127.0.0.1" "localhost" }}
-  {{- $cert := genSignedCert $webServiceName nil $altNames 365 $ca }}
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: {{ printf "%s-tls-crt" $webServiceName }}
-    namespace: {{ $releaseNamespace | quote }}
-  type: kubernetes.io/tls
-  data:
-    tls.crt: {{ $cert.Cert | b64enc }}
-    tls.key: {{ $cert.Key | b64enc }}
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ printf "%s-apache-config" (include "common.names.fullname" .) }}
+    data:
+      temporal-vhost.conf: |-
+        <VirtualHost 127.0.0.1:8443 _default_:8443>
+          ServerName www.example.com
+          ServerAlias *
+
+          SSLEngine on
+          SSLCertificateFile "/opt/bitnami/apache/conf/bitnami/certs/tls.crt"
+          SSLCertificateKeyFile "/opt/bitnami/apache/conf/bitnami/certs/tls.key"
+
+          RequestHeader set X-Forwarded-Proto "https"
+          ProxyPreserveHost on
+
+          SSLProxyEngine on
+
+          ProxyPass / http://127.0.0.1:{{ .Values.web.containerPorts.http }}/
+          ProxyPassReverse / http://127.0.0.1:{{ .Values.web.containerPorts.http }}/
+        </VirtualHost>
