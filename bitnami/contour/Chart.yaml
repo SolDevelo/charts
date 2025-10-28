@@ -11,8 +11,8 @@ annotations:
       version: 1.35.6
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/envoy:1.35.6-debian-12-r0
     - name: nginx
-      version: 1.29.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:1.29.2-debian-12-r0
+      version: 1.29.3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/nginx:1.29.3-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
@@ -37,4 +37,4 @@ maintainers:
 name: contour
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/contour
-version: 22.1.0
+version: 22.1.1
