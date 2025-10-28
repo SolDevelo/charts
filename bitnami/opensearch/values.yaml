@@ -100,7 +100,7 @@ containerPorts:
 ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
 ## ref: https://github.com/bitnami/containers/tree/main/bitnami/opensearch#environment-variables
 ##
-plugins: "https://github.com/opensearch-project/opensearch-prometheus-exporter/releases/download/3.3.0.0/prometheus-exporter-3.3.0.0.zip"
+plugins: "https://github.com/opensearch-project/opensearch-prometheus-exporter/releases/download/3.3.1.0/prometheus-exporter-3.3.1.0.zip"
 ## @param snapshotRepoPath File System snapshot repository path
 ## ref: https://github.com/bitnami/containers/tree/main/bitnami/opensearch#environment-variables
 ##
