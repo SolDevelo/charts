@@ -2,17 +2,18 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: discourse
-      version: 3.5.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/discourse:3.5.1-debian-12-r0
+      version: 3.5.2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/discourse:3.5.2-debian-12-r0
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
-appVersion: 3.5.1
+appVersion: 3.5.2
 dependencies:
 - condition: redis.enabled
   name: redis
@@ -45,4 +46,4 @@ maintainers:
 name: discourse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/discourse
-version: 18.0.1
+version: 18.0.2
