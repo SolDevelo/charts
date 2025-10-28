@@ -27,14 +27,13 @@ it('allows uploading data', () => {
       force: true,
     }
   );
-  cy.get('[data-test-subj="dataVisualizerFileOpenImportPageButton"]').click();
   cy.fixture('indexes').then((index) => {
     cy.get('[data-test-subj="dataVisualizerFileIndexNameInput"]').type(
       `${index.newIndex.name}.${random}`
     );
   });
-  cy.get('[data-test-subj="dataVisualizerFileImportButton"]').click();
-  cy.get('[data-test-subj="dataVisualizerFileImportSuccessCallout"]');
+  cy.get('[data-test-subj*="ImportButton"]').click();
+  cy.get('span').contains('Upload another file');
 });
 
 it('allows creating a dashboard and visualization', () => {
