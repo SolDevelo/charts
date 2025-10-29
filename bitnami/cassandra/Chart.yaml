@@ -5,25 +5,27 @@ annotations:
   fips: "false"
   images: |
     - name: cassandra
-      version: 5.0.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r21
+      version: 5.0.6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.6-debian-12-r0
     - name: cassandra-exporter
       version: 2.3.8
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra-exporter:2.3.8-debian-12-r54
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 5.0.5
+appVersion: 5.0.6
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
   tags:
   - bitnami-common
   version: 2.x.x
-description: Apache Cassandra is an open source distributed database management system designed to handle large amounts of data across many servers, providing high availability with no single point of failure.
+description: Apache Cassandra is an open source distributed database management system
+  designed to handle large amounts of data across many servers, providing high availability
+  with no single point of failure.
 home: https://bitnami.com
 icon: https://dyltqmyl993wv.cloudfront.net/assets/stacks/cassandra/img/cassandra-stack-220x234.png
 keywords:
@@ -36,4 +38,4 @@ maintainers:
 name: cassandra
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/cassandra
-version: 13.3.1
+version: 13.3.2
