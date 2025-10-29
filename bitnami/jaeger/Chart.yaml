@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: cassandra
-      version: 5.0.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r23
+      version: 5.0.6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.6-debian-12-r0
     - name: jaeger
       version: 2.11.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/jaeger:2.11.0-debian-12-r2
@@ -38,4 +38,4 @@ maintainers:
 name: jaeger
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/jaeger
-version: 6.1.0
+version: 6.1.1
