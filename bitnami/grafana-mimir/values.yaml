@@ -93,7 +93,7 @@ mimir:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/grafana-mimir
-    tag: 2.17.1-debian-12-r4
+    tag: 2.17.2-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
