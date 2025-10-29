@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: cassandra
-      version: 5.0.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.5-debian-12-r21
+      version: 5.0.6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cassandra:5.0.6-debian-12-r0
     - name: zipkin
       version: 3.5.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/zipkin:3.5.1-debian-12-r6
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/zipkin:3.5.1-debian-12-r7
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -39,4 +40,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/zipkin
 - https://github.com/bitnami/containers/tree/main/bitnami/zipkin
 - https://github.com/openzipkin/zipkin
-version: 1.5.0
+version: 1.5.1
