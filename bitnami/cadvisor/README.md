@@ -297,7 +297,7 @@ For more information on this new support, please refer to the [FIPS Compliance s
 | `podAnnotations`                                    | Pod annotations                                                                                                                                                                                                   | `{}`                       |
 | `podLabels`                                         | Add additional labels to the pod (evaluated as a template)                                                                                                                                                        | `{}`                       |
 | `fips.openssl`                                      | Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                | `""`                       |
-| `fips.golang`                                       | Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                 | `relaxed`                  |
+| `fips.golang`                                       | Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used                                                                                                 | `restricted`               |
 
 ### Traffic Exposure Parameters
 

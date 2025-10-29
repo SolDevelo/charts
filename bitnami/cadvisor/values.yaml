@@ -359,7 +359,7 @@ podLabels: {}
 ##
 fips:
   openssl: ""
-  golang: relaxed
+  golang: restricted
 ## @section Traffic Exposure Parameters
 ##
 ## Kubernetes svc configutarion
