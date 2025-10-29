@@ -185,7 +185,7 @@ controlplane:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/chainloop-control-plane
-    tag: 1.49.0-debian-12-r0
+    tag: 1.50.0-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -266,7 +266,7 @@ controlplane:
     image:
       registry: registry.app-catalog.vmware.com
       repository: eam/prd/containers/verified/common/minideb-bookworm/chainloop-control-plane-migrations
-      tag: 1.49.0-debian-12-r0
+      tag: 1.50.0-debian-12-r0
       digest: ""
       ## Specify a imagePullPolicy
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -1017,7 +1017,7 @@ cas:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/chainloop-artifact-cas
-    tag: 1.49.0-debian-12-r0
+    tag: 1.50.0-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
