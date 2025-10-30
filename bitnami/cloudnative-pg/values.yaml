@@ -720,7 +720,7 @@ pluginBarmanCloud:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud
-    tag: 0.7.0-debian-12-r2
+    tag: 0.8.0-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -753,7 +753,7 @@ pluginBarmanCloud:
   sidecarImage:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud-sidecar
-    tag: 0.7.0-debian-12-r29
+    tag: 0.8.0-debian-12-r0
     digest: ""
   ## @param pluginBarmanCloud.replicaCount Number of plugin-barman-cloud replicas to deploy
   ##

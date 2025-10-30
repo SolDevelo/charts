@@ -8,11 +8,11 @@ annotations:
       version: 1.27.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/cloudnative-pg:1.27.1-debian-12-r0
     - name: plugin-barman-cloud
-      version: 0.7.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud:0.7.0-debian-12-r2
+      version: 0.8.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud:0.8.0-debian-12-r0
     - name: plugin-barman-cloud-sidecar
-      version: 0.7.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud-sidecar:0.7.0-debian-12-r29
+      version: 0.8.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/plugin-barman-cloud-sidecar:0.8.0-debian-12-r0
     - name: postgresql
       version: 18.0.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/postgresql:18.0.0-debian-12-r14
@@ -40,4 +40,4 @@ maintainers:
 name: cloudnative-pg
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/cloudnative-pg
-version: 1.2.2
+version: 1.2.3
