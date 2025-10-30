@@ -89,7 +89,7 @@ diagnosticMode:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/seaweedfs
-  tag: 3.98.0-debian-12-r0
+  tag: 3.99.0-debian-12-r0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
