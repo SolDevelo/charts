@@ -54,7 +54,7 @@ global:
 image:
   registry: registry.app-catalog.vmware.com
   repository: eam/prd/containers/verified/common/minideb-bookworm/rabbitmq
-  tag: 4.1.5-debian-12-r0
+  tag: 4.2.0-debian-12-r0
   digest: ""
   ## set to true if you would like to see extra information on logs
   ## It turns BASH and/or NAMI debugging in the image
