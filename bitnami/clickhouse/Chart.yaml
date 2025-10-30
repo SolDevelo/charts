@@ -5,18 +5,18 @@ annotations:
   fips: "false"
   images: |
     - name: clickhouse
-      version: 25.9.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.9.4-debian-12-r0
+      version: 25.9.5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.9.5-debian-12-r0
     - name: clickhouse-keeper
-      version: 25.9.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.9.4-debian-12-r0
+      version: 25.9.5
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.9.5-debian-12-r0
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 25.9.4
+appVersion: 25.9.5
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -37,4 +37,4 @@ maintainers:
 name: clickhouse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/clickhouse
-version: 9.7.1
+version: 9.7.2
