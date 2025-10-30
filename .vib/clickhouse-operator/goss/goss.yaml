@@ -36,12 +36,13 @@ http:
 addr:
   tcp://chk-vib-vib-0-0:2181:
     reachable: true
-    timeout: 500
+    timeout: 5000
 command:
   check-cluster-status:
     # Hardcoded port based on the ClickHouseInstallationTemplate spec
     exec: clickhouse-client --port 9000 --user '{{ .Vars.auth.username }}' --password '{{ .Vars.auth.password }}' --query='SELECT COUNT(*) FROM system.clusters;'
     exit-status: 0
+    timeout: 30000
     stdout:
       - "4"
   create-database-in-cluster:
@@ -51,5 +52,6 @@ command:
     {{- $insertValue := 23 }}
     exec: clickhouse-client --host chi-vib-vib-0-0 --port 9000 --user '{{ .Vars.auth.username }}' --password '{{ .Vars.auth.password }}' --multiquery --query='CREATE DATABASE {{ $database }} ON CLUSTER vib ENGINE = Memory; CREATE TABLE {{ $table }} (a UInt8) ENGINE = Memory;  INSERT INTO {{ $table }} VALUES({{ $insertValue }}); SELECT * FROM {{ $table }};'
     exit-status: 0
+    timeout: 30000
     stdout:
       - "{{ $insertValue }}"
