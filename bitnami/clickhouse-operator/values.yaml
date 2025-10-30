@@ -106,7 +106,7 @@ image:
 ##
 fips:
   openssl: ""
-  golang: relaxed
+  golang: restricted
 ## Bitnami ClickHouse image
 ## ref: https://hub.docker.com/r/bitnami/clickhouse/tags/
 ## @param clickHouseImage.registry [default: REGISTRY_NAME] ClickHouse image registry
@@ -707,7 +707,7 @@ metrics:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## Configure extra options for ClickHouse Operator Metrics exporter containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param metrics.livenessProbe.enabled Enable livenessProbe on ClickHouse Operator Metrics exporter containers
