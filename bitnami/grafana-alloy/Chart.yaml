@@ -8,11 +8,11 @@ annotations:
       version: 0.15.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/configmap-reload:0.15.0-debian-12-r17
     - name: grafana-alloy
-      version: 1.11.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-alloy:1.11.2-debian-12-r1
+      version: 1.11.3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/grafana-alloy:1.11.3-debian-12-r0
   licenses: Apache-2.0
 apiVersion: v2
-appVersion: 1.11.2
+appVersion: 1.11.3
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -38,4 +38,4 @@ maintainers:
 name: grafana-alloy
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana-alloy
-version: 2.4.0
+version: 2.4.1
