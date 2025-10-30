@@ -207,7 +207,7 @@ resources: {}
 ##
 fips:
   openssl: ""
-  java: ""
+  java: "relaxed"
 ## Configure Pods Security Context
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
 ## @param podSecurityContext.enabled Enable neo4j pods' Security Context
