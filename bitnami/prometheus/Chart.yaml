@@ -11,15 +11,15 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: prometheus
-      version: 3.7.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.7.2-debian-12-r0
+      version: 3.7.3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/prometheus:3.7.3-debian-12-r0
     - name: thanos
       version: 0.40.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/thanos:0.40.1-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: clusterUtility
 apiVersion: v2
-appVersion: 3.7.2
+appVersion: 3.7.3
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -43,4 +43,4 @@ sources:
 - https://github.com/bitnami/containers/tree/main/bitnami/prometheus
 - https://github.com/prometheus/prometheus
 - https://github.com/prometheus-community/helm-charts
-version: 3.2.2
+version: 3.2.3

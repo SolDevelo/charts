@@ -692,7 +692,7 @@ server:
   image:
     registry: registry.app-catalog.vmware.com
     repository: eam/prd/containers/verified/common/minideb-bookworm/prometheus
-    tag: 3.7.2-debian-12-r0
+    tag: 3.7.3-debian-12-r0
     digest: ""
     ## Specify a imagePullPolicy
     ## ref: http://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
