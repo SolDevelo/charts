@@ -12,6 +12,7 @@ containerPorts:
   http: 7475
   https: 7476
   bolt: 7688
+resourcesPreset: "medium"
 service:
   extraPorts:
     - name: proxy-https
