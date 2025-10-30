@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: neo4j
       version: 5.26.14
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/neo4j:5.26.14-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/neo4j:5.26.14-debian-12-r1
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -39,4 +39,4 @@ sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/neo4j
 - https://github.com/bitnami/containers/tree/main/bitnami/neo4j
 - https://github.com/neo4j/neo4j
-version: 0.6.1
+version: 0.6.2
