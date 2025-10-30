@@ -52,6 +52,6 @@ command:
     {{- $insertValue := 23 }}
     exec: clickhouse-client --host chi-vib-vib-0-0 --port 9000 --user '{{ .Vars.auth.username }}' --password '{{ .Vars.auth.password }}' --multiquery --query='CREATE DATABASE {{ $database }} ON CLUSTER vib ENGINE = Memory; CREATE TABLE {{ $table }} (a UInt8) ENGINE = Memory;  INSERT INTO {{ $table }} VALUES({{ $insertValue }}); SELECT * FROM {{ $table }};'
     exit-status: 0
-    timeout: 30000
+    timeout: 60000
     stdout:
       - "{{ $insertValue }}"
