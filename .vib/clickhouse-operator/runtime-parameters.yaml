@@ -60,7 +60,7 @@ extraDeploy:
                     cpu: "0.5"
                   limits:
                     memory: "1Gi"
-                    cpu: "1"
+                    cpu: "2"
                 volumeMounts:
                   - name: default-volume-claim
                     mountPath: /bitnami/clickhouse
@@ -187,7 +187,7 @@ extraDeploy:
                     cpu: "0.5"
                   limits:
                     memory: "1Gi"
-                    cpu: "1"
+                    cpu: "2"
                 volumeMounts:
                   - name: default-volume-claim
                     mountPath: /bitnami/clickhouse-keeper
