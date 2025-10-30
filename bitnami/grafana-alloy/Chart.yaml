@@ -38,4 +38,4 @@ maintainers:
 name: grafana-alloy
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/grafana-alloy
-version: 2.4.1
+version: 2.4.2

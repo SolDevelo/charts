@@ -393,7 +393,7 @@ alloy:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## @param alloy.mounts.varlog Mount /var/log from the host into the container for log collection.
   ## @param alloy.mounts.dockercontainers Mount /var/lib/docker/containers from the host into the container for log
   ##
@@ -633,7 +633,7 @@ configReloader:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## Configure Container Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ## @param configReloader.containerSecurityContext.enabled Enabled ConfigMap Reload container's Security Context
