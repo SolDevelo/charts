@@ -5,8 +5,8 @@ annotations:
   fips: "false"
   images: |
     - name: rabbitmq
-      version: 4.1.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.1.5-debian-12-r0
+      version: 4.2.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq:4.2.0-debian-12-r0
     - name: rabbitmq-cluster-operator
       version: 2.16.1
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/rabbitmq-cluster-operator:2.16.1-debian-12-r6
@@ -43,4 +43,4 @@ maintainers:
 name: rabbitmq-cluster-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
-version: 4.5.1
+version: 4.5.2
