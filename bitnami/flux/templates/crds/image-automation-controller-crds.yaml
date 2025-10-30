@@ -1,5 +1,5 @@
 # Source: https://github.com/fluxcd/image-automation-controller/releases/download/v{version}/image-automation-controller.crds.yaml
-# Version: 1.0.2
+# Version: 1.0.3
 # VersionOf: fluxcd-image-automation-controller
 # Conditional: and .Values.imageAutomationController.enabled .Values.installCRDs
 {{- if and .Values.imageAutomationController.enabled .Values.installCRDs }}

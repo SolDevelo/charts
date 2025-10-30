@@ -1,5 +1,5 @@
 # Source: https://github.com/fluxcd/notification-controller/releases/download/v{version}/notification-controller.crds.yaml
-# Version: 1.7.3
+# Version: 1.7.4
 # VersionOf: fluxcd-notification-controller
 # Conditional: and .Values.notificationController.enabled .Values.installCRDs
 {{- if and .Values.notificationController.enabled .Values.installCRDs }}

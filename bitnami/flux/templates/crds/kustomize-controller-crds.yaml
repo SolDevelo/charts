@@ -1,5 +1,5 @@
 # Source: https://github.com/fluxcd/kustomize-controller/releases/download/v{version}/kustomize-controller.crds.yaml
-# Version: 1.7.1
+# Version: 1.7.2
 # VersionOf: fluxcd-kustomize-controller
 # Conditional: and .Values.kustomizeController.enabled .Values.installCRDs
 {{- if and .Values.kustomizeController.enabled .Values.installCRDs }}

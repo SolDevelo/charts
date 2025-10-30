@@ -1,5 +1,5 @@
 # Source: https://github.com/fluxcd/image-reflector-controller/releases/download/v{version}/image-reflector-controller.crds.yaml
-# Version: 1.0.2
+# Version: 1.0.3
 # VersionOf: fluxcd-image-reflector-controller
 # Conditional: and .Values.imageReflectorController.enabled .Values.installCRDs
 {{- if and .Values.imageReflectorController.enabled .Values.installCRDs }}
