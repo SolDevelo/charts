@@ -246,9 +246,11 @@ controlplane:
   ##    - org_name: "read-only-demo"
   prometheus_org_metrics: []
   ## @param controlplane.fips.openssl Configure OpenSSL FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
+  ## @param controlplane.fips.golang Configure Golang FIPS mode: '', 'restricted', 'relaxed', 'off'. If empty (""), 'global.defaultFips' would be used
   ##
   fips:
     openssl: ""
+    golang: restricted
 
   # Database migration
   ## @param controlplane.migration.ssl Connect to the database using SSL (required fro AWS RDS, etc)
@@ -1049,7 +1051,7 @@ cas:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
 
   ##
   ## TLS configuration
@@ -1817,7 +1819,7 @@ dex:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## Configure extra options for Dex containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param dex.startupProbe.enabled Enable startupProbe on Dex nodes
