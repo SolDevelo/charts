@@ -1,3 +1,7 @@
+extraEnvVars:
+# TNZ-66004: Avoid checking ghost-cli updates
+  - name: GHOST_CLI_PRE_CHECKS
+    value: 'false'
 ghostUsername: bitnamiTest
 ghostPassword: Complicated123!4
 ghostEmail: vim-tests@example.com
