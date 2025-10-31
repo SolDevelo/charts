@@ -131,7 +131,7 @@ ratelimitImage:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
 ## Bitnami Envoy image version
 ## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
 ## @param envoyImage.registry [default: REGISTRY_NAME] Envoy image registry
