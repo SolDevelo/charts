@@ -14,8 +14,8 @@ annotations:
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: pymilvus
-      version: 2.6.2
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pymilvus:2.6.2-debian-12-r15
+      version: 2.6.3
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/pymilvus:2.6.3-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -55,4 +55,4 @@ maintainers:
 name: milvus
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/milvus
-version: 16.0.11
+version: 16.0.12
