@@ -2,10 +2,11 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: ejbca
       version: 9.1.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ejbca:9.1.1-debian-12-r13
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/ejbca:9.1.1-debian-12-r14
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -37,4 +38,4 @@ maintainers:
 name: ejbca
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/ejbca
-version: 19.1.0
+version: 19.1.1
