@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: os-shell
       version: "12"
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r52
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
     - name: solr
       version: 9.9.0
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/solr:9.9.0-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/solr:9.9.0-debian-12-r3
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
@@ -38,4 +39,4 @@ maintainers:
 name: solr
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/solr
-version: 9.7.0
+version: 9.7.1
