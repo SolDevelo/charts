@@ -5,7 +5,7 @@ extraEnvVars:
 ghostUsername: bitnamiTest
 ghostPassword: Complicated123!4
 ghostEmail: vim-tests@example.com
-ghostHost: vmware-ghost.my
+ghostHost: www.example.com
 ghostSkipInstall: false
 containerPorts:
   http: 2369

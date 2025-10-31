@@ -5,7 +5,7 @@ module.exports = {
     password: 'Complicated123!4',
   },
   hosts: {
-    'vmware-ghost.my': '{{ TARGET_IP }}',
+    'www.example.com': '{{ TARGET_IP }}',
   },
   defaultCommandTimeout: 60000,
   e2e: {
