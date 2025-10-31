@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: APACHE-2.0
 
 annotations:
+  fips: "false"
   images: |
     - name: tensorflow-resnet
       version: 2.19.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-resnet:2.19.1-debian-12-r1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-resnet:2.19.1-debian-12-r2
     - name: tensorflow-serving
       version: 2.19.1
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-serving:2.19.1-debian-12-r2
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/tensorflow-serving:2.19.1-debian-12-r3
   licenses: Apache-2.0
   tanzuCategory: application
 apiVersion: v2
@@ -36,4 +37,4 @@ maintainers:
 name: tensorflow-resnet
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/tensorflow-resnet
-version: 4.4.0
+version: 4.4.1
