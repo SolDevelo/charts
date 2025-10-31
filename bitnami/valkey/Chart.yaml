@@ -14,15 +14,15 @@ annotations:
       version: 1.79.0
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/redis-exporter:1.79.0-debian-12-r0
     - name: valkey
-      version: 8.1.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/valkey:8.1.4-debian-12-r0
+      version: 9.0.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/valkey:9.0.0-debian-12-r0
     - name: valkey-sentinel
-      version: 8.1.4
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/valkey-sentinel:8.1.4-debian-12-r0
+      version: 9.0.0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/valkey-sentinel:9.0.0-debian-12-r0
   licenses: Apache-2.0
   tanzuCategory: service
 apiVersion: v2
-appVersion: 8.1.4
+appVersion: 9.0.0
 dependencies:
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
@@ -44,4 +44,4 @@ maintainers:
 name: valkey
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/valkey
-version: 4.1.2
+version: 5.0.0
