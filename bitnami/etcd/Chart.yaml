@@ -6,7 +6,7 @@ annotations:
   images: |
     - name: etcd
       version: 3.6.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/etcd:3.6.5-debian-12-r0
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/etcd:3.6.5-debian-12-r2
     - name: os-shell
       version: "12"
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/os-shell:12-debian-12-r53
@@ -37,4 +37,4 @@ maintainers:
 name: etcd
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/etcd
-version: 12.1.1
+version: 12.1.2
