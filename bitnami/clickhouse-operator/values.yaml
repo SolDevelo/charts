@@ -106,7 +106,7 @@ image:
 ##
 fips:
   openssl: ""
-  golang: restricted
+  golang: relaxed
 ## Bitnami ClickHouse image
 ## ref: https://hub.docker.com/r/bitnami/clickhouse/tags/
 ## @param clickHouseImage.registry [default: REGISTRY_NAME] ClickHouse image registry
