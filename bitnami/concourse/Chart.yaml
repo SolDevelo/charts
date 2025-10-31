@@ -18,7 +18,7 @@ dependencies:
 - condition: postgresql.enabled
   name: postgresql
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
-  version: 16.X.X
+  version: 18.X.X
 - name: common
   repository: oci://registry.app-catalog.vmware.com/eam/prd/charts/verified/common/minideb-bookworm
   tags:
@@ -42,4 +42,4 @@ maintainers:
 name: concourse
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/concourse
-version: 5.1.65
+version: 6.0.0
