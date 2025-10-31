@@ -393,7 +393,7 @@ alloy:
   ##
   fips:
     openssl: ""
-    golang: restricted
+    golang: relaxed
   ## @param alloy.mounts.varlog Mount /var/log from the host into the container for log collection.
   ## @param alloy.mounts.dockercontainers Mount /var/lib/docker/containers from the host into the container for log
   ##
