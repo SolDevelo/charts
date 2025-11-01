@@ -5,11 +5,11 @@ annotations:
   fips: "false"
   images: |
     - name: clickhouse
-      version: 25.9.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.9.5-debian-12-r0
+      version: 25.10.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse:25.10.1-debian-12-r0
     - name: clickhouse-keeper
-      version: 25.9.5
-      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.9.5-debian-12-r0
+      version: 25.10.1
+      image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-keeper:25.10.1-debian-12-r0
     - name: clickhouse-operator
       version: 0.25.5
       image: registry.app-catalog.vmware.com/eam/prd/containers/verified/common/minideb-bookworm/clickhouse-operator:0.25.5-debian-12-r0
@@ -42,4 +42,4 @@ name: clickhouse-operator
 sources:
 - https://github.com/bitnami/charts/tree/main/bitnami/clickhouse-operator
 - https://github.com/bitnami/containers/tree/main/bitnami/clickhouse-operator
-version: 0.3.8
+version: 0.3.9
