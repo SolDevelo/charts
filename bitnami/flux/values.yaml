@@ -2414,7 +2414,7 @@ notificationController:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## Configure Pods Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ## @param notificationController.podSecurityContext.enabled Enabled Notification Controller pods' Security Context
@@ -3438,7 +3438,7 @@ imageReflectorController:
   ##
   fips:
     openssl: ""
-    golang: relaxed
+    golang: restricted
   ## Configure extra options for Image Reflector Controller containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ## @param imageReflectorController.livenessProbe.enabled Enable livenessProbe on Image Reflector Controller containers
