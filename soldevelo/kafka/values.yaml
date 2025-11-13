@@ -1,5 +1,6 @@
-# Copyright Broadcom, Inc. All Rights Reserved.
-# SPDX-License-Identifier: APACHE-2.0
+# Copyright 2025 SolDevelo
+# Based on Bitnami Kafka Helm Chart © Broadcom, Inc. (Apache-2.0)
+# SPDX-License-Identifier: Apache-2.0
 
 ## @section Global parameters
 ## Global Docker image parameters
@@ -84,8 +85,8 @@ serviceBindings:
 
 ## @section Kafka common parameters
 
-## Bitnami Kafka image version
-## ref: https://hub.docker.com/r/bitnami/kafka/tags/
+## Soldevelo Kafka image version
+## ref: https://hub.docker.com/r/soldevelo/kafka/tags/
 ## @param image.registry [default: REGISTRY_NAME] Kafka image registry
 ## @param image.repository [default: REPOSITORY_NAME/kafka] Kafka image repository
 ## @skip image.tag Kafka image tag (immutable tags are recommended)
@@ -96,8 +97,8 @@ serviceBindings:
 ##
 image:
   registry: docker.io
-  repository: bitnami/kafka
-  tag: 4.0.0-debian-12-r10
+  repository: soldevelo/kafka
+  tag: 4.0.0
   digest: ""
   ## Specify a imagePullPolicy
   ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -395,7 +396,7 @@ tls:
   ##
   sslClientAuth: "required"
 ## @param extraEnvVars Extra environment variables to add to Kafka pods
-## ref: https://github.com/bitnami/containers/tree/main/bitnami/kafka#configuration
+## ref: https://github.com/soldevelo/containers/tree/main/soldevelo/kafka#configuration
 ## e.g:
 ## extraEnvVars:
 ##   - name: KAFKA_CFG_BACKGROUND_THREADS
@@ -487,8 +488,8 @@ defaultInitContainers:
     ##
     image:
       registry: docker.io
-      repository: bitnami/os-shell
-      tag: 12-debian-12-r51
+      repository: soldevelo/os-shell
+      tag: 12-r51
       digest: ""
       pullPolicy: IfNotPresent
       ## Optionally specify an array of imagePullSecrets.
@@ -524,7 +525,7 @@ defaultInitContainers:
     ## Kafka "volume-permissions" init container resource requests and limits
     ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## @param defaultInitContainers.volumePermissions.resourcesPreset Set Kafka "volume-permissions" init container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if defaultInitContainers.volumePermissions.resources is set (defaultInitContainers.volumePermissions.resources is recommended for production).
-    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
     ##
     resourcesPreset: "nano"
     ## @param defaultInitContainers.volumePermissions.resources Set Kafka "volume-permissions" init container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -573,7 +574,7 @@ defaultInitContainers:
     ## Kafka "prepare-config" init container resource requests and limits
     ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## @param defaultInitContainers.prepareConfig.resourcesPreset Set Kafka "prepare-config" init container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if defaultInitContainers.prepareConfig.resources is set (defaultInitContainers.prepareConfig.resources is recommended for production).
-    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
     ##
     resourcesPreset: "nano"
     ## @param defaultInitContainers.prepareConfig.resources Set Kafka "prepare-config" init container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -598,7 +599,7 @@ defaultInitContainers:
     ## @param defaultInitContainers.autoDiscovery.enabled Enable init container that auto-detects external IPs/ports by querying the K8s API
     ##
     enabled: false
-    ## Bitnami Kubectl image
+    ## Soldevelo Kubectl image
     ## @param defaultInitContainers.autoDiscovery.image.registry [default: REGISTRY_NAME] "auto-discovery" init-containers' image registry
     ## @param defaultInitContainers.autoDiscovery.image.repository [default: REPOSITORY_NAME/os-shell] "auto-discovery" init-containers' image repository
     ## @skip defaultInitContainers.autoDiscovery.image.tag "auto-discovery" init-containers' image tag (immutable tags are recommended)
@@ -608,8 +609,8 @@ defaultInitContainers:
     ##
     image:
       registry: docker.io
-      repository: bitnami/kubectl
-      tag: 1.33.4-debian-12-r0
+      repository: soldevelo/kubectl
+      tag: 1.33.4
       digest: ""
       ## Specify a imagePullPolicy
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -653,7 +654,7 @@ defaultInitContainers:
     ## Kafka "auto-discovery" init container resource requests and limits
     ## ref: http://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## @param defaultInitContainers.autoDiscovery.resourcesPreset Set Kafka "auto-discovery" init container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if defaultInitContainers.autoDiscovery.resources is set (defaultInitContainers.autoDiscovery.resources is recommended for production).
-    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
     ##
     resourcesPreset: "nano"
     ## @param defaultInitContainers.autoDiscovery.resources Set Kafka "auto-discovery" init container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -717,7 +718,7 @@ controller:
   ##
   args: []
   ## @param controller.extraEnvVars Extra environment variables to add to Kafka pods
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/kafka#configuration
+  ## ref: https://github.com/soldevelo/containers/tree/main/soldevelo/kafka#configuration
   ## e.g:
   ## extraEnvVars:
   ##   - name: KAFKA_CFG_BACKGROUND_THREADS
@@ -792,7 +793,7 @@ controller:
   ## Kafka resource requests and limits
   ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ## @param controller.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if controller.resources is set (controller.resources is recommended for production).
-  ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
   ##
   resourcesPreset: "small"
   ## @param controller.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -1178,7 +1179,7 @@ broker:
   ##
   args: []
   ## @param broker.extraEnvVars Extra environment variables to add to Kafka pods
-  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/kafka#configuration
+  ## ref: https://github.com/soldevelo/containers/tree/main/soldevelo/kafka#configuration
   ## e.g:
   ## extraEnvVars:
   ##   - name: KAFKA_CFG_BACKGROUND_THREADS
@@ -1253,7 +1254,7 @@ broker:
   ## Kafka resource requests and limits
   ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ## @param broker.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if broker.resources is set (broker.resources is recommended for production).
-  ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
   ##
   resourcesPreset: "small"
   ## @param broker.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -1989,8 +1990,8 @@ metrics:
     ## @param metrics.jmx.kafkaJmxPort JMX port where the exporter will collect metrics, exposed in the Kafka container.
     ##
     kafkaJmxPort: 5555
-    ## Bitnami JMX exporter image
-    ## ref: https://hub.docker.com/r/bitnami/jmx-exporter/tags/
+    ## Soldevelo JMX exporter image
+    ## ref: https://hub.docker.com/r/soldevelo/jmx-exporter/tags/
     ## @param metrics.jmx.image.registry [default: REGISTRY_NAME] JMX exporter image registry
     ## @param metrics.jmx.image.repository [default: REPOSITORY_NAME/jmx-exporter] JMX exporter image repository
     ## @skip metrics.jmx.image.tag JMX exporter image tag (immutable tags are recommended)
@@ -2000,8 +2001,8 @@ metrics:
     ##
     image:
       registry: docker.io
-      repository: bitnami/jmx-exporter
-      tag: 1.4.0-debian-12-r0
+      repository: soldevelo/jmx-exporter
+      tag: 1.4.0
       digest: ""
       ## Specify a imagePullPolicy
       ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
@@ -2048,7 +2049,7 @@ metrics:
     ## Prometheus JMX exporter resource requests and limits
     ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
     ## @param metrics.jmx.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if metrics.jmx.resources is set (metrics.jmx.resources is recommended for production).
-    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
     ##
     resourcesPreset: "micro"
     ## @param metrics.jmx.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
@@ -2184,7 +2185,7 @@ metrics:
     ##
     labels: {}
     ## @param metrics.serviceMonitor.selector Prometheus instance selector labels
-    ## ref: https://github.com/bitnami/charts/tree/main/bitnami/prometheus-operator#prometheus-configuration
+    ## ref: https://github.com/soldevelo/charts/tree/main/soldevelo/prometheus-operator#prometheus-configuration
     ##
     selector: {}
     ## @param metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping
@@ -2381,7 +2382,7 @@ provisioning:
   ## Kafka provisioning resource requests and limits
   ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
   ## @param provisioning.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if provisioning.resources is set (provisioning.resources is recommended for production).
-  ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+  ## More information: https://github.com/soldevelo/charts/blob/main/soldevelo/common/templates/_resources.tpl#L15
   ##
   resourcesPreset: "micro"
   ## @param provisioning.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)

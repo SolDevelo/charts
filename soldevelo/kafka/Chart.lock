@@ -1,6 +1,6 @@
 dependencies:
-- name: common
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 2.31.4
-digest: sha256:fc442e77200e1914dd46fe26490dcf62f44caa51db673c2f8e67d5319cd4c163
-generated: "2025-08-13T17:40:33.748453422Z"
+- name: common-chart
+  repository: oci://registry-1.docker.io/soldevelo
+  version: 2.31.7
+digest: sha256:9a5293b93a6aa702cc9b7428e561216d5b31f12a2733e75c67fb9ae0eb9c2165
+generated: "2025-11-12T18:26:56.679489543+01:00"

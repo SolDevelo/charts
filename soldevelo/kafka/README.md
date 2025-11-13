@@ -1,37 +1,20 @@
-<!--- app-name: Apache Kafka -->
+# SolDevelo Kafka Helm Chart
 
-# Bitnami Secure Images Helm chart for Apache Kafka
-
-Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
+SolDevelo's Kafka Helm chart, based on the Bitnami Helm Chart for Apache Kafka. Apache Kafka is a distributed streaming platform designed to build real-time pipelines and can be used as a message broker or as a replacement for a log aggregation solution for big data applications.
 
 [Overview of Apache Kafka](http://kafka.apache.org/)
 
-Trademarks: This software listing is packaged by Bitnami. The respective trademarks mentioned in the offering are owned by the respective companies, and use of them does not imply any affiliation or endorsement.
+This chart is a fork of Bitnami's Kafka chart with SolDevelo maintenance and container images. Original work © Bitnami and contributors.
 
 ## TL;DR
 
 ```console
-helm install my-release oci://registry-1.docker.io/bitnamicharts/kafka
+helm install my-release oci://registry-1.docker.io/soldevelo/kafka-chart
 ```
-
-> Tip: Did you know that this app is also available as a Kubernetes App on the Azure Marketplace? Kubernetes Apps are the easiest way to deploy Bitnami on AKS. Click [here](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/bitnami.kafka-cnab) to see the listing on Azure Marketplace.
-
-Looking to use Apache Kafka in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
-
-## ⚠️ Important Notice: Upcoming changes to the Bitnami Catalog
-
-Beginning August 28th, 2025, Bitnami will evolve its public catalog to offer a curated set of hardened, security-focused images under the new [Bitnami Secure Images initiative](https://news.broadcom.com/app-dev/broadcom-introduces-bitnami-secure-images-for-production-ready-containerized-applications). As part of this transition:
-
-- Granting community users access for the first time to security-optimized versions of popular container images.
-- Bitnami will begin deprecating support for non-hardened, Debian-based software images in its free tier and will gradually remove non-latest tags from the public catalog. As a result, community users will have access to a reduced number of hardened images. These images are published only under the “latest” tag and are intended for development purposes
-- Starting August 28th, over two weeks, all existing container images, including older or versioned tags (e.g., 2.50.0, 10.6), will be migrated from the public catalog (docker.io/bitnami) to the “Bitnami Legacy” repository (docker.io/bitnamilegacy), where they will no longer receive updates.
-- For production workloads and long-term support, users are encouraged to adopt Bitnami Secure Images, which include hardened containers, smaller attack surfaces, CVE transparency (via VEX/KEV), SBOMs, and enterprise support.
-
-These changes aim to improve the security posture of all Bitnami users by promoting best practices for software supply chain integrity and up-to-date deployments. For more details, visit the [Bitnami Secure Images announcement](https://github.com/bitnami/containers/issues/83267).
 
 ## Introduction
 
-This chart bootstraps a [Kafka](https://github.com/bitnami/containers/tree/main/bitnami/kafka) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Kafka](https://github.com/soldevelo/containers/tree/main/soldevelo/kafka) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -376,7 +359,7 @@ extraDeploy:
 You can create the Kafka Connect image using the Dockerfile below:
 
 ```Dockerfile
-FROM bitnami/kafka:latest
+FROM soldevelo/kafka:latest
 # Download MongoDB&reg; Connector for Apache Kafka https://www.confluent.io/hub/mongodb/kafka-connect-mongodb
 RUN mkdir -p /opt/bitnami/kafka/plugins && \
     cd /opt/bitnami/kafka/plugins && \
@@ -386,7 +369,7 @@ CMD /opt/bitnami/kafka/bin/connect-standalone.sh /bitnami/kafka/config/connect-s
 
 ### Persistence
 
-The [Bitnami Kafka](https://github.com/bitnami/containers/tree/main/bitnami/kafka) image stores the Kafka data at the `/bitnami/kafka` path of the container. Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+The [Bitnami Kafka](https://github.com/soldevelo/containers/tree/main/soldevelo/kafka) image stores the Kafka data at the `/bitnami/kafka` path of the container. Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 
 #### Adjust permissions of persistent volume mountpoint
 
@@ -1068,7 +1051,7 @@ helm install my-release -f values.yaml oci://REGISTRY_NAME/REPOSITORY_NAME/kafka
 ```
 
 > Note: You need to substitute the placeholders `REGISTRY_NAME` and `REPOSITORY_NAME` with a reference to your Helm chart registry and repository. For example, in the case of Bitnami, you need to use `REGISTRY_NAME=registry-1.docker.io` and `REPOSITORY_NAME=bitnamicharts`.
-> **Tip**: You can use the default [values.yaml](https://github.com/bitnami/charts/tree/main/bitnami/kafka/values.yaml)
+> **Tip**: You can use the default [values.yaml](https://github.com/soldevelo/charts/tree/main/soldevelo/kafka/values.yaml)
 
 ## Troubleshooting
 
@@ -1545,7 +1528,8 @@ kubectl delete statefulset kafka-zookeeper --cascade=false
 
 ## License
 
-Copyright &copy; 2025 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+Copyright 2025 SolDevelo
+Based on Bitnami Charts Library (https://github.com/bitnami/charts) © 2025 Broadcom Inc. (licensed under Apache-2.0)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
