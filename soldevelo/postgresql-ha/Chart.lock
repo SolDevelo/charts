@@ -3,4 +3,4 @@ dependencies:
   repository: oci://registry-1.docker.io/soldevelo
   version: 2.31.8
 digest: sha256:56b3def7762ea969c7d704922956d49bf54488bf6c9c6c71f8dddac59a17fa37
-generated: "2026-04-28T13:21:53.989204998+02:00"
+generated: "2026-04-28T13:21:55.479676057+02:00"
