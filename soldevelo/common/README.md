@@ -1,14 +1,19 @@
-# Bitnami Common Library Chart
 
-A [Helm Library Chart](https://helm.sh/docs/topics/library_charts/#helm) for grouping common logic between Bitnami charts.
+# SolDevelo Common Library Chart
+
+**This chart is a SolDevelo-maintained fork of the Bitnami Common Library Chart.**
+
+A [Helm Library Chart](https://helm.sh/docs/topics/library_charts/#helm) for grouping common logic between SolDevelo charts. This chart is not deployable by itself.
 
 ## TL;DR
 
+
+
 ```yaml
 dependencies:
-  - name: common
+  - name: common-chart
     version: 2.x.x
-    repository: oci://registry-1.docker.io/bitnamicharts
+    repository: oci://registry-1.docker.io/soldevelo
 ```
 
 ```console
@@ -24,22 +29,17 @@ data:
   myvalue: "Hello World"
 ```
 
-Looking to use our applications in production? Try [VMware Tanzu Application Catalog](https://bitnami.com/enterprise), the commercial edition of the Bitnami catalog.
 
-## ⚠️ Important Notice: Upcoming changes to the Bitnami Catalog
+Looking to use SolDevelo’s applications in production? Visit [soldevelo.com](https://soldevelo.com) or contact us for enterprise support.
 
-Beginning August 28th, 2025, Bitnami will evolve its public catalog to offer a curated set of hardened, security-focused images under the new [Bitnami Secure Images initiative](https://news.broadcom.com/app-dev/broadcom-introduces-bitnami-secure-images-for-production-ready-containerized-applications). As part of this transition:
 
-- Granting community users access for the first time to security-optimized versions of popular container images.
-- Bitnami will begin deprecating support for non-hardened, Debian-based software images in its free tier and will gradually remove non-latest tags from the public catalog. As a result, community users will have access to a reduced number of hardened images. These images are published only under the “latest” tag and are intended for development purposes
-- Starting August 28th, over two weeks, all existing container images, including older or versioned tags (e.g., 2.50.0, 10.6), will be migrated from the public catalog (docker.io/bitnami) to the “Bitnami Legacy” repository (docker.io/bitnamilegacy), where they will no longer receive updates.
-- For production workloads and long-term support, users are encouraged to adopt Bitnami Secure Images, which include hardened containers, smaller attack surfaces, CVE transparency (via VEX/KEV), SBOMs, and enterprise support.
-
-These changes aim to improve the security posture of all Bitnami users by promoting best practices for software supply chain integrity and up-to-date deployments. For more details, visit the [Bitnami Secure Images announcement](https://github.com/bitnami/containers/issues/83267).
+---
+**Note:** This chart is based on the Bitnami Common Library Chart (Apache-2.0, © Broadcom, Inc.), with SolDevelo-specific modifications and support.
+---
 
 ## Introduction
 
-This chart provides a common template helpers which can be used to develop new charts using [Helm](https://helm.sh) package manager.
+This chart provides common template helpers which can be used to develop new charts using [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -204,12 +204,12 @@ registry:
 repository:
   type: string
   description: Repository and image name
-  example: bitnami/nginx
+  example: soldevelo/postgresql-repmgr
 
 tag:
   type: string
   description: image tag
-  example: 1.16.1-debian-10-r63
+  example: 17.6.0-debian-12-r0
 
 pullPolicy:
   type: string
@@ -228,8 +228,8 @@ debug:
 
 ## An instance would be:
 # registry: docker.io
-# repository: bitnami/nginx
-# tag: 1.16.1-debian-10-r63
+# repository: soldevelo/postgresql-repmgr
+# tag: 17.6.0-debian-12-r0
 # pullPolicy: IfNotPresent
 # debug: false
 ```
@@ -372,7 +372,7 @@ helm install test mychart --set path.to.value00="",path.to.value01=""
 
 ## License
 
-Copyright &copy; 2025 Broadcom. The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+Copyright © 2026 SolDevelo. Based on Bitnami Common Helm Chart © Broadcom, Inc. (Apache-2.0).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
