@@ -1528,7 +1528,7 @@ kubectl delete statefulset kafka-zookeeper --cascade=false
 
 ## License
 
-Copyright 2025 SolDevelo
+Copyright 2026 SolDevelo
 Based on Bitnami Charts Library (https://github.com/bitnami/charts) © 2025 Broadcom Inc. (licensed under Apache-2.0)
 
 Licensed under the Apache License, Version 2.0 (the "License");
